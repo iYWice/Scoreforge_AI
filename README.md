@@ -1,173 +1,58 @@
-# Scoreforge AI
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-Scoreforge AI is a web-based examination and student performance analytics application. Teachers can build exams and review results, while students can take assessments and track their progress. Google Gemini provides optional AI-generated exam insights.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-## Features
+## About Laravel
 
-### Teachers
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- Manage classes and subjects.
-- Create exams with time limits and generated access codes.
-- Build multiple-choice, true/false, and identification questions.
-- Manage exam status: draft, published, or closed.
-- Review exam analytics, topic performance, and student performance predictions.
-- Generate and regenerate AI exam insights through Gemini.
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-### Students
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-- Register and access a student dashboard.
-- Join an exam using its access code.
-- Read instructions, complete a timed exam, and view results.
-- Track performance trends, rankings, academic readiness, and study recommendations.
+## Learning Laravel
 
-The application also includes an admin dashboard and role-based access. Public registration supports teacher and student accounts.
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-## Technology
+In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-| Area | Stack |
-| --- | --- |
-| Backend | PHP and Laravel 13 |
-| Interface | Blade, Tailwind CSS 3, Alpine.js 3 |
-| Asset build | Vite 8 |
-| Database | MySQL |
-| Authentication | Laravel Breeze |
-| AI integration | Google Gemini API |
-| Tests | Pest 4 |
+You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
-Performance predictions, readiness assessments, and study recommendations use application-defined calculations and rules. Gemini is used separately to generate exam insights.
+## Agentic Development
 
-## Requirements
+Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
 
-- PHP 8.5 for the project environment, with Laravel's required extensions and PDO MySQL.
-- Composer 2.
-- Node.js 22.12 or newer and npm, compatible with the installed Vite version.
-- A running MySQL server.
-- PDO SQLite to run the configured in-memory database tests.
-- A Gemini API key if you want to generate AI exam insights.
+```bash
+composer require laravel/boost --dev
 
-## Local setup
-
-### 1. Get the project
-
-Clone this repository using the URL from GitHub's **Code** button, then open a terminal in the project folder.
-
-### 2. Install dependencies
-
-```sh
-composer install
-npm ci
+php artisan boost:install
 ```
 
-### 3. Configure the environment
+Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
-Copy `.env.example` to `.env`.
+## Contributing
 
-On Windows PowerShell:
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-```powershell
-Copy-Item .env.example .env
-```
+## Code of Conduct
 
-On macOS or Linux:
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-```sh
-cp .env.example .env
-```
+## Security Vulnerabilities
 
-Set the application name and database connection in `.env`. Create an empty MySQL database named `scoreforge_ai` first, then use your local database credentials:
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-```dotenv
-APP_NAME="Scoreforge AI"
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=scoreforge_ai
-DB_USERNAME=your_mysql_username
-DB_PASSWORD=your_mysql_password
-```
+## License
 
-Generate the application key and create the database tables:
-
-```sh
-php artisan key:generate --no-interaction
-php artisan migrate --no-interaction
-```
-
-The example configuration uses database-backed sessions, cache, and queues, so run the migrations before using the application.
-
-### 4. Configure Gemini (optional)
-
-Add these settings to `.env` to enable AI exam insights:
-
-```dotenv
-GEMINI_API_KEY=your_gemini_api_key
-GEMINI_MODEL=gemini-2.5-flash
-```
-
-The model above is the default in `config/services.php`. Use a model available to your API account. Without a configured key, the Gemini service reports that AI insights are unavailable; the local analytics calculations do not require this key.
-
-After changing environment settings, clear cached configuration:
-
-```sh
-php artisan config:clear --no-interaction
-```
-
-### 5. Start development
-
-```sh
-composer run dev
-```
-
-This starts the application server, queue listener, and Vite development server. Open the address printed by the application server in your terminal.
-
-To build frontend assets:
-
-```sh
-npm run build
-```
-
-## Basic workflow
-
-1. Register a teacher account.
-2. Create a class and subject, then create an exam and add questions.
-3. Publish the exam and share its access code with students.
-4. Register or sign in as a student and enter the exam code.
-5. Complete the assessment and review the result.
-6. Sign in as the teacher to review analytics and optionally generate an AI insight.
-
-## Testing
-
-Run the test suite:
-
-```sh
-php artisan test --compact
-```
-
-Run a specific test file:
-
-```sh
-php artisan test --compact tests/Feature/ExampleTest.php
-```
-
-`phpunit.xml` configures an in-memory SQLite database for tests.
-
-## Project structure
-
-```text
-app/Http/Controllers/   Authentication, teacher, and student request handling
-app/Models/             Application data models
-app/Services/           Analytics, predictions, recommendations, and Gemini
-config/                 Application and integration configuration
-database/migrations/    Database schema
-resources/views/        Blade pages and components
-resources/js/           Frontend JavaScript
-routes/                 Web, authentication, and role-specific routes
-tests/                  Feature and unit tests
-```
-
-## Configuration notes
-
-- Keep `.env` and API keys out of version control. The repository already ignores `.env`; use `.env.example` as the setup reference.
-- The default mail configuration writes messages to the application log. Configure a mail provider to deliver password-reset emails.
-- If frontend changes are missing, run `npm run dev` during development or rebuild with `npm run build`.
-- If the database connection fails, check that MySQL is running, the database exists, and the credentials in `.env` are correct.
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
