@@ -1,0 +1,331 @@
+@extends('layouts.app')
+
+@section('title', 'Question Builder')
+
+@section('content')
+
+<div class="max-w-5xl mx-auto">
+
+    <h1 class="text-3xl font-bold mb-6">
+        {{ $exam->title }} - Question Builder
+    </h1>
+
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-300 text-green-700 p-3 rounded mb-4">
+        {{ session('success') }}
+    </div>
+    @endif
+
+    <div class="bg-white shadow rounded-lg p-6 mb-6">
+
+        <form method="POST"
+            action="{{ route('teacher.exams.questions.store', $exam->id) }}">
+
+            @csrf
+
+            <!-- Question Type -->
+
+            <div class="mb-4">
+
+                <label class="block font-semibold mb-2">
+                    Question Type
+                </label>
+
+                <select
+                    name="type"
+                    id="questionType"
+                    class="w-full border rounded p-2">
+
+                    <option value="multiple_choice">
+                        Multiple Choice
+                    </option>
+
+                    <option value="tf">
+                        True / False
+                    </option>
+
+                    <option value="identification">
+                        Identification
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- Question -->
+
+            <div class="mb-4">
+
+                <label class="block font-semibold mb-2">
+                    Question
+                </label>
+
+                <textarea
+                    name="question_text"
+                    rows="3"
+                    class="w-full border rounded p-2"
+                    required></textarea>
+
+            </div>
+
+            <!-- MCQ Choices -->
+
+            <div id="mcqFields">
+
+                <label class="block font-semibold mb-2">
+                    Choices
+                </label>
+
+                <input
+                    type="text"
+                    name="choice_a"
+                    placeholder="Choice A"
+                    class="w-full border rounded p-2 mb-2">
+
+                <input
+                    type="text"
+                    name="choice_b"
+                    placeholder="Choice B"
+                    class="w-full border rounded p-2 mb-2">
+
+                <input
+                    type="text"
+                    name="choice_c"
+                    placeholder="Choice C"
+                    class="w-full border rounded p-2 mb-2">
+
+                <input
+                    type="text"
+                    name="choice_d"
+                    placeholder="Choice D"
+                    class="w-full border rounded p-2 mb-4">
+
+            </div>
+
+            <!-- Text Correct Answer -->
+
+            <div
+                id="textAnswerField"
+                class="mb-4">
+
+                <label class="block font-semibold mb-2">
+                    Correct Answer
+                </label>
+
+                <input
+                    type="text"
+                    name="correct_answer"
+                    class="w-full border rounded p-2">
+
+            </div>
+
+            <!-- TRUE FALSE -->
+
+            <div
+                id="trueFalseAnswerField"
+                class="hidden mb-4">
+
+                <label class="block font-semibold mb-3">
+                    Correct Answer
+                </label>
+
+                <div class="flex gap-8">
+
+                    <label class="flex items-center gap-2">
+
+                        <input
+                            type="radio"
+                            name="correct_answer"
+                            value="True">
+
+                        True
+
+                    </label>
+
+                    <label class="flex items-center gap-2">
+
+                        <input
+                            type="radio"
+                            name="correct_answer"
+                            value="False">
+
+                        False
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <!-- Points -->
+
+            <div class="mb-6">
+
+                <label class="block font-semibold mb-2">
+                    Points
+                </label>
+
+                <input
+                    type="number"
+                    name="points"
+                    value="1"
+                    min="1"
+                    class="w-full border rounded p-2">
+
+            </div>
+
+            <button
+                class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded">
+
+                Add Question
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- Question Bank -->
+
+    <div class="bg-white p-5 rounded shadow">
+
+        <h2 class="text-xl font-bold mb-4">
+
+            Question Bank
+
+        </h2>
+
+        <table class="w-full">
+
+            <thead>
+
+                <tr class="border-b">
+
+                    <th class="text-left p-2">#</th>
+
+                    <th class="text-left p-2">Type</th>
+
+                    <th class="text-left p-2">Question</th>
+
+                    <th class="text-left p-2">Answer</th>
+
+                    <th class="text-left p-2">Points</th>
+
+                    <th class="text-left p-2">Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach($questions as $question)
+
+                <tr class="border-b">
+
+                    <td class="p-2">
+                        {{ $loop->iteration }}
+                    </td>
+
+                    <td class="p-2">
+                        {{ ucfirst($question->type) }}
+                    </td>
+
+                    <td class="p-2">
+                        {{ $question->question_text }}
+                    </td>
+
+                    <td class="p-2">
+                        {{ $question->correct_answer }}
+                    </td>
+
+                    <td class="p-2">
+                        {{ $question->points }}
+                    </td>
+
+                    <td class="p-2">
+
+                        <div class="flex gap-2">
+
+                            <a href="{{ route('teacher.questions.edit',$question->id) }}"
+                                class="bg-yellow-500 text-white px-3 py-1 rounded">
+
+                                Edit
+
+                            </a>
+
+                            <form
+                                action="{{ route('teacher.questions.destroy',$question->id) }}"
+                                method="POST">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button
+                                    onclick="return confirm('Delete question?')"
+                                    class="bg-red-500 text-white px-3 py-1 rounded">
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                @endforeach
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+    const typeSelect =
+        document.getElementById('questionType');
+
+    const mcqFields =
+        document.getElementById('mcqFields');
+
+    const textAnswerField =
+        document.getElementById('textAnswerField');
+
+    const trueFalseAnswerField =
+        document.getElementById('trueFalseAnswerField');
+
+    function updateFields() {
+        const type = typeSelect.value;
+
+        mcqFields.style.display = 'none';
+
+        textAnswerField.classList.add('hidden');
+
+        trueFalseAnswerField.classList.add('hidden');
+
+        if (type === 'multiple_choice') {
+            mcqFields.style.display = 'block';
+
+            textAnswerField.classList.remove('hidden');
+        } else if (type === 'tf') {
+            trueFalseAnswerField.classList.remove('hidden');
+        } else if (type === 'identification') {
+            textAnswerField.classList.remove('hidden');
+        }
+    }
+
+    typeSelect.addEventListener(
+        'change',
+        updateFields
+    );
+
+    updateFields();
+</script>
+
+@endsection
