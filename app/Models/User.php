@@ -68,4 +68,23 @@ class User extends Authenticatable
             'student_id'
         );
     }
+
+    public function createdClasses()
+    {
+        return $this->hasMany(
+            SchoolClass::class,
+            'created_by'
+        );
+    }
+
+    public function enrolledClasses()
+    {
+        return $this->belongsToMany(
+            SchoolClass::class,
+            'class_enrollments',
+            'student_id',
+            'class_id'
+        )->withPivot('joined_at')
+            ->withTimestamps();
+    }
 }

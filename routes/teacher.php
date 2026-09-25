@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Teacher\ExamController;
 use App\Http\Controllers\Teacher\QuestionController;
 use App\Http\Controllers\Teacher\AnalyticsController;
+use App\Http\Controllers\Teacher\ClassController;
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
 
@@ -105,4 +106,25 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         '/teacher/analytics/exam/{exam}/ai-insight/regenerate',
         [AnalyticsController::class, 'regenerateAiInsight']
     )->name('teacher.analytics.ai-insight.regenerate');
+
+
+    Route::get(
+        '/teacher/classes',
+        [ClassController::class, 'index']
+    )->name('teacher.classes.index');
+
+    Route::post(
+        '/teacher/classes',
+        [ClassController::class, 'store']
+    )->name('teacher.classes.store');
+
+    Route::get(
+        '/teacher/classes/{class}',
+        [ClassController::class, 'show']
+    )->name('teacher.classes.show');
+
+    Route::patch(
+        '/teacher/classes/{class}',
+        [ClassController::class, 'update']
+    )->name('teacher.classes.update');
 });

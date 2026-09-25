@@ -3,6 +3,7 @@
 use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\ExamAttemptController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Student\ClassController;
 
 Route::middleware(['auth', 'role:student'])->group(function () {
 
@@ -52,4 +53,19 @@ Route::middleware(['auth', 'role:student'])->group(function () {
         '/student/exam/{attempt}/result',
         [ExamAttemptController::class, 'result']
     )->name('student.exam.result');
+
+    Route::get(
+        '/student/classes',
+        [ClassController::class, 'index']
+    )->name('student.classes.index');
+
+    Route::post(
+        '/student/classes/join',
+        [ClassController::class, 'join']
+    )->name('student.classes.join');
+
+    Route::get(
+        '/student/classes/{class}',
+        [ClassController::class, 'show']
+    )->name('student.classes.show');resources/views/student/classes/
 });

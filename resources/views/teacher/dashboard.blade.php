@@ -475,7 +475,7 @@
 
 
                 <a
-                    href="{{ route('teacher.class-subjects.index') }}"
+                    href="{{ route('teacher.classes.index') }}"
                     class="group flex items-center
                            justify-between
                            border-b border-slate-800

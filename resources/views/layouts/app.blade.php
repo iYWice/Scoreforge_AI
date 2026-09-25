@@ -190,22 +190,23 @@
 
                         {{-- Classes --}}
                         <a
-                            href="{{ route('teacher.class-subjects.index') }}"
+                            href="{{ route('teacher.classes.index') }}"
                             class="relative flex h-full items-center
-                                   px-4 text-sm font-semibold
-                                   transition-all duration-200
-                                   hover:text-indigo-600
-                                   active:scale-95
-                                   {{ request()->routeIs('teacher.class-subjects*')
-                                        ? 'text-slate-950'
-                                        : 'text-slate-500' }}">
+           px-4 text-sm font-semibold
+           transition-all duration-200
+           hover:text-indigo-600
+           active:scale-95
+           {{ request()->routeIs('teacher.classes.*')
+               ? 'text-slate-950'
+               : 'text-slate-500' }}">
                             Classes
 
-                            @if(request()->routeIs('teacher.class-subjects*'))
+                            @if(request()->routeIs('teacher.classes.*'))
                             <span
                                 class="absolute inset-x-4 bottom-0
-                                           h-[3px] rounded-t-full
-                                           bg-indigo-600"></span>
+                   h-[3px] rounded-t-full
+                   bg-indigo-600">
+                            </span>
                             @endif
                         </a>
 
@@ -257,38 +258,62 @@
 
                         @elseif(auth()->user()->role === 'student')
 
+                        {{-- Overview --}}
                         <a
                             href="{{ url('/student/dashboard') }}"
                             class="relative flex h-full items-center
-                                   px-4 text-sm font-semibold
-                                   text-slate-950">
+           px-4 text-sm font-semibold
+           transition-all duration-200
+           hover:text-indigo-600
+           active:scale-95
+           {{ request()->is('student/dashboard')
+               ? 'text-slate-950'
+               : 'text-slate-500' }}">
                             Overview
 
                             @if(request()->is('student/dashboard'))
                             <span
                                 class="absolute inset-x-4 bottom-0
-                                           h-[3px] rounded-t-full
-                                           bg-indigo-600"></span>
+                   h-[3px] rounded-t-full
+                   bg-indigo-600">
+                            </span>
                             @endif
                         </a>
 
+
+                        {{-- Classes --}}
                         <a
-                            href="{{ url('/student/exam') }}"
+                            href="{{ route('student.classes.index') }}"
                             class="relative flex h-full items-center
-                                   px-4 text-sm font-semibold
-                                   text-slate-500
-                                   transition hover:text-indigo-600
-                                   active:scale-95">
-                            Take Exam
+           px-4 text-sm font-semibold
+           transition-all duration-200
+           hover:text-indigo-600
+           active:scale-95
+           {{ request()->routeIs('student.classes.*')
+               ? 'text-slate-950'
+               : 'text-slate-500' }}">
+                            Classes
+
+                            @if(request()->routeIs('student.classes.*'))
+                            <span
+                                class="absolute inset-x-4 bottom-0
+                   h-[3px] rounded-t-full
+                   bg-indigo-600">
+                            </span>
+                            @endif
                         </a>
 
+
+
+
+                        {{-- Performance --}}
                         <a
                             href="{{ url('/student/dashboard') }}#performance"
                             class="relative flex h-full items-center
-                                   px-4 text-sm font-semibold
-                                   text-slate-500
-                                   transition hover:text-indigo-600
-                                   active:scale-95">
+           px-4 text-sm font-semibold
+           text-slate-500
+           transition hover:text-indigo-600
+           active:scale-95">
                             Performance
                         </a>
 
@@ -323,6 +348,8 @@
                                        h-[3px] rounded-t-full
                                        bg-indigo-600"></span>
                         </a>
+
+
 
                         @endif
 
@@ -575,7 +602,7 @@
                         </a>
 
                         <a
-                            href="{{ route('teacher.class-subjects.index') }}"
+                            href="{{ route('teacher.classes.index') }}"
                             class="rounded-xl px-4 py-3
                                    text-sm font-semibold
                                    transition-all
