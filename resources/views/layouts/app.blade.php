@@ -232,7 +232,7 @@
                         </a>
 
 
-                        {{-- AI placeholder --}}
+                        <!-- {{-- AI placeholder --}}
                         <button
                             type="button"
                             class="group relative flex h-full
@@ -251,7 +251,7 @@
                                        transition-transform
                                        group-hover:scale-105">
                                 Soon
-                            </span>
+                            </span> -->
 
                         </button>
 
@@ -292,7 +292,7 @@
                             Performance
                         </a>
 
-                        <span
+                        <!-- <span
                             class="flex h-full items-center
                                    gap-2 px-4
                                    text-sm font-semibold
@@ -307,7 +307,7 @@
                                        text-indigo-500">
                                 Soon
                             </span>
-                        </span>
+                        </span> -->
 
                         @elseif(auth()->user()->role === 'admin')
 

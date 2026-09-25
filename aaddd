@@ -1,0 +1,149 @@
+// Get test exam
+$exam = \App\Models\Exam::find(10);
+
+// Calculate exam statistics
+$analytics = app(
+    \App\Services\ExamAnalyticsService::class
+)->analyze($exam);
+
+// Load Gemini
+$gemini = app(
+\App\Services\GeminiService::class
+);
+
+// Test AI insight generation
+$gemini->generateExamInsight($exam, $analytics);
+
+////
+PS C:\Users\User\Desktop\Scoreforge_AI> php artisan tinker
+Psy Shell v0.12.24 (PHP 8.5.9 — cli) by Justin Hileman
+New PHP manual is available (latest: 3.1.1). Update with `doc --update-manual`
+
+> $exam = \App\Models\Exam::find(10);
+
+= App\Models\Exam {#8729
+id: 10,
+title: "data",
+subject_id: 1,
+class_id: 1,
+exam_code: "INFO-R8H3",
+time_limit: null,
+total_items: 0,
+created_by: 2,
+duration: 60,
+passing_score: 4,
+created_at: "2026-09-17 08:15:59",
+updated_at: "2026-09-17 08:18:24",
+status: "published",
+}
+
+> $analytics = app(                                                                                            
+.     \App\Services\ExamAnalyticsService::class                                                                
+. )->analyze($exam);
+
+= [
+"total_students" => 3,
+"total_attempts" => 3,
+"average_score" => 66.67,
+"highest_score" => 100.0,
+"lowest_score" => 40.0,
+"passed" => 1,
+"failed" => 2,
+"pass_rate" => 33.33,
+"question_analysis" => [
+[
+"question_id" => 32,
+"question_text" => "Quantitative data can be measured and expressed numerically",
+"topic" => "Quantitative dat",
+"correct" => 2,
+"incorrect" => 1,
+"total_answers" => 3,
+"accuracy" => 66.67,
+"difficulty" => "Moderate",
+],
+[
+"question_id" => 33,
+"question_text" => "Qualitative data describes qualities or characteristics and uses categories instead of numbers.",
+"topic" => "Qualitative data",
+"correct" => 2,
+"incorrect" => 1,
+"total_answers" => 3,
+"accuracy" => 66.67,
+"difficulty" => "Moderate",
+],
+[
+"question_id" => 34,
+"question_text" => "A Boolean data type must always contain a numeric value like 1 or 2",
+"topic" => "Boolean data type",
+"correct" => 2,
+"incorrect" => 1,
+"total_answers" => 3,
+"accuracy" => 66.67,
+"difficulty" => "Moderate",
+],
+[
+"question_id" => 35,
+"question_text" => "Nominal qualitative data has a strict, inherent numerical order or ranking scale",
+"topic" => "Nominal qualitative data",
+"correct" => 2,
+"incorrect" => 1,
+"total_answers" => 3,
+"accuracy" => 66.67,
+"difficulty" => "Moderate",
+],
+[
+"question_id" => 36,
+"question_text" => "Changing a spreadsheet file format from .XLS to .CSV is an example of a data transformation.",
+"topic" => "spreadsheet file",
+"correct" => 2,
+"incorrect" => 1,
+"total_answers" => 3,
+"accuracy" => 66.67,
+"difficulty" => "Moderate",
+],
+],
+"topic_analysis" => [
+[
+"topic" => "Quantitative dat",
+"correct" => 2,
+"total" => 3,
+"accuracy" => 66.67,
+],
+[
+"topic" => "Qualitative data",
+"correct" => 2,
+"total" => 3,
+"accuracy" => 66.67,
+],
+[
+"topic" => "Boolean data type",
+"correct" => 2,
+"total" => 3,
+"accuracy" => 66.67,
+],
+[
+"topic" => "Nominal qualitative data",
+"correct" => 2,
+"total" => 3,
+"accuracy" => 66.67,
+],
+[
+"topic" => "spreadsheet file",
+"correct" => 2,
+"total" => 3,
+"accuracy" => 66.67,
+],
+],
+]
+
+> $gemini = app(  
+> . \App\Services\GeminiService::class  
+> . );
+
+= App\Services\GeminiService {#8708}
+
+> $gemini->generateExamInsight($exam, $analytics);
+
+RuntimeException AI-Q Insights is temporarily unavailable because the AI service is busy. Please try again shortly.
+
+>

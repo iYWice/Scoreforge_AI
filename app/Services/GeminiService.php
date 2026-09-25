@@ -66,15 +66,34 @@ class GeminiService
                 );
             }
 
-            if ($response->failed()) {
+            if ($response->status() === 429) {
+                Log::warning('Gemini API quota exceeded.', [
+                    'response' => $response->json(),
+                ]);
 
+                throw new RuntimeException(
+                    'AI-Q has reached its current AI generation limit. Please try again later.'
+                );
+            }
+
+            if ($response->status() === 503) {
+                Log::warning('Gemini API temporarily unavailable.', [
+                    'response' => $response->json(),
+                ]);
+
+                throw new RuntimeException(
+                    'AI-Q Insights is temporarily unavailable because the AI service is busy. Please try again shortly.'
+                );
+            }
+
+            if ($response->failed()) {
                 Log::error('Gemini API request failed.', [
                     'status' => $response->status(),
                     'response' => $response->json(),
                 ]);
 
                 throw new RuntimeException(
-                    'Gemini could not generate an insight.'
+                    'AI-Q could not generate the AI insight right now.'
                 );
             }
 
