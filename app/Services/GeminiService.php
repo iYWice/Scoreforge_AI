@@ -55,16 +55,6 @@ class GeminiService
                         ],
                     ]
                 );
-            if ($response->status() === 429) {
-
-                Log::warning('Gemini API quota exceeded.', [
-                    'response' => $response->json(),
-                ]);
-
-                throw new RuntimeException(
-                    'AI-Q has reached its current AI generation limit. Please try again later.'
-                );
-            }
 
             if ($response->status() === 429) {
                 Log::warning('Gemini API quota exceeded.', [
@@ -82,7 +72,7 @@ class GeminiService
                 ]);
 
                 throw new RuntimeException(
-                    'AI-Q Insights is temporarily unavailable because the AI service is busy. Please try again shortly.'
+                    'The AI service is temporarily unavailable or busy. Please try again shortly.'
                 );
             }
 
@@ -93,7 +83,7 @@ class GeminiService
                 ]);
 
                 throw new RuntimeException(
-                    'AI-Q could not generate the AI insight right now.'
+                    'AI-Q could not complete the AI request right now.'
                 );
             }
 
@@ -130,12 +120,267 @@ class GeminiService
     /**
      * Simple connection test.
      */
+
+    public function generateQuestions(
+        string $sourceText,
+        int $count,
+        array $types,
+        ?string $difficulty = null
+    ): array {
+
+        /*
+    |--------------------------------------------------------------------------
+    | Validate generation settings
+    |--------------------------------------------------------------------------
+    */
+
+        $count = max(1, min($count, 50));
+
+        $allowedTypes = [
+            'multiple_choice',
+            'true_false',
+            'identification',
+        ];
+
+        $types = array_values(
+            array_intersect($types, $allowedTypes)
+        );
+
+        if (empty($types)) {
+            throw new RuntimeException(
+                'At least one valid question type is required.'
+            );
+        }
+
+        if (trim($sourceText) === '') {
+            throw new RuntimeException(
+                'The learning material contains no readable text.'
+            );
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Prevent extremely large prompts
+    |--------------------------------------------------------------------------
+    */
+
+        $sourceText = mb_substr(
+            $sourceText,
+            0,
+            30000
+        );
+
+        $typeList = implode(', ', $types);
+
+        $difficultyInstruction = $difficulty
+            ? "Generate questions with {$difficulty} difficulty."
+            : 'Use an appropriate mixture of difficulty levels.';
+
+        /*
+    |--------------------------------------------------------------------------
+    | Gemini Prompt
+    |--------------------------------------------------------------------------
+    */
+
+        $prompt = <<<PROMPT
+You are the AI Question Builder of AI-Q, an examination management
+and analytics system used in an academic environment.
+
+Generate examination questions using ONLY the learning material
+provided below.
+
+GENERATION SETTINGS:
+
+Number of questions: {$count}
+
+Allowed question types:
+{$typeList}
+
+Difficulty instruction:
+{$difficultyInstruction}
+
+IMPORTANT RULES:
+
+- Generate exactly {$count} questions.
+- Use only information supported by the supplied learning material.
+- Do not invent facts that are not found in the material.
+- Questions must be clear and academically appropriate.
+- Avoid duplicate or nearly identical questions.
+- Each question must have one clearly correct answer.
+- Assign a concise topic to every question.
+- Use 1 point for every generated question.
+
+QUESTION TYPE RULES:
+
+1. multiple_choice
+   - Provide exactly four options.
+   - Only one option must be correct.
+   - correct_answer must contain the complete correct option text.
+
+2. true_false
+   - options must contain exactly:
+     ["True", "False"]
+   - correct_answer must be either "True" or "False".
+
+3. identification
+   - options must be an empty array.
+   - correct_answer must contain the expected answer.
+
+Return ONLY valid JSON.
+
+Do not include Markdown.
+Do not include ```json.
+Do not include explanations outside the JSON.
+
+Use exactly this structure:
+
+{
+    "questions": [
+        {
+            "question_type": "multiple_choice",
+            "topic": "Topic name",
+            "question_text": "Question here",
+            "correct_answer": "Correct answer",
+            "points": 1,
+            "options": [
+                "Option 1",
+                "Option 2",
+                "Option 3",
+                "Option 4"
+            ]
+        }
+    ]
+}
+
+LEARNING MATERIAL:
+
+{$sourceText}
+
+PROMPT;
+
+        /*
+    |--------------------------------------------------------------------------
+    | Send to existing Gemini API method
+    |--------------------------------------------------------------------------
+    */
+
+        $response = $this->generate($prompt);
+
+        /*
+    |--------------------------------------------------------------------------
+    | Clean possible Markdown fences
+    |--------------------------------------------------------------------------
+    */
+
+        $response = trim($response);
+
+        $response = preg_replace(
+            '/^```(?:json)?\s*/i',
+            '',
+            $response
+        );
+
+        $response = preg_replace(
+            '/\s*```$/',
+            '',
+            $response
+        );
+
+        /*
+    |--------------------------------------------------------------------------
+    | Decode Gemini JSON
+    |--------------------------------------------------------------------------
+    */
+
+        $decoded = json_decode(
+            trim($response),
+            true
+        );
+
+        if (!is_array($decoded)) {
+            throw new RuntimeException(
+                'Gemini returned an invalid question format.'
+            );
+        }
+
+        if (
+            !isset($decoded['questions']) ||
+            !is_array($decoded['questions'])
+        ) {
+            throw new RuntimeException(
+                'Gemini did not return a question list.'
+            );
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | Validate generated questions
+    |--------------------------------------------------------------------------
+    */
+
+        $questions = [];
+
+        foreach ($decoded['questions'] as $question) {
+
+            $questionType =
+                $question['question_type'] ?? null;
+
+            if (!in_array(
+                $questionType,
+                $allowedTypes,
+                true
+            )) {
+                continue;
+            }
+
+            if (
+                empty($question['question_text']) ||
+                empty($question['correct_answer'])
+            ) {
+                continue;
+            }
+
+            $options = $question['options'] ?? [];
+
+            if (!is_array($options)) {
+                $options = [];
+            }
+
+            $questions[] = [
+                'question_type' => $questionType,
+
+                'topic' =>
+                trim($question['topic'] ?? 'General'),
+
+                'question_text' =>
+                trim($question['question_text']),
+
+                'correct_answer' =>
+                trim((string) $question['correct_answer']),
+
+                'points' => 1,
+
+                'options' =>
+                array_values($options),
+            ];
+        }
+
+        if (empty($questions)) {
+            throw new RuntimeException(
+                'Gemini did not generate any valid questions.'
+            );
+        }
+
+        return $questions;
+    }
     public function testConnection(): string
     {
         return $this->generate(
             'Reply with exactly: AI-Q Gemini connection successful.'
         );
     }
+
+
 
     public function generateExamInsight(
         \App\Models\Exam $exam,

@@ -5,6 +5,7 @@ use App\Http\Controllers\Teacher\ExamController;
 use App\Http\Controllers\Teacher\QuestionController;
 use App\Http\Controllers\Teacher\AnalyticsController;
 use App\Http\Controllers\Teacher\ClassController;
+use App\Http\Controllers\Teacher\AIQuestionBuilderController;
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
 
@@ -127,4 +128,21 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         '/teacher/classes/{class}',
         [ClassController::class, 'update']
     )->name('teacher.classes.update');
+
+    Route::get(
+        '/teacher/exams/{exam}/ai-question-builder',
+        [AIQuestionBuilderController::class, 'create']
+    )->name('teacher.ai-questions.create');
+
+
+    Route::post(
+        '/teacher/exams/{exam}/ai-question-builder',
+        [AIQuestionBuilderController::class, 'generate']
+    )->name('teacher.ai-questions.generate');
+
+
+    Route::get(
+        '/teacher/exams/{exam}/ai-question-builder/{session}',
+        [AIQuestionBuilderController::class, 'review']
+    )->name('teacher.ai-questions.review');
 });

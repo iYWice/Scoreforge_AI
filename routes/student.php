@@ -67,5 +67,5 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get(
         '/student/classes/{class}',
         [ClassController::class, 'show']
-    )->name('student.classes.show');resources/views/student/classes/
+    )->name('student.classes.show');
 });

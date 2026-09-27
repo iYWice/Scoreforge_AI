@@ -38,6 +38,19 @@
         Add Question
     </button>
 
+    <a
+        href="{{ route(
+        'teacher.ai-questions.create',
+        $exam
+    ) }}"
+        class="inline-flex items-center
+           rounded-xl bg-indigo-600
+           px-4 py-2.5 text-sm
+           font-semibold text-white
+           transition hover:bg-indigo-700">
+        ✦ AI Question Builder
+    </a>
+
 </div>
 @endsection
 
