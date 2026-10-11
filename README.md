@@ -1,6 +1,6 @@
-# Ai-Q AI
+# Ai-Q
 
-Scoreforge AI is a web-based examination and student performance
+Ai-Q is a web-based examination and student performance
 analytics application. Teachers can build exams and review results,
 while students can take assessments and track their progress. Google
 Gemini provides optional AI-generated exam insights.
@@ -202,7 +202,7 @@ Open `.env` and configure the MySQL connection for the new computer.
 Example:
 
 ```dotenv
-APP_NAME="Scoreforge AI"
+APP_NAME="Ai-Q"
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://127.0.0.1:8000
