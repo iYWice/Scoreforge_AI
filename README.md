@@ -92,7 +92,7 @@ cd C:\Users\YourName\Desktop
 Clone the repository using the URL shown by GitHub's **Code** button:
 
 ```sh
-git https://github.com/iYWice/Scoreforge_AI.git
+git clone https://github.com/iYWice/Scoreforge_AI.git
 ```
 
 Enter the project folder:
