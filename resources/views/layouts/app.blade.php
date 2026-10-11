@@ -45,6 +45,11 @@
 <body class="min-h-full bg-[#f7f8fb] text-slate-900 antialiased">
 
     @auth
+    @if(\App\Models\SystemSetting::getValue('maintenance_notice', '0') === '1')
+    <div class="border-b border-amber-200 bg-amber-50 px-5 py-3 text-center text-sm font-medium text-amber-900">
+        AI-Q is currently undergoing maintenance. Some features may be temporarily unavailable.
+    </div>
+    @endif
 
     <div
         x-data="{
@@ -252,9 +257,9 @@
                                        transition-transform
                                        group-hover:scale-105">
                                 Soon
-                            </span> -->
+                            </span> 
 
-                        </button>
+                        </button>-->
 
                         @elseif(auth()->user()->role === 'student')
 
@@ -334,24 +339,74 @@
                             </span>
                         </span> -->
 
+
                         @elseif(auth()->user()->role === 'admin')
 
-                        <a
-                            href="{{ url('/admin/dashboard') }}"
-                            class="relative flex h-full items-center
-                                   px-4 text-sm font-semibold
-                                   text-slate-950">
-                            Overview
+                        @php
+                        $adminNav = [
+                        [
+                        'label' => 'Overview',
+                        'route' => 'admin.dashboard',
+                        'active' => 'admin.dashboard',
+                        ],
+                        [
+                        'label' => 'Users',
+                        'route' => 'admin.users.index',
+                        'active' => 'admin.users.*',
+                        ],
+                        [
+                        'label' => 'Classes',
+                        'route' => 'admin.classes.index',
+                        'active' => 'admin.classes.*',
+                        ],
+                        [
+                        'label' => 'Exams',
+                        'route' => 'admin.exams.index',
+                        'active' => 'admin.exams.*',
+                        ],
+                        [
+                        'label' => 'Activity Logs',
+                        'route' => 'admin.activity-logs.index',
+                        'active' => 'admin.activity-logs.*',
+                        ],
+                        [
+                        'label' => 'Settings',
+                        'route' => 'admin.settings.index',
+                        'active' => 'admin.settings.*',
+                        ],
+                        ];
+                        @endphp
 
+                        @foreach($adminNav as $item)
+                        @php
+                        $active = request()->routeIs($item['active']);
+                        @endphp
+
+                        <a
+                            href="{{ route($item['route']) }}"
+                            class="relative flex h-full items-center
+                   px-4 text-sm font-semibold
+                   transition-all duration-200
+                   hover:text-indigo-600
+                   active:scale-95
+                   {{ $active ? 'text-slate-950' : 'text-slate-500' }}">
+                            {{ $item['label'] }}
+
+                            @if($active)
                             <span
                                 class="absolute inset-x-4 bottom-0
-                                       h-[3px] rounded-t-full
-                                       bg-indigo-600"></span>
+                           h-[3px] rounded-t-full
+                           bg-indigo-600">
+                            </span>
+                            @endif
                         </a>
-
-
+                        @endforeach
 
                         @endif
+
+
+
+
 
                     </nav>
 
@@ -649,7 +704,9 @@
                             Overview
                         </a>
 
+
                         @endif
+
 
                     </div>
 

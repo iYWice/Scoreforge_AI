@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Smalot\PdfParser\Parser;
 use Throwable;
+use App\Models\SystemSetting;
 
 class AIQuestionBuilderController extends Controller
 {
@@ -22,6 +23,11 @@ class AIQuestionBuilderController extends Controller
         abort_if(
             $exam->created_by !== auth()->id(),
             403
+        );
+        abort_if(
+            SystemSetting::getValue('ai_question_builder', '1') !== '1',
+            403,
+            'AI Question Builder is currently disabled by the administrator.'
         );
 
         $exam->load('subject');
@@ -44,6 +50,11 @@ class AIQuestionBuilderController extends Controller
         abort_if(
             $exam->created_by !== auth()->id(),
             403
+        );
+        abort_if(
+            SystemSetting::getValue('ai_question_builder', '1') !== '1',
+            403,
+            'AI Question Builder is currently disabled by the administrator.'
         );
 
         /*

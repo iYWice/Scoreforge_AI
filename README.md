@@ -9,48 +9,50 @@ Gemini provides optional AI-generated exam insights.
 
 ### Teachers
 
--   Manage classes and subjects.
--   Create exams with time limits and generated access codes.
--   Build multiple-choice, true/false, and identification questions.
--   Manage exam status: draft, published, or closed.
--   Review exam analytics and topic performance.
--   Generate and regenerate AI-assisted exam insights through Gemini.
+- Manage classes and subjects.
+- Create exams with time limits and generated access codes.
+- Build multiple-choice, true/false, and identification questions.
+- Manage exam status: draft, published, or closed.
+- Review exam analytics and topic performance.
+- Generate and regenerate AI-assisted exam insights through Gemini.
 
 ### Students
 
--   Register and access a student dashboard.
--   Join classes using a class code.
--   Access published class examinations.
--   Join an exam using its access code.
--   Read instructions, complete a timed exam, and view results.
--   Review available performance information.
+- Register and access a student dashboard.
+- Join classes using a class code.
+- Access published class examinations.
+- Join an exam using its access code.
+- Read instructions, complete a timed exam, and view results.
+- Review available performance information.
 
 The application also includes an admin dashboard and role-based access.
 Public registration supports teacher and student accounts.
 
 ## Technology
 
-  Area             Stack
-  ---------------- ------------------------------------
-  Backend          PHP and Laravel 13
-  Interface        Blade, Tailwind CSS 3, Alpine.js 3
-  Asset build      Vite 8
-  Database         MySQL
-  Authentication   Laravel Breeze
-  AI integration   Google Gemini API
-  Tests            Pest 4
+Area Stack
+
+---
+
+Backend PHP and Laravel 13
+Interface Blade, Tailwind CSS 3, Alpine.js 3
+Asset build Vite 8
+Database MySQL
+Authentication Laravel Breeze
+AI integration Google Gemini API
+Tests Pest 4
 
 ## Requirements
 
 Before installing AI-Q on another computer, install the following:
 
--   Git
--   PHP 8.5 with Laravel-required extensions and PDO MySQL
--   Composer 2
--   Node.js 22.12 or newer and npm
--   MySQL Server, XAMPP, or another compatible MySQL installation
--   A code editor such as Visual Studio Code
--   A Gemini API key only if AI-assisted insights will be used
+- Git
+- PHP 8.5 with Laravel-required extensions and PDO MySQL
+- Composer 2
+- Node.js 22.12 or newer and npm
+- MySQL Server, XAMPP, or another compatible MySQL installation
+- A code editor such as Visual Studio Code
+- A Gemini API key only if AI-assisted insights will be used
 
 For the configured automated tests, PDO SQLite is also required.
 
@@ -65,7 +67,7 @@ Install Git, PHP, Composer, Node.js/npm, and MySQL on the new computer.
 
 Verify the installation in a terminal:
 
-``` sh
+```sh
 git --version
 php -v
 composer --version
@@ -83,19 +85,19 @@ Move to the folder where you want to keep the project.
 
 Example on Windows:
 
-``` powershell
+```powershell
 cd C:\Users\YourName\Desktop
 ```
 
 Clone the repository using the URL shown by GitHub's **Code** button:
 
-``` sh
-git clone YOUR_GITHUB_REPOSITORY_URL
+```sh
+git https://github.com/iYWice/Scoreforge_AI.git
 ```
 
 Enter the project folder:
 
-``` sh
+```sh
 cd Scoreforge_AI
 ```
 
@@ -108,7 +110,7 @@ folders as a substitute for installing dependencies.
 
 From the project directory, run:
 
-``` sh
+```sh
 composer install
 ```
 
@@ -121,7 +123,7 @@ extension it names before continuing.
 
 Run:
 
-``` sh
+```sh
 npm ci
 ```
 
@@ -130,7 +132,7 @@ This installs the frontend dependencies from `package-lock.json`.
 If `npm ci` cannot be used because the lock file is missing or
 incompatible, use:
 
-``` sh
+```sh
 npm install
 ```
 
@@ -141,19 +143,19 @@ committed to GitHub.
 
 On Windows PowerShell:
 
-``` powershell
+```powershell
 Copy-Item .env.example .env
 ```
 
 On Command Prompt:
 
-``` cmd
+```cmd
 copy .env.example .env
 ```
 
 On macOS or Linux:
 
-``` sh
+```sh
 cp .env.example .env
 ```
 
@@ -161,7 +163,7 @@ cp .env.example .env
 
 Run:
 
-``` sh
+```sh
 php artisan key:generate
 ```
 
@@ -176,7 +178,7 @@ Start MySQL.
 
 Create an empty database named:
 
-``` text
+```text
 scoreforge_ai
 ```
 
@@ -189,7 +191,7 @@ For example, in phpMyAdmin:
 
 You can also create it through MySQL:
 
-``` sql
+```sql
 CREATE DATABASE scoreforge_ai;
 ```
 
@@ -199,7 +201,7 @@ Open `.env` and configure the MySQL connection for the new computer.
 
 Example:
 
-``` dotenv
+```dotenv
 APP_NAME="Scoreforge AI"
 APP_ENV=local
 APP_DEBUG=true
@@ -223,7 +225,7 @@ password, but use the actual credentials configured on the computer.
 
 For a new installation with an empty database, run:
 
-``` sh
+```sh
 php artisan migrate
 ```
 
@@ -261,7 +263,7 @@ With phpMyAdmin:
 If you import a complete existing database, do not run `migrate:fresh`.
 After importing, run:
 
-``` sh
+```sh
 php artisan migrate
 ```
 
@@ -274,7 +276,7 @@ and local analytics functionality can run without it.
 
 Add the Gemini settings to `.env`:
 
-``` dotenv
+```dotenv
 GEMINI_API_KEY=your_gemini_api_key
 GEMINI_MODEL=your_working_gemini_model
 ```
@@ -286,7 +288,7 @@ Never commit the real Gemini API key to GitHub.
 
 After editing `.env`, run:
 
-``` sh
+```sh
 php artisan config:clear
 ```
 
@@ -294,7 +296,7 @@ php artisan config:clear
 
 After installation or after changing environment settings, run:
 
-``` sh
+```sh
 php artisan optimize:clear
 ```
 
@@ -302,7 +304,7 @@ php artisan optimize:clear
 
 The simplest development command is:
 
-``` sh
+```sh
 composer run dev
 ```
 
@@ -311,7 +313,7 @@ including the web application and Vite development server.
 
 Open the Laravel URL printed in the terminal, normally:
 
-``` text
+```text
 http://127.0.0.1:8000
 ```
 
@@ -321,19 +323,19 @@ Keep the terminal running while using the system.
 
 Terminal 1:
 
-``` sh
+```sh
 php artisan serve
 ```
 
 Terminal 2:
 
-``` sh
+```sh
 npm run dev
 ```
 
 Then open:
 
-``` text
+```text
 http://127.0.0.1:8000
 ```
 
@@ -360,7 +362,7 @@ Test the following:
 If AI-Q is already installed on the computer and you only need the
 newest code, open the project folder and run:
 
-``` sh
+```sh
 git pull
 composer install
 npm ci
@@ -370,7 +372,7 @@ php artisan optimize:clear
 
 Then start the project:
 
-``` sh
+```sh
 composer run dev
 ```
 
@@ -381,19 +383,19 @@ the dependency versions recorded by the project.
 
 For a compiled frontend build:
 
-``` sh
+```sh
 npm run build
 ```
 
 During active development, use:
 
-``` sh
+```sh
 npm run dev
 ```
 
 or:
 
-``` sh
+```sh
 composer run dev
 ```
 
@@ -414,13 +416,13 @@ composer run dev
 
 Run the test suite:
 
-``` sh
+```sh
 php artisan test --compact
 ```
 
 Run a specific test file:
 
-``` sh
+```sh
 php artisan test --compact tests/Feature/ExampleTest.php
 ```
 
@@ -428,7 +430,7 @@ php artisan test --compact tests/Feature/ExampleTest.php
 
 ## Project Structure
 
-``` text
+```text
 app/Http/Controllers/   Authentication, teacher, and student request handling
 app/Models/             Application data models
 app/Services/           Analytics and Gemini integration
@@ -467,7 +469,7 @@ Create the `scoreforge_ai` database before running migrations.
 
 Run:
 
-``` sh
+```sh
 php artisan key:generate
 ```
 
@@ -475,13 +477,13 @@ php artisan key:generate
 
 During development run:
 
-``` sh
+```sh
 npm run dev
 ```
 
 or build the assets:
 
-``` sh
+```sh
 npm run build
 ```
 
@@ -489,7 +491,7 @@ npm run build
 
 Run:
 
-``` sh
+```sh
 php artisan optimize:clear
 ```
 
@@ -500,7 +502,7 @@ sure `npm run dev` is still running.
 
 Check `GEMINI_API_KEY` and `GEMINI_MODEL` in `.env`, then run:
 
-``` sh
+```sh
 php artisan config:clear
 ```
 
@@ -510,13 +512,13 @@ remain usable.
 
 ## Configuration and Security Notes
 
--   Never upload `.env` to GitHub.
--   Never commit database passwords or Gemini API keys.
--   Use `.env.example` as the public configuration reference.
--   Use `php artisan migrate`, not `migrate:fresh`, when existing data
-    must be preserved.
--   Database exports can contain student and examination data; store and
-    transfer them securely.
--   The default mail configuration may write messages to the application
-    log. Configure a mail provider if password-reset emails must
-    actually be delivered.
+- Never upload `.env` to GitHub.
+- Never commit database passwords or Gemini API keys.
+- Use `.env.example` as the public configuration reference.
+- Use `php artisan migrate`, not `migrate:fresh`, when existing data
+  must be preserved.
+- Database exports can contain student and examination data; store and
+  transfer them securely.
+- The default mail configuration may write messages to the application
+  log. Configure a mail provider if password-reset emails must
+  actually be delivered.

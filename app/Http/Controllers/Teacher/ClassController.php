@@ -33,6 +33,7 @@ class ClassController extends Controller
         ]);
 
         SchoolClass::create([
+
             'name' => $validated['name'],
             'subject_id' => $validated['subject_id'],
             'created_by' => auth()->id(),

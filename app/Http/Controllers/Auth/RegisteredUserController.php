@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\SystemSetting;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -20,6 +21,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+        abort_if(
+            SystemSetting::getValue('allow_registration', '1') !== '1',
+            403,
+            'Public registration is currently disabled.'
+        );
         return view('auth.register');
     }
 
@@ -30,6 +36,11 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        abort_if(
+            SystemSetting::getValue('allow_registration', '1') !== '1',
+            403,
+            'Public registration is currently disabled.'
+        );
         $request->validate([
             'fname' => ['required', 'string', 'max:255'],
             'lname' => ['required', 'string', 'max:255'],

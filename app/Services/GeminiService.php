@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Throwable;
+use App\Models\SystemSetting;
 
 class GeminiService
 {
@@ -386,7 +387,11 @@ PROMPT;
         \App\Models\Exam $exam,
         array $analytics
     ): array {
-
+        if (SystemSetting::getValue('ai_insights', '1') !== '1') {
+            throw new \RuntimeException(
+                'AI Performance Insights is currently disabled by the administrator.'
+            );
+        }
         $data = [
             'exam' => [
                 'title' => $exam->title,
