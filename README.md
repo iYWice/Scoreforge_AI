@@ -1,4 +1,4 @@
-# Scoreforge AI
+# Ai-Q AI
 
 Scoreforge AI is a web-based examination and student performance
 analytics application. Teachers can build exams and review results,
