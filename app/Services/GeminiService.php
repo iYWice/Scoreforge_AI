@@ -19,7 +19,7 @@ class GeminiService
 
         $model = config(
             'services.gemini.model',
-            'gemini-3.8-flash'
+            'gemini-3.5-flash-lite'
         );
 
         if (empty($apiKey)) {
@@ -52,7 +52,7 @@ class GeminiService
 
                         'generationConfig' => [
                             'temperature' => 0.2,
-                            'maxOutputTokens' => 1200,
+                            'maxOutputTokens' => 4096,
                         ],
                     ]
                 );
@@ -88,9 +88,29 @@ class GeminiService
                 );
             }
 
-            $text = $response->json(
-                'candidates.0.content.parts.0.text'
-            );
+
+            $body = $response->json();
+
+            $text = collect(data_get($body, 'candidates.0.content.parts', []))
+                ->pluck('text')
+                ->filter(fn($part) => is_string($part) && trim($part) !== '')
+                ->implode("\n");
+
+            if (trim($text) === '') {
+                Log::warning('Gemini returned no text content.', [
+                    'status' => $response->status(),
+                    'finish_reason' => data_get($body, 'candidates.0.finishReason'),
+                    'prompt_feedback' => data_get($body, 'promptFeedback'),
+                    'response' => $body,
+                ]);
+
+                throw new RuntimeException(
+                    'Gemini returned no text. Check the application log for the response details.'
+                );
+            }
+
+            return trim($text);
+
 
             if (empty($text)) {
 
@@ -275,24 +295,19 @@ PROMPT;
 
         $response = trim($response);
 
-        $response = preg_replace(
-            '/^```(?:json)?\s*/i',
-            '',
-            $response
-        );
+        $response = preg_replace('/^```(?:json)?\s*/i', '', $response);
+        $response = preg_replace('/\s*```$/', '', $response);
 
-        $response = preg_replace(
-            '/\s*```$/',
-            '',
-            $response
-        );
+        $decoded = json_decode(trim($response), true);
 
         /*
     |--------------------------------------------------------------------------
     | Decode Gemini JSON
     |--------------------------------------------------------------------------
     */
-
+        Log::debug('AI-Q Gemini raw question response', [
+            'response' => mb_substr($response, 0, 10000),
+        ]);
         $decoded = json_decode(
             trim($response),
             true
