@@ -156,4 +156,14 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         [AIQuestionBuilderController::class, 'updateGeneratedQuestion']
     )->whereNumber('questionIndex')
         ->name('teacher.ai-questions.update-question');
+
+    Route::get(
+        '/teacher/analytics/export',
+        [AnalyticsController::class, 'export']
+    )->name('teacher.analytics.export');
+
+    Route::get(
+        '/teacher/analytics/predictions/export',
+        [AnalyticsController::class, 'exportPredictions']
+    )->name('teacher.analytics.predictions.export');
 });

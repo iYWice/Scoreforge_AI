@@ -30,6 +30,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
 
     <section class="border-b border-slate-200 pb-8">
 
+
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 
             <div>
@@ -160,6 +161,12 @@ $safePassRate = max(0, min(100, (float) $passRate));
             </span>
 
         </a>
+        <a
+            href="{{ route('teacher.analytics.export') }}"
+            class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+            Export CSV
+        </a>
+
 
         @endif
 

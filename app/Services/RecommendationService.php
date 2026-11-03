@@ -5,9 +5,13 @@ namespace App\Services;
 use App\Models\ExamAttempt;
 use App\Models\Recommendation;
 use App\Services\StudentPerformanceService;
+use App\Services\GeminiService;
 
 class RecommendationService
 {
+    public function __construct(
+        private readonly GeminiService $geminiService
+    ) {}
     public function generate(ExamAttempt $attempt): Recommendation
     {
         $studentId = $attempt->student_id;
@@ -35,6 +39,51 @@ class RecommendationService
         )->first();
 
         $recommendations = [];
+
+        $recommendationData = [
+            'latest_exam_percentage' => round($percentage, 2),
+            'performance_trend' => $performance['trend'] ?? 'Unknown',
+            'performance_level' => $performance['performance_level'] ?? 'Unknown',
+            'subjects' => array_slice(
+                array_values($performance['subjects'] ?? []),
+                0,
+                10
+            ),
+            'weak_topics' => array_slice(
+                array_values($performance['weak_topics'] ?? []),
+                0,
+                10
+            ),
+        ];
+
+        try {
+            $prompt = 'You are an educational study-support assistant. '
+                . 'Give up to five brief, practical study recommendations using only the supplied exam metrics, subjects, and weak topics. '
+                . 'Do not diagnose students, infer personal circumstances, or invent causes. '
+                . 'Return only JSON in this format: {"recommendations":["..."]}. '
+                . 'Data: ' . json_encode($recommendationData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+            $rawRecommendations = trim($this->geminiService->generate($prompt));
+            $rawRecommendations = preg_replace('/^```(?:json)?\s*/i', '', $rawRecommendations);
+            $rawRecommendations = preg_replace('/\s*```$/', '', $rawRecommendations);
+
+            $aiResult = json_decode($rawRecommendations, true);
+            $aiRecommendations = $aiResult['recommendations'] ?? null;
+
+            if (is_array($aiRecommendations)) {
+                $aiRecommendations = array_values(array_filter(
+                    $aiRecommendations,
+                    fn($item) => is_string($item) && trim($item) !== ''
+                ));
+
+                if ($aiRecommendations !== []) {
+                    $message = implode(' ', array_slice($aiRecommendations, 0, 5));
+                }
+            }
+        } catch (\Throwable $exception) {
+            report($exception);
+            // Keep the existing rule-based recommendations if Gemini is unavailable.
+        }
 
         /*
     |--------------------------------------------------------------------------

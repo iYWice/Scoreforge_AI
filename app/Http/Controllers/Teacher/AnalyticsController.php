@@ -451,4 +451,104 @@ class AnalyticsController extends Controller
             );
         }
     }
+    public function export()
+    {
+        $teacherId = auth()->id();
+
+        return response()->streamDownload(function () use ($teacherId): void {
+            $stream = fopen('php://output', 'w');
+
+            fputcsv($stream, [
+                'Student',
+                'Email',
+                'Exam',
+                'Subject',
+                'Score',
+                'Total Score',
+                'Percentage',
+                'Pass Status',
+                'Submitted At',
+            ]);
+
+            ExamAttempt::with(['student', 'exam.subject'])
+                ->where('status', 'completed')
+                ->whereHas('exam', function ($query) use ($teacherId): void {
+                    $query->where('created_by', $teacherId);
+                })
+                ->orderBy('id')
+                ->chunk(500, function ($attempts) use ($stream): void {
+                    foreach ($attempts as $attempt) {
+                        $percentage = ($attempt->total_score ?? 0) > 0
+                            ? round(($attempt->score / $attempt->total_score) * 100, 2)
+                            : 0;
+
+                        fputcsv($stream, [
+                            trim(($attempt->student?->fname ?? '') . ' ' . ($attempt->student?->lname ?? '')),
+                            $attempt->student?->email,
+                            $attempt->exam?->title,
+                            $attempt->exam?->subject?->name,
+                            $attempt->score,
+                            $attempt->total_score,
+                            $percentage,
+                            ($attempt->score ?? 0) >= ($attempt->exam?->passing_score ?? PHP_INT_MAX)
+                                ? 'Passed'
+                                : 'Failed',
+                            $attempt->submitted_at,
+                        ]);
+                    }
+                });
+
+            fclose($stream);
+        }, 'teacher-analytics-' . now()->format('Ymd-His') . '.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    public function exportPredictions()
+    {
+        $teacherId = auth()->id();
+
+        $studentIds = ExamAttempt::where('status', 'completed')
+            ->whereHas('exam', function ($query) use ($teacherId): void {
+                $query->where('created_by', $teacherId);
+            })
+            ->pluck('student_id')
+            ->unique();
+
+        return response()->streamDownload(function () use ($studentIds): void {
+            $stream = fopen('php://output', 'w');
+
+            fputcsv($stream, [
+                'Student',
+                'Email',
+                'Predicted Score',
+                'Predicted Level',
+                'Risk Level',
+                'Confidence',
+                'Reason',
+            ]);
+
+            Prediction::with('student')
+                ->whereIn('student_id', $studentIds)
+                ->whereNull('subject_id')
+                ->orderByDesc('predicted_score')
+                ->chunk(500, function ($predictions) use ($stream): void {
+                    foreach ($predictions as $prediction) {
+                        fputcsv($stream, [
+                            trim(($prediction->student?->fname ?? '') . ' ' . ($prediction->student?->lname ?? '')),
+                            $prediction->student?->email,
+                            $prediction->predicted_score,
+                            $prediction->predicted_level,
+                            $prediction->risk_level,
+                            $prediction->confidence_level,
+                            $prediction->reason,
+                        ]);
+                    }
+                });
+
+            fclose($stream);
+        }, 'performance-predictions-' . now()->format('Ymd-His') . '.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
 }

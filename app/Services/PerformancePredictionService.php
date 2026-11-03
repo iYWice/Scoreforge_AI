@@ -4,9 +4,13 @@ namespace App\Services;
 
 use App\Models\ExamAttempt;
 use App\Models\Prediction;
+use App\Services\GeminiService;
 
 class PerformancePredictionService
 {
+    public function __construct(
+        private readonly GeminiService $geminiService
+    ) {}
     public function predict(int $studentId): Prediction
     {
         $attempts = ExamAttempt::with('exam.subject')
@@ -123,6 +127,63 @@ class PerformancePredictionService
             $trendAdjustment,
             $attempts->count()
         );
+        $predictionData = [
+            'completed_exams' => $attempts->count(),
+            'score_percentages' => $percentages
+                ->map(fn($score) => round((float) $score, 2))
+                ->values()
+                ->all(),
+            'overall_average' => round($average, 2),
+            'recent_average' => round($recentAverage, 2),
+            'trend_adjustment' => round($trendAdjustment, 2),
+        ];
+
+        try {
+            $prompt = 'You are assisting with student performance forecasting. '
+                . 'Use only the supplied examination percentages and summary statistics. '
+                . 'Do not infer causes or use information not supplied. '
+                . 'Return only JSON with these keys: predicted_score (number 0-100), '
+                . 'predicted_level (Excellent, Very Good, Good, Needs Improvement, or At Risk), '
+                . 'risk_level (Low, Moderate, or High), '
+                . 'confidence_level (Low, Moderate, or High), and reason (brief evidence-based text). '
+                . 'Treat this as an estimate based on limited examination history. '
+                . 'Data: ' . json_encode($predictionData, JSON_PRETTY_PRINT);
+
+            $rawPrediction = trim($this->geminiService->generate($prompt));
+            $rawPrediction = preg_replace('/^```(?:json)?\s*/i', '', $rawPrediction);
+            $rawPrediction = preg_replace('/\s*```$/', '', $rawPrediction);
+
+            $aiPrediction = json_decode($rawPrediction, true);
+
+            $validLevels = [
+                'Excellent',
+                'Very Good',
+                'Good',
+                'Needs Improvement',
+                'At Risk',
+            ];
+
+            if (
+                is_array($aiPrediction) &&
+                is_numeric($aiPrediction['predicted_score'] ?? null) &&
+                in_array($aiPrediction['predicted_level'] ?? null, $validLevels, true) &&
+                in_array($aiPrediction['risk_level'] ?? null, ['Low', 'Moderate', 'High'], true) &&
+                in_array($aiPrediction['confidence_level'] ?? null, ['Low', 'Moderate', 'High'], true) &&
+                is_string($aiPrediction['reason'] ?? null)
+            ) {
+                $predictedScore = max(
+                    0,
+                    min(100, (float) $aiPrediction['predicted_score'])
+                );
+                $predictedLevel = $aiPrediction['predicted_level'];
+                $riskLevel = $aiPrediction['risk_level'];
+                $confidence = $aiPrediction['confidence_level'];
+                $reason = mb_substr($aiPrediction['reason'], 0, 1000);
+            }
+        } catch (\Throwable $exception) {
+            report($exception);
+            // Keep the existing score-based prediction if Gemini is unavailable.
+        }
 
         /*
         |--------------------------------------------------------------------------

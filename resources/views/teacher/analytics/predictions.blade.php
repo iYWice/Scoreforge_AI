@@ -23,6 +23,11 @@
             Identify potential exam achievers and students
             who may require additional academic support.
         </p>
+        <a
+            href="{{ route('teacher.analytics.predictions.export') }}"
+            class="inline-flex rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+            Export CSV
+        </a>
 
     </div>
 

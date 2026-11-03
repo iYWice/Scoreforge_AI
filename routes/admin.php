@@ -52,4 +52,8 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::patch('/settings', [SystemSettingController::class, 'update'])
             ->name('settings.update');
+        Route::get(
+            '/activity-logs/export',
+            [ActivityLogController::class, 'export']
+        )->name('activity-logs.export');
     });

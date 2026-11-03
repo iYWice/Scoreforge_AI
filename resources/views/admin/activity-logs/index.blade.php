@@ -5,7 +5,11 @@
 
 @section('content')
 <div class="space-y-6">
-
+    <a
+        href="{{ route('admin.activity-logs.export', request()->query()) }}"
+        class="rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white">
+        Export CSV
+    </a>
     <div>
         <h1 class="text-2xl font-bold text-slate-900">
             System Activity Logs
