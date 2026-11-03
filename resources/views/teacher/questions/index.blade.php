@@ -83,6 +83,40 @@ $examStatus = strtolower($exam->status ?? 'draft');
         }
     }"
     class="space-y-8">
+    @if($savedQuestionSets->isNotEmpty())
+    <section class="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5 sm:p-6">
+        <div class="mb-4">
+            <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-indigo-500">
+                Saved question bank
+            </p>
+            <h3 class="mt-1 text-lg font-bold text-slate-950">Reuse generated questions</h3>
+            <p class="mt-1 text-sm text-slate-600">
+                Choose a saved set to add questions to this exam.
+            </p>
+        </div>
+
+        <div class="grid gap-3 md:grid-cols-2">
+            @foreach($savedQuestionSets as $questionSet)
+            <article class="flex items-center justify-between gap-4 rounded-xl border border-indigo-100 bg-white p-4">
+                <div class="min-w-0">
+                    <p class="truncate text-sm font-semibold text-slate-900">
+                        {{ $questionSet->source_name }}
+                    </p>
+                    <p class="mt-1 text-xs text-slate-500">
+                        {{ $questionSet->question_count }} questions · saved {{ $questionSet->created_at->diffForHumans() }}
+                    </p>
+                </div>
+
+                <a
+                    href="{{ route('teacher.ai-questions.review', [$exam, $questionSet]) }}"
+                    class="shrink-0 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700">
+                    Choose
+                </a>
+            </article>
+            @endforeach
+        </div>
+    </section>
+    @endif
 
 
     {{-- ====================================================== --}}

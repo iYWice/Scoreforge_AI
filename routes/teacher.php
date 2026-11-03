@@ -145,4 +145,15 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         '/teacher/exams/{exam}/ai-question-builder/{session}',
         [AIQuestionBuilderController::class, 'review']
     )->name('teacher.ai-questions.review');
+
+    Route::post(
+        '/teacher/exams/{exam}/ai-question-builder/{session}',
+        [AIQuestionBuilderController::class, 'commit']
+    )->name('teacher.ai-questions.commit');
+
+    Route::put(
+        '/teacher/exams/{exam}/ai-question-builder/{session}/questions/{questionIndex}',
+        [AIQuestionBuilderController::class, 'updateGeneratedQuestion']
+    )->whereNumber('questionIndex')
+        ->name('teacher.ai-questions.update-question');
 });

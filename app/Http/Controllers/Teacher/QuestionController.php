@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Exam;
 use App\Models\Question;
 use App\Models\QuestionOption;
+use App\Models\QuestionGenerationSession;
 
 class QuestionController extends Controller
 {
@@ -15,6 +16,7 @@ class QuestionController extends Controller
         $question->load('exam', 'options');
 
         $this->authorizeExam($question->exam);
+        $exam = $question->exam;
 
         return view(
             'teacher.questions.edit',
@@ -114,13 +116,21 @@ class QuestionController extends Controller
         $totalQuestions = $questions->count();
         $totalPoints = $questions->sum('points');
 
+        $savedQuestionSets = QuestionGenerationSession::query()
+            ->where('user_id', auth()->id())
+            ->where('purpose', 'question_bank')
+            ->where('status', 'saved')
+            ->latest()
+            ->get();
+
         return view(
             'teacher.questions.index',
             compact(
                 'exam',
                 'questions',
                 'totalQuestions',
-                'totalPoints'
+                'totalPoints',
+                'savedQuestionSets'
             )
         );
     }

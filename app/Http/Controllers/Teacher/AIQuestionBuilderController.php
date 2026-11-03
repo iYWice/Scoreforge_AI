@@ -12,6 +12,9 @@ use RuntimeException;
 use Smalot\PdfParser\Parser;
 use Throwable;
 use App\Models\SystemSetting;
+use App\Models\Question;
+use App\Models\QuestionOption;
+use Illuminate\Support\Facades\DB;
 
 class AIQuestionBuilderController extends Controller
 {
@@ -228,12 +231,8 @@ class AIQuestionBuilderController extends Controller
         );
 
         abort_if(
-            $session->user_id !== auth()->id(),
-            403
-        );
-
-        abort_if(
-            $session->exam_id !== $exam->id,
+            $session->exam_id !== $exam->id &&
+                !($session->purpose === 'question_bank' && $session->status === 'saved'),
             404
         );
 
@@ -246,5 +245,167 @@ class AIQuestionBuilderController extends Controller
                 'session'
             )
         );
+    }
+    public function commit(
+        Request $request,
+        Exam $exam,
+        QuestionGenerationSession $session
+    ) {
+        abort_if($exam->created_by !== auth()->id(), 403);
+        abort_if($session->user_id !== auth()->id(), 403);
+
+        abort_if(
+            $session->exam_id !== $exam->id &&
+                !($session->purpose === 'question_bank' && $session->status === 'saved'),
+            404
+        );
+
+        abort_if(
+            $session->status === 'used',
+            409,
+            'These questions have already been added to an exam.'
+        );
+
+        $validated = $request->validate([
+            'action' => 'required|in:save,use',
+            'selected_questions' => 'required|array|min:1',
+            'selected_questions.*' => 'required|integer|min:0',
+        ]);
+
+        $questions = $session->generated_questions ?? [];
+
+        $selectedQuestions = collect($validated['selected_questions'])
+            ->unique()
+            ->map(function (int $index) use ($questions) {
+                abort_unless(
+                    array_key_exists($index, $questions),
+                    422,
+                    'A selected question is no longer available.'
+                );
+
+                return $questions[$index];
+            })
+            ->values();
+
+        if ($validated['action'] === 'save') {
+            QuestionGenerationSession::create([
+                'user_id' => auth()->id(),
+                'exam_id' => null,
+                'source_name' => $session->source_name,
+                'source_file' => null,
+                'purpose' => 'question_bank',
+                'question_count' => $selectedQuestions->count(),
+                'question_types' => $selectedQuestions
+                    ->pluck('question_type')
+                    ->unique()
+                    ->values()
+                    ->all(),
+                'difficulty' => $session->difficulty,
+                'generated_questions' => $selectedQuestions->all(),
+                'status' => 'saved',
+            ]);
+
+            return back()->with(
+                'success',
+                'Selected questions were saved to your question bank.'
+            );
+        }
+
+        DB::transaction(function () use ($exam, $selectedQuestions, $session): void {
+            foreach ($selectedQuestions as $questionData) {
+                $type = match ($questionData['question_type'] ?? null) {
+                    'multiple_choice' => 'mcq',
+                    'true_false' => 'tf',
+                    'identification' => 'identification',
+                    default => abort(422, 'A generated question has an unsupported type.'),
+                };
+
+                $question = Question::create([
+                    'exam_id' => $exam->id,
+                    'question_type' => $type,
+                    'topic' => $questionData['topic'] ?? null,
+                    'question_text' => $questionData['question_text'],
+                    'correct_answer' => $questionData['correct_answer'],
+                    'points' => max(1, min((int) ($questionData['points'] ?? 1), 100)),
+                ]);
+
+                if ($type === 'mcq') {
+                    foreach ($questionData['options'] ?? [] as $option) {
+                        QuestionOption::create([
+                            'question_id' => $question->id,
+                            'option_text' => $option,
+                            'is_correct' => $option === $questionData['correct_answer'],
+                        ]);
+                    }
+                }
+            }
+
+            if ($session->purpose !== 'question_bank') {
+                $session->update(['status' => 'used']);
+            }
+        });
+
+        return redirect()
+            ->route('teacher.exams.questions', $exam)
+            ->with(
+                'success',
+                $selectedQuestions->count() . ' questions added to the examination.'
+            );
+    }
+    public function updateGeneratedQuestion(
+        Request $request,
+        Exam $exam,
+        QuestionGenerationSession $session,
+        int $questionIndex
+    ) {
+        abort_if($exam->created_by !== auth()->id(), 403);
+        abort_if($session->user_id !== auth()->id(), 403);
+        abort_if($session->exam_id !== $exam->id, 404);
+        abort_if($session->status === 'used', 409);
+
+        $questions = $session->generated_questions ?? [];
+
+        abort_unless(array_key_exists($questionIndex, $questions), 404);
+
+        $question = $questions[$questionIndex];
+
+        $validated = $request->validate([
+            'question_text' => 'required|string|max:1000',
+            'topic' => 'nullable|string|max:255',
+            'correct_answer' => 'required|string|max:500',
+            'points' => 'required|integer|min:1|max:100',
+            'options' => $question['question_type'] === 'multiple_choice'
+                ? 'required|array|size:4'
+                : 'nullable|array',
+            'options.*' => 'required|string|max:500',
+        ]);
+
+        if (
+            $question['question_type'] === 'multiple_choice' &&
+            !in_array($validated['correct_answer'], $validated['options'], true)
+        ) {
+            return back()
+                ->withErrors([
+                    'correct_answer' => 'The correct answer must match one of the choices.',
+                ])
+                ->withInput();
+        }
+
+        $question['question_text'] = $validated['question_text'];
+        $question['topic'] = $validated['topic'] ?? null;
+        $question['correct_answer'] = $validated['correct_answer'];
+        $question['points'] = (int) $validated['points'];
+
+        if ($question['question_type'] === 'multiple_choice') {
+            $question['options'] = $validated['options'];
+        }
+
+        $questions[$questionIndex] = $question;
+
+        $session->update([
+            'generated_questions' => $questions,
+        ]);
+
+        return back()->with('success', 'Generated question updated.');
     }
 }
