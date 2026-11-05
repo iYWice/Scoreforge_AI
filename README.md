@@ -47,7 +47,7 @@ Tests Pest 4
 Before installing AI-Q on another computer, install the following:
 
 - Git
-- PHP 8.5 with Laravel-required extensions and PDO MySQL
+- PHP 8.3+ with Laravel-required extensions and PDO MySQL
 - Composer 2
 - Node.js 22.12 or newer and npm
 - MySQL Server, XAMPP, or another compatible MySQL installation
