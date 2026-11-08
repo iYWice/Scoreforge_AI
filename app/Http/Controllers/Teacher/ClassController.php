@@ -20,8 +20,7 @@ class ClassController extends Controller
         $subjects = Subject::orderBy('name')->get();
 
         return view('teacher.classes.index', compact(
-            'classes',
-            'subjects'
+            'classes'
         ));
     }
 
@@ -29,13 +28,11 @@ class ClassController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'subject_id' => ['required', 'exists:subjects,id'],
         ]);
 
         SchoolClass::create([
-
             'name' => $validated['name'],
-            'subject_id' => $validated['subject_id'],
+            'subject_id' => null,
             'created_by' => auth()->id(),
             'class_code' => SchoolClass::generateClassCode(),
         ]);

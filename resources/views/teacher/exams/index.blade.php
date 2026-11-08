@@ -430,35 +430,22 @@ $closedCount = $exams->where('status', 'closed')->count();
                         {{-- Subject --}}
                         <div>
 
-                            <label class="mb-2 block text-[10px]
-                                          font-extrabold uppercase
-                                          tracking-[0.16em]
-                                          text-slate-500">
+                            <label class="mb-2 block text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-500">
                                 Subject
                             </label>
 
-                            <select
-                                name="subject_id"
+                            <input
+                                type="text"
+                                name="subject"
+                                value="{{ old('subject') }}"
                                 required
-                                class="w-full rounded-xl
-                                       border border-slate-200
-                                       bg-slate-50 px-4 py-3
-                                       text-sm font-semibold
-                                       text-slate-700 outline-none
-                                       transition-all
-                                       hover:border-slate-300
-                                       focus:border-indigo-500
-                                       focus:bg-white
-                                       focus:ring-4
-                                       focus:ring-indigo-100">
+                                maxlength="255"
+                                placeholder="e.g. Information Management"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition-all placeholder:font-normal placeholder:text-slate-400 hover:border-slate-300 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100">
 
-                                <option value="">Select subject</option>
-
-                                @foreach($subjects as $subject)
-                                <option value="{{ $subject->id }}">
-                                    {{ $subject->name }}
-                                </option>
-                                @endforeach
+                            @error('subject')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
 
                             </select>
 

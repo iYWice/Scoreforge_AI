@@ -53,27 +53,29 @@ class ExamController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'subject_id' => 'required|exists:subjects,id',
-            'class_id' => 'required|exists:classes,id',
-            'duration' => 'required|integer|min:1',
-            'passing_score' => 'required|integer|min:1',
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'subject' => ['required', 'string', 'max:255'],
+            'class_id' => ['required', 'exists:classes,id'],
+            'duration' => ['required', 'integer', 'min:1'],
+            'passing_score' => ['required', 'integer', 'min:1'],
         ]);
-        $subject = Subject::find($request->subject_id);
+
+        $subject = Subject::firstOrCreate([
+            'name' => trim($validated['subject']),
+        ]);
 
         Exam::create([
-            'title' => $request->title,
+            'title' => $validated['title'],
             'exam_code' => $this->generateExamCode($subject->name),
-            'subject_id' => $request->subject_id,
-            'class_id' => $request->class_id,
+            'subject_id' => $subject->id,
+            'class_id' => $validated['class_id'],
             'created_by' => auth()->id(),
-            'duration' => $request->duration,
-            'passing_score' => $request->passing_score,
+            'duration' => $validated['duration'],
+            'passing_score' => $validated['passing_score'],
             'total_points' => 0,
             'status' => 'draft',
         ]);
-
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,

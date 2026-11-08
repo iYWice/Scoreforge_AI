@@ -179,32 +179,6 @@
                         class="mt-2 w-full rounded-lg border-slate-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
 
-                <div>
-                    <label
-                        for="subject_id"
-                        class="text-sm font-medium text-slate-700">
-                        Subject
-                    </label>
-
-                    <select
-                        id="subject_id"
-                        name="subject_id"
-                        required
-                        class="mt-2 w-full rounded-lg border-slate-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="">
-                            Select a subject
-                        </option>
-
-                        @foreach($subjects as $subject)
-                        <option
-                            value="{{ $subject->id }}"
-                            @selected(old('subject_id')==$subject->id)
-                            >
-                            {{ $subject->name }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
 
                 <div class="flex justify-end gap-3 border-t border-slate-100 pt-5">
                     <button
