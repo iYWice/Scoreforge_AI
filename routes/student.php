@@ -68,4 +68,10 @@ Route::middleware(['auth', 'role:student'])->group(function () {
         '/student/classes/{class}',
         [ClassController::class, 'show']
     )->name('student.classes.show');
+
+    Route::get(
+    '/student/exam-history',
+    [DashboardController::class, 'history']
+)->name('student.exam.history');
 });
+

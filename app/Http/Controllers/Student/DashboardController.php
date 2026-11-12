@@ -65,4 +65,15 @@ class DashboardController extends Controller
             )
         );
     }
+
+    public function history()
+{
+    $attempts = ExamAttempt::with('exam.subject')
+        ->where('student_id', auth()->id())
+        ->where('status', 'completed')
+        ->latest('submitted_at')
+        ->paginate(15);
+
+    return view('student.exam-history', compact('attempts'));
+}
 }

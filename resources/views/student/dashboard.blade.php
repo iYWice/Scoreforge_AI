@@ -759,153 +759,90 @@ $weakestTopic = $weakTopics->first();
     {{-- RECENT EXAMS                                           --}}
     {{-- ====================================================== --}}
 
-    <section>
+    {{-- RECENT EXAMS --}}
+<section>
+    <div class="mb-5 flex items-end justify-between gap-4">
+        <div>
+            <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-400">
+                Examination History
+            </p>
 
-        <div class="mb-5 flex items-end justify-between gap-4">
+            <h2 class="mt-1 text-lg font-extrabold text-slate-950">
+                Recent examinations
+            </h2>
 
-            <div>
-
-                <p class="text-[10px] font-extrabold uppercase
-                          tracking-[0.2em] text-slate-400">
-                    Examination History
-                </p>
-
-                <h2 class="mt-1 text-lg font-extrabold text-slate-950">
-                    Recent examinations
-                </h2>
-
-            </div>
-
-
-            <span class="text-xs font-bold text-slate-400">
-                {{ $attempts->count() }}
-                {{ \Illuminate\Support\Str::plural(
-                    'exam',
-                    $attempts->count()
-                ) }}
-            </span>
-
+            <a
+                href="{{ route('student.exam.history') }}"
+                class="mt-2 inline-block text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                View all history →
+            </a>
         </div>
 
+        <span class="text-xs font-bold text-slate-400">
+            {{ $attempts->count() }}
+            {{ \Illuminate\Support\Str::plural('exam', $attempts->count()) }}
+        </span>
+    </div>
 
-        <div class="border-t border-slate-200">
-
-            @forelse($attempts as $attempt)
-
+    <div class="border-t border-slate-200">
+        @forelse($attempts as $attempt)
             @php
+                $passingScore = $attempt->exam?->passing_score ?? 0;
+                $passed = ($attempt->score ?? 0) >= $passingScore;
 
-            $passingScore =
-            $attempt->exam?->passing_score ?? 0;
-
-            $passed =
-            ($attempt->score ?? 0) >= $passingScore;
-
-            $attemptPercentage =
-            ($attempt->total_score ?? 0) > 0
-            ? (($attempt->score ?? 0) /
-            $attempt->total_score) * 100
-            : null;
-
+                $attemptPercentage = ($attempt->total_score ?? 0) > 0
+                    ? (($attempt->score ?? 0) / $attempt->total_score) * 100
+                    : null;
             @endphp
 
-
-            <div
-                class="group grid gap-4 border-b
-                           border-slate-200 py-5
-                           transition-colors
-                           hover:bg-white
-                           sm:grid-cols-[minmax(0,1fr)_120px_120px]
-                           sm:items-center">
-
-
+            <div class="group grid gap-4 border-b border-slate-200 py-5 transition-colors hover:bg-white sm:grid-cols-[minmax(0,1fr)_120px_140px] sm:items-center">
                 <div>
-
                     <div class="flex flex-wrap items-center gap-2">
-
                         <h3 class="text-sm font-extrabold text-slate-850">
                             {{ $attempt->exam?->title ?? 'Exam unavailable' }}
                         </h3>
 
-
-                        <span
-                            class="inline-flex rounded-full px-2 py-0.5
-                                       text-[8px] font-extrabold uppercase
-                                       tracking-wider
-                                       {{ $passed
-                                            ? 'bg-emerald-50 text-emerald-700'
-                                            : 'bg-rose-50 text-rose-700' }}">
-
+                        <span class="inline-flex rounded-full px-2 py-0.5 text-[8px] font-extrabold uppercase tracking-wider {{ $passed ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700' }}">
                             {{ $passed ? 'Passed' : 'Failed' }}
-
                         </span>
-
                     </div>
 
-
                     <p class="mt-1 text-xs text-slate-400">
-
                         {{ $attempt->exam?->subject?->name ?? 'No subject' }}
-
-                        <span class="mx-1 text-slate-300">
-                            ·
-                        </span>
-
+                        <span class="mx-1 text-slate-300">·</span>
                         {{ $attempt->submitted_at
-                                ? \Carbon\Carbon::parse(
-                                    $attempt->submitted_at
-                                  )->format('M d, Y')
-                                : 'Date unavailable' }}
-
+                            ? \Carbon\Carbon::parse($attempt->submitted_at)->format('M d, Y')
+                            : 'Date unavailable' }}
                     </p>
-
                 </div>
-
-
 
                 <div>
-
-                    <p class="text-[9px] font-extrabold uppercase
-                                  tracking-[0.15em] text-slate-400">
+                    <p class="text-[9px] font-extrabold uppercase tracking-[0.15em] text-slate-400">
                         Score
                     </p>
-
                     <p class="mt-1 text-xs font-black text-slate-750">
-                        {{ $attempt->score ?? 0 }}
-                        /
-                        {{ $attempt->total_score ?? '—' }}
+                        {{ $attempt->score ?? 0 }} / {{ $attempt->total_score ?? '—' }}
                     </p>
-
                 </div>
-
-
 
                 <div class="sm:text-right">
-
                     @if($attemptPercentage !== null)
-
-                    <p class="text-lg font-black
-                                      {{ $passed
-                                            ? 'text-emerald-600'
-                                            : 'text-rose-600' }}">
-                        {{ number_format($attemptPercentage, 1) }}%
-                    </p>
-
+                        <p class="text-lg font-black {{ $passed ? 'text-emerald-600' : 'text-rose-600' }}">
+                            {{ number_format($attemptPercentage, 1) }}%
+                        </p>
                     @else
-
-                    <p class="text-lg font-black text-slate-400">
-                        —
-                    </p>
-
+                        <p class="text-lg font-black text-slate-400">—</p>
                     @endif
 
+                    <a
+                        href="{{ route('student.exam.result', $attempt) }}"
+                        class="mt-1 inline-block text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                        View result →
+                    </a>
                 </div>
-
             </div>
-
-            @empty
-
+        @empty
             <div class="border-b border-slate-200 py-14 text-center">
-
                 <p class="text-sm font-bold text-slate-600">
                     No examinations completed yet.
                 </p>
@@ -914,26 +851,16 @@ $weakestTopic = $weakTopics->first();
                     Enter an exam code to take your first examination.
                 </p>
 
-
                 <button
                     type="button"
-                    @click="examPanel = true;
-                                window.scrollTo({
-                                    top: 0,
-                                    behavior: 'smooth'
-                                })"
-                    class="mt-4 text-xs font-bold text-indigo-600
-                               transition-colors hover:text-indigo-800">
+                    @click="examPanel = true; window.scrollTo({ top: 0, behavior: 'smooth' })"
+                    class="mt-4 text-xs font-bold text-indigo-600 transition-colors hover:text-indigo-800">
                     Enter Exam Code →
                 </button>
-
             </div>
-
-            @endforelse
-
-        </div>
-
-    </section>
+        @endforelse
+    </div>
+</section>
 
 
 

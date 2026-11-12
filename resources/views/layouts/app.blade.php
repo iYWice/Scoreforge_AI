@@ -292,16 +292,16 @@
 
 
 
-                        <!-- {{-- Performance --}}
+                        {{-- Performance --}}
                         <a
-                            href="{{ url('/student/dashboard') }}#performance"
+                            href="{{ url('/student/exam-history') }}#performance"
                             class="relative flex h-full items-center
            px-4 text-sm font-semibold
            text-slate-500
            transition hover:text-indigo-600
            active:scale-95">
-                            Performance
-                        </a> -->
+                            History
+                        </a>
 
                         <!-- <span
                             class="flex h-full items-center
