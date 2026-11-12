@@ -526,9 +526,8 @@ $weakestTopic = $weakTopics->first();
             </h2>
 
             <p class="mt-1 text-sm leading-6 text-slate-400">
-                Your strongest and lowest-performing topics
-                based on completed examinations.
-            </p>
+    Topic accuracy from completed exams. Counts are shown to give each percentage context.
+</p>
 
 
             <div class="mt-8 space-y-6">
@@ -544,17 +543,14 @@ $weakestTopic = $weakTopics->first();
 
                     @if($strongestTopic)
 
-                    <div class="mt-2 flex items-end justify-between gap-3">
-
-                        <p class="text-sm font-bold text-white">
-                            {{ $strongestTopic['topic'] }}
-                        </p>
-
-                        <span class="text-xl font-black text-emerald-400">
-                            {{ number_format($strongestTopic['percentage'], 1) }}%
-                        </span>
-
-                    </div>
+                    <div>
+    <p class="text-sm font-bold text-white">
+        {{ $strongestTopic['topic'] }}
+    </p>
+    <p class="mt-1 text-[10px] text-slate-400">
+        {{ $strongestTopic['correct'] }} of {{ $strongestTopic['total'] }} correct
+    </p>
+</div>
 
                     @else
 
@@ -582,17 +578,14 @@ $weakestTopic = $weakTopics->first();
 
                     @if($weakestTopic)
 
-                    <div class="mt-2 flex items-end justify-between gap-3">
-
-                        <p class="text-sm font-bold text-white">
-                            {{ $weakestTopic['topic'] }}
-                        </p>
-
-                        <span class="text-xl font-black text-rose-400">
-                            {{ number_format($weakestTopic['percentage'], 1) }}%
-                        </span>
-
-                    </div>
+                    <div>
+    <p class="text-sm font-bold text-white">
+        {{ $weakestTopic['topic'] }}
+    </p>
+    <p class="mt-1 text-[10px] text-slate-400">
+        {{ $weakestTopic['incorrect'] }} of {{ $weakestTopic['total'] }} incorrect
+    </p>
+</div>
 
                     @else
 

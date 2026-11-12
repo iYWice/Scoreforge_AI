@@ -292,7 +292,7 @@
 
 
 
-                        {{-- Performance --}}
+                        <!-- {{-- Performance --}}
                         <a
                             href="{{ url('/student/dashboard') }}#performance"
                             class="relative flex h-full items-center
@@ -301,7 +301,7 @@
            transition hover:text-indigo-600
            active:scale-95">
                             Performance
-                        </a>
+                        </a> -->
 
                         <!-- <span
                             class="flex h-full items-center
