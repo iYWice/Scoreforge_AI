@@ -501,6 +501,7 @@
 
 
                             {{-- Profile Dropdown --}}
+
                             <div
                                 x-cloak
                                 x-show="profileMenu"
@@ -530,6 +531,11 @@
                                            capitalize text-slate-400">
                                         {{ auth()->user()->role }} account
                                     </p>
+                                    <a
+                                        href="{{ route('profile.edit') }}"
+                                        class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-indigo-50 hover:text-indigo-700">
+                                        Profile settings
+                                    </a>
 
                                 </div>
 
