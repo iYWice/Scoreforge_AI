@@ -29,14 +29,14 @@
 
 
     @if (
-        file_exists(public_path('build/manifest.json'))
-        || file_exists(public_path('hot'))
+    file_exists(public_path('build/manifest.json'))
+    || file_exists(public_path('hot'))
     )
 
-        @vite([
-            'resources/css/app.css',
-            'resources/js/app.js'
-        ])
+    @vite([
+    'resources/css/app.css',
+    'resources/js/app.js'
+    ])
 
     @endif
 
@@ -49,96 +49,86 @@
            font-sans text-slate-800 antialiased">
 
 
-<div
-    x-data="{
+    <div
+        x-data="{
         tab: '{{ $errors->any() && old('role') ? 'register' : 'login' }}',
         loginLoading: false,
         registerLoading: false,
         mobileAuth: false
     }"
-    class="flex min-h-screen flex-col">
+        class="flex min-h-screen flex-col">
 
 
-    {{-- ====================================================== --}}
-    {{-- TOP NAVIGATION                                         --}}
-    {{-- ====================================================== --}}
+        {{-- ====================================================== --}}
+        {{-- TOP NAVIGATION                                         --}}
+        {{-- ====================================================== --}}
 
-    <header
-        class="border-b border-slate-200
+        <header
+            class="border-b border-slate-200
                bg-white/95 backdrop-blur-xl">
 
-        <div
-            class="mx-auto flex h-16 max-w-7xl
+            <div
+                class="mx-auto flex h-16 max-w-7xl
                    items-center justify-between
                    px-4 sm:px-6 lg:px-8">
 
 
-            {{-- Brand --}}
-            <a
-                href="{{ url('/') }}"
-                class="group flex items-center gap-3">
+                {{-- Brand --}}
+                <a
+                    href="{{ url('/') }}"
+                    class="group flex items-center gap-3">
 
-                <div
-                    class="flex h-9 w-9 items-center
-                           justify-center rounded-lg
-                           bg-indigo-600 text-xs
-                           font-black text-white
-                           shadow-sm transition-all
-                           duration-200
-                           group-hover:-translate-y-0.5
-                           group-hover:shadow-lg
-                           group-hover:shadow-indigo-500/20">
-
-                    AQ
-
-                </div>
+                    <img
+                        src="{{ asset('images/Aiq_logo.jpg') }}"
+                        alt="AI-Q"
+                        class="h-10 w-auto">
 
 
-                <div>
+                    <div>
 
-                    <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2">
 
-                        <span
-                            class="text-sm font-black
+                            <span
+                                class="text-sm font-black
                                    tracking-[-0.03em]
                                    text-slate-950">
 
-                            AI-Q
+                                AI-Q
 
-                        </span>
+                            </span>
 
-                        <span
-                            class="hidden text-[8px]
+                            <span
+                                class="hidden text-[8px]
                                    font-extrabold uppercase
                                    tracking-[0.16em]
                                    text-slate-300 sm:inline">
 
-                            Examination Intelligence
+                                Examination Intelligence
 
-                        </span>
+                            </span>
 
-                    </div>
+                        </div>
 
 
-                    <p
-                        class="text-[8px] font-bold
+                        <p
+                            class="text-[8px] font-bold
                                uppercase tracking-[0.13em]
                                text-slate-400">
 
-                        UCLM Academic Platform
+                            UCLM Academic Platform
 
-                    </p>
+                        </p>
 
-                </div>
+                    </div>
 
-            </a>
+                </a>
 
 
 
-            {{-- Right side --}}
-            <div class="flex items-center gap-4">
+                {{-- Right side --}}
+                <div class="flex items-center gap-4">
 
-                @auth
+                    @auth
 
                     <span
                         class="hidden text-xs font-semibold
@@ -152,11 +142,11 @@
 
                     @php
 
-                        $dashboardRoute = match(auth()->user()->role) {
-                            'teacher' => route('teacher.dashboard'),
-                            'student' => route('student.dashboard'),
-                            default => url('/dashboard'),
-                        };
+                    $dashboardRoute = match(auth()->user()->role) {
+                    'teacher' => route('teacher.dashboard'),
+                    'student' => route('student.dashboard'),
+                    default => url('/dashboard'),
+                    };
 
                     @endphp
 
@@ -182,7 +172,7 @@
 
                     </a>
 
-                @else
+                    @else
 
                     <p
                         class="hidden text-[10px] font-semibold
@@ -218,29 +208,29 @@
 
                     </button>
 
-                @endauth
+                    @endauth
+
+                </div>
 
             </div>
 
-        </div>
-
-    </header>
+        </header>
 
 
 
-    {{-- ====================================================== --}}
-    {{-- MAIN                                                   --}}
-    {{-- ====================================================== --}}
+        {{-- ====================================================== --}}
+        {{-- MAIN                                                   --}}
+        {{-- ====================================================== --}}
 
-    <main class="flex flex-1 items-center">
+        <main class="flex flex-1 items-center">
 
-        <div
-            class="mx-auto w-full max-w-7xl
+            <div
+                class="mx-auto w-full max-w-7xl
                    px-4 py-10 sm:px-6 sm:py-14
                    lg:px-8 lg:py-16">
 
 
-            @auth
+                @auth
 
                 {{-- ========================================== --}}
                 {{-- AUTHENTICATED WELCOME                      --}}
@@ -339,7 +329,7 @@
                 </section>
 
 
-            @else
+                @else
 
                 {{-- ========================================== --}}
                 {{-- GUEST WORKSPACE                            --}}
@@ -409,7 +399,7 @@
                                    sm:text-base">
 
                             AI-Q is an examination management
-                            and analytics platform designed for
+                            and analytics platform designed by the students of
                             the University of Cebu Lapu-Lapu
                             and Mandaue. Create and take
                             examinations, process scores
@@ -765,17 +755,17 @@
 
                                         @if(Route::has('password.request'))
 
-                                            <a
-                                                href="{{ route('password.request') }}"
-                                                class="text-[10px]
+                                        <a
+                                            href="{{ route('password.request') }}"
+                                            class="text-[10px]
                                                        font-bold
                                                        text-indigo-600
                                                        transition-colors
                                                        hover:text-indigo-800">
 
-                                                Forgot password?
+                                            Forgot password?
 
-                                            </a>
+                                        </a>
 
                                         @endif
 
@@ -832,25 +822,25 @@
 
 
                                 @if(
-                                    $errors->any()
-                                    && !old('role')
+                                $errors->any()
+                                && !old('role')
                                 )
 
-                                    <div
-                                        class="border border-rose-200
+                                <div
+                                    class="border border-rose-200
                                                bg-rose-50
                                                px-4 py-3">
 
-                                        <p
-                                            class="text-[10px]
+                                    <p
+                                        class="text-[10px]
                                                    font-bold
                                                    text-rose-700">
 
-                                            {{ $errors->first() }}
+                                        {{ $errors->first() }}
 
-                                        </p>
+                                    </p>
 
-                                    </div>
+                                </div>
 
                                 @endif
 
@@ -987,12 +977,12 @@
 
                                         @error('fname')
 
-                                            <p
-                                                class="mt-1 text-[10px]
+                                        <p
+                                            class="mt-1 text-[10px]
                                                        font-semibold
                                                        text-rose-600">
-                                                {{ $message }}
-                                            </p>
+                                            {{ $message }}
+                                        </p>
 
                                         @enderror
 
@@ -1037,12 +1027,12 @@
 
                                         @error('lname')
 
-                                            <p
-                                                class="mt-1 text-[10px]
+                                        <p
+                                            class="mt-1 text-[10px]
                                                        font-semibold
                                                        text-rose-600">
-                                                {{ $message }}
-                                            </p>
+                                            {{ $message }}
+                                        </p>
 
                                         @enderror
 
@@ -1090,12 +1080,12 @@
 
                                     @error('email')
 
-                                        <p
-                                            class="mt-1 text-[10px]
+                                    <p
+                                        class="mt-1 text-[10px]
                                                    font-semibold
                                                    text-rose-600">
-                                            {{ $message }}
-                                        </p>
+                                        {{ $message }}
+                                    </p>
 
                                     @enderror
 
@@ -1172,12 +1162,12 @@
 
                                     @error('role')
 
-                                        <p
-                                            class="mt-1 text-[10px]
+                                    <p
+                                        class="mt-1 text-[10px]
                                                    font-semibold
                                                    text-rose-600">
-                                            {{ $message }}
-                                        </p>
+                                        {{ $message }}
+                                    </p>
 
                                     @enderror
 
@@ -1269,12 +1259,12 @@
 
                                 @error('password')
 
-                                    <p
-                                        class="text-[10px]
+                                <p
+                                    class="text-[10px]
                                                font-semibold
                                                text-rose-600">
-                                        {{ $message }}
-                                    </p>
+                                    {{ $message }}
+                                </p>
 
                                 @enderror
 
@@ -1351,22 +1341,22 @@
 
                 </div>
 
-            @endauth
+                @endauth
 
-        </div>
+            </div>
 
-    </main>
+        </main>
 
 
 
-    {{-- ====================================================== --}}
-    {{-- FOOTER                                                 --}}
-    {{-- ====================================================== --}}
+        {{-- ====================================================== --}}
+        {{-- FOOTER                                                 --}}
+        {{-- ====================================================== --}}
 
-    <footer class="border-t border-slate-200 bg-white">
+        <footer class="border-t border-slate-200 bg-white">
 
-        <div
-            class="mx-auto flex max-w-7xl
+            <div
+                class="mx-auto flex max-w-7xl
                    flex-col gap-2 px-4 py-5
                    text-[9px] font-semibold
                    text-slate-400 sm:flex-row
@@ -1374,21 +1364,21 @@
                    sm:justify-between
                    sm:px-6 lg:px-8">
 
-            <p>
-                AI-Q · AI-Driven Examination Management
-                and Analytics System
-            </p>
+                <p>
+                    AI-Q · AI-Driven Examination Management
+                    and Analytics System
+                </p>
 
 
-            <p>
-                University of Cebu Lapu-Lapu and Mandaue
-            </p>
+                <p>
+                    University of Cebu Lapu-Lapu and Mandaue
+                </p>
 
-        </div>
+            </div>
 
-    </footer>
+        </footer>
 
-</div>
+    </div>
 
 </body>
 
