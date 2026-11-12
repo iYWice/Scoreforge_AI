@@ -52,6 +52,12 @@ class NewPasswordController extends Controller
                     'remember_token' => Str::random(60),
                 ])->save();
 
+                app(\App\Services\ActivityLogger::class)->log(
+                    'user.password_reset',
+                    'User reset their password using the reset link.',
+                    $user
+                );
+
                 event(new PasswordReset($user));
             }
         );

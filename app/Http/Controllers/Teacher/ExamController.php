@@ -53,29 +53,41 @@ class ExamController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'subject' => ['required', 'string', 'max:255'],
-            'class_id' => ['required', 'exists:classes,id'],
-            'duration' => ['required', 'integer', 'min:1'],
-            'passing_score' => ['required', 'integer', 'min:1'],
-        ]);
+$validated = $request->validate([
+    'title' => ['required', 'string', 'max:255'],
+    'subject' => ['required', 'string', 'max:255'],
+    'class_id' => ['required', 'exists:classes,id'],
+    'total_items' => ['required', 'integer', 'min:1'],
+    'duration' => ['required', 'integer', 'min:1'],
+    'passing_score' => [
+        'required',
+        'integer',
+        'min:0',
+        'lte:total_items',
+    ],
+]);
 
-        $subject = Subject::firstOrCreate([
-            'name' => trim($validated['subject']),
-        ]);
+$subject = Subject::firstOrCreate([
+    'name' => trim($validated['subject']),
+]);
 
-        Exam::create([
-            'title' => $validated['title'],
-            'exam_code' => $this->generateExamCode($subject->name),
-            'subject_id' => $subject->id,
-            'class_id' => $validated['class_id'],
-            'created_by' => auth()->id(),
-            'duration' => $validated['duration'],
-            'passing_score' => $validated['passing_score'],
-            'total_points' => 0,
-            'status' => 'draft',
-        ]);
+$exam = Exam::create([
+    'title' => $validated['title'],
+    'exam_code' => $this->generateExamCode($subject->name),
+    'subject_id' => $subject->id,
+    'class_id' => $validated['class_id'],
+    'created_by' => auth()->id(),
+    'total_items' => $validated['total_items'],
+    'duration' => $validated['duration'],
+    'passing_score' => $validated['passing_score'],
+    'status' => 'draft',
+]);
+
+        app(\App\Services\ActivityLogger::class)->log(
+            'exam.created',
+            'Teacher created an examination.',
+            $exam
+        );
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
@@ -158,6 +170,12 @@ class ExamController extends Controller
 
         ]));
 
+        app(\App\Services\ActivityLogger::class)->log(
+            'exam.updated',
+            'Teacher updated an examination.',
+            $exam
+        );
+
         return redirect()
             ->route('teacher.exams.index')
             ->with('success', 'Exam updated successfully.');
@@ -171,8 +189,14 @@ class ExamController extends Controller
         if ($exam->created_by != auth()->id()) {
             abort(403);
         }
-
+        app(\App\Services\ActivityLogger::class)->log(
+            'exam.deleted',
+            'Teacher deleted an examination.',
+            $exam
+        );
         $exam->delete();
+
+
 
         return redirect()
             ->route('teacher.exams.index')
@@ -218,6 +242,13 @@ class ExamController extends Controller
         $exam->update([
             'status' => $request->status,
         ]);
+
+        app(\App\Services\ActivityLogger::class)->log(
+            $request->status === 'published' ? 'exam.published' : 'exam.status_changed',
+            'Teacher changed the examination status.',
+            $exam,
+            ['status' => $request->status]
+        );
 
         return back()->with(
             'success',

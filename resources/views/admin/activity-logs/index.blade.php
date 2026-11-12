@@ -67,7 +67,7 @@
                     <th class="px-5 py-4">User</th>
                     <th class="px-5 py-4">Action</th>
                     <th class="px-5 py-4">Description</th>
-                    <th class="px-5 py-4">IP Address</th>
+                    <!-- <th class="px-5 py-4">IP Address</th> -->
                 </tr>
             </thead>
 
@@ -99,9 +99,9 @@
                         {{ $log->description }}
                     </td>
 
-                    <td class="px-5 py-4 font-mono text-xs text-slate-500">
+                    <!-- <td class="px-5 py-4 font-mono text-xs text-slate-500">
                         {{ $log->ip_address ?? '—' }}
-                    </td>
+                    </td> -->
                 </tr>
                 @empty
                 <tr>

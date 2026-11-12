@@ -182,6 +182,15 @@ class AIQuestionBuilderController extends Controller
 
                 'status' => 'draft',
             ]);
+            app(\App\Services\ActivityLogger::class)->log(
+                'questions.ai_generated',
+                'Teacher generated questions with AI.',
+                $session,
+                [
+                    'exam_id' => $exam->id,
+                    'question_count' => count($questions),
+                ]
+            );
 
             /*
             |--------------------------------------------------------------------------
@@ -286,9 +295,8 @@ class AIQuestionBuilderController extends Controller
                 return $questions[$index];
             })
             ->values();
-
         if ($validated['action'] === 'save') {
-            QuestionGenerationSession::create([
+            $savedSet = QuestionGenerationSession::create([
                 'user_id' => auth()->id(),
                 'exam_id' => null,
                 'source_name' => $session->source_name,
@@ -305,12 +313,18 @@ class AIQuestionBuilderController extends Controller
                 'status' => 'saved',
             ]);
 
+            app(\App\Services\ActivityLogger::class)->log(
+                'questions.saved_to_bank',
+                'Teacher saved generated questions to the question bank.',
+                $savedSet,
+                ['question_count' => $selectedQuestions->count()]
+            );
+
             return back()->with(
                 'success',
                 'Selected questions were saved to your question bank.'
             );
         }
-
         DB::transaction(function () use ($exam, $selectedQuestions, $session): void {
             foreach ($selectedQuestions as $questionData) {
                 $type = match ($questionData['question_type'] ?? null) {
@@ -344,6 +358,13 @@ class AIQuestionBuilderController extends Controller
                 $session->update(['status' => 'used']);
             }
         });
+
+        app(\App\Services\ActivityLogger::class)->log(
+            'questions.added_to_exam',
+            'Teacher reused generated questions in an examination.',
+            $exam,
+            ['question_count' => $selectedQuestions->count()]
+        );
 
         return redirect()
             ->route('teacher.exams.questions', $exam)
@@ -405,6 +426,13 @@ class AIQuestionBuilderController extends Controller
         $session->update([
             'generated_questions' => $questions,
         ]);
+
+        app(\App\Services\ActivityLogger::class)->log(
+            'question.ai_draft_updated',
+            'Teacher edited an AI-generated question.',
+            $session,
+            ['question_index' => $questionIndex]
+        );
 
         return back()->with('success', 'Generated question updated.');
     }

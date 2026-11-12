@@ -18,11 +18,17 @@ class PasswordController extends Controller
         $validated = $request->validateWithBag('updatePassword', [
             'current_password' => ['required', 'current_password'],
             'password' => [
-    'required',
-    Password::min(8)->letters()->numbers(),
-    'confirmed',
-],
+                'required',
+                Password::min(8)->letters()->numbers(),
+                'confirmed',
+            ],
         ]);
+
+        app(\App\Services\ActivityLogger::class)->log(
+            'user.password_changed',
+            'User changed their password.',
+            $request->user()
+        );
 
         $request->user()->update([
             'password' => Hash::make($validated['password']),

@@ -48,6 +48,10 @@ class ActivityLogController extends Controller
     }
     public function export(Request $request)
     {
+        app(\App\Services\ActivityLogger::class)->log(
+    'activity_logs.exported',
+    'Administrator exported activity logs.'
+);
         return response()->streamDownload(function () use ($request): void {
             $stream = fopen('php://output', 'w');
 

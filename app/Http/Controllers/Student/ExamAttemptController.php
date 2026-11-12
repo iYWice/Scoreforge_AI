@@ -140,6 +140,13 @@ class ExamAttemptController extends Controller
             'status' => 'ongoing',
         ]);
 
+        app(\App\Services\ActivityLogger::class)->log(
+            'exam.started',
+            'Student started an examination.',
+            $attempt,
+            ['exam_id' => $exam->id]
+        );
+
         return redirect()->route(
             'student.exam.take',
             $attempt->id
@@ -367,6 +374,12 @@ class ExamAttemptController extends Controller
         app(AcademicReadinessService::class)
             ->evaluate($attempt->student_id);
 
+        app(\App\Services\ActivityLogger::class)->log(
+            'exam.submitted',
+            'Student submitted an examination.',
+            $attempt,
+            ['exam_id' => $attempt->exam_id]
+        );
         return redirect()->route(
             'student.exam.result',
             $attempt->id

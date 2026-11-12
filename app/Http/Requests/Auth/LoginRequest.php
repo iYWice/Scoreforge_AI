@@ -50,7 +50,12 @@ class LoginRequest extends FormRequest
 
         if (! $attempt) {
             RateLimiter::hit($this->throttleKey());
-
+            app(\App\Services\ActivityLogger::class)->log(
+                'auth.login_failed',
+                'A login attempt failed.',
+                null,
+                ['email' => $this->input('email')]
+            );
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
@@ -87,6 +92,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

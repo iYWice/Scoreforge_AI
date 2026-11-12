@@ -93,10 +93,17 @@ class UserController extends Controller
             }
         }
 
-        app(ActivityLogger::class)->log(
+        $changedFields = array_keys(
+            array_diff_assoc($data, $user->only(array_keys($data)))
+        );
+
+        $user->update($data);
+
+        app(\App\Services\ActivityLogger::class)->log(
             'user.updated',
             'Administrator updated a user account.',
-            $user
+            $user,
+            ['changed_fields' => $changedFields]
         );
 
         return back()->with('success', 'User account updated successfully.');
@@ -118,6 +125,12 @@ class UserController extends Controller
             'password' => Hash::make($data['password']),
             'remember_token' => null,
         ])->save();
+
+        app(\App\Services\ActivityLogger::class)->log(
+            'user.password_reset',
+            'Administrator reset a user password.',
+            $user
+        );
 
         return back()->with('success', 'Password reset successfully.');
     }

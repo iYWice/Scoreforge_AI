@@ -83,29 +83,10 @@
                                 : url('/admin/dashboard')) }}"
                             class="group flex items-center gap-3">
 
-                            <div
-                                class="relative flex h-10 w-10
-                                   items-center justify-center
-                                   overflow-hidden rounded-xl
-                                   bg-slate-950 text-white
-                                   shadow-sm
-                                   transition-all duration-300
-                                   group-hover:-translate-y-0.5
-                                   group-hover:rotate-3
-                                   group-hover:shadow-lg
-                                   group-active:scale-90">
-
-                                <span class="text-sm font-black tracking-tight">
-                                    AQ
-                                </span>
-
-                                <div
-                                    class="absolute inset-x-0 bottom-0 h-1
-                                       bg-indigo-500
-                                       transition-all duration-300
-                                       group-hover:h-1.5"></div>
-
-                            </div>
+                            <img
+                        src="{{ asset('images/Aiq_logo.jpg') }}"
+                        alt="AI-Q"
+                        class="h-10 w-auto">
 
                             <div class="hidden sm:block">
 

@@ -30,6 +30,12 @@ class AuthenticatedSessionController extends Controller
 
         $user = auth()->user();
 
+        app(\App\Services\ActivityLogger::class)->log(
+            'auth.login',
+            'User logged in.',
+            $user
+        );
+
         if ($user->role === 'admin') {
             return redirect('/admin/dashboard');
         }
@@ -46,6 +52,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+
+        if ($user) {
+            app(\App\Services\ActivityLogger::class)->log(
+                'auth.logout',
+                'User logged out.',
+                $user
+            );
+        }
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

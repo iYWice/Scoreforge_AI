@@ -83,6 +83,11 @@ class QuestionController extends Controller
                 ]);
             }
         }
+        app(\App\Services\ActivityLogger::class)->log(
+            'question.updated',
+            'Teacher edited an examination question.',
+            $question
+        );
 
         return back()->with(
             'success',
@@ -95,7 +100,11 @@ class QuestionController extends Controller
         $question->load('exam');
 
         $this->authorizeExam($question->exam);
-
+        app(\App\Services\ActivityLogger::class)->log(
+            'question.deleted',
+            'Teacher deleted an examination question.',
+            $question
+        );
         $question->delete();
 
         return back()->with(
@@ -228,6 +237,12 @@ class QuestionController extends Controller
                 ]);
             }
         }
+        app(\App\Services\ActivityLogger::class)->log(
+            'question.created',
+            'Teacher added a question to an examination.',
+            $question,
+            ['exam_id' => $exam->id, 'question_type' => $question->question_type]
+        );
 
         return redirect()
             ->route(

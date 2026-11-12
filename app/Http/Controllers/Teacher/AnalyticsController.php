@@ -453,6 +453,10 @@ class AnalyticsController extends Controller
     }
     public function export()
     {
+        app(\App\Services\ActivityLogger::class)->log(
+            'report.analytics_exported',
+            'Teacher exported analytics report.'
+        );
         $teacherId = auth()->id();
 
         return response()->streamDownload(function () use ($teacherId): void {
@@ -506,6 +510,10 @@ class AnalyticsController extends Controller
 
     public function exportPredictions()
     {
+        app(\App\Services\ActivityLogger::class)->log(
+            'report.predictions_exported',
+            'Teacher exported performance predictions.'
+        );
         $teacherId = auth()->id();
 
         $studentIds = ExamAttempt::where('status', 'completed')
