@@ -1,5 +1,5 @@
 kind: wasmer.io/App.v0
-owner: YOUR_WASMER_USERNAME
+owner: iywice
 name: ai-q
 package: .
 
