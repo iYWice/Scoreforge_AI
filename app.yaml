@@ -1,0 +1,12 @@
+kind: wasmer.io/App.v0
+owner: iywice
+name: ai-q
+package: .
+
+capabilities:
+  database:
+    engine: mysql
+
+volumes:
+  - name: aiq-private-uploads
+    mount: /app/storage/app/private
