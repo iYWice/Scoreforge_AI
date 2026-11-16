@@ -9,15 +9,16 @@ class Prediction extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'student_id',
-        'subject_id',
-        'predicted_score',
-        'predicted_level',
-        'risk_level',
-        'confidence_level',
-        'reason',
-    ];
+protected $fillable = [
+    'student_id',
+    'subject_id',
+    'prediction_type',
+    'predicted_score',
+    'predicted_level',
+    'risk_level',
+    'confidence_level',
+    'reason',
+];
 
     protected $casts = [
         'predicted_score' => 'decimal:2',

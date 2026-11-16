@@ -89,9 +89,9 @@
                 class="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md">
                 <div class="flex items-start justify-between gap-4">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-indigo-600">
+                        <!-- <p class="text-xs font-semibold uppercase tracking-[0.16em] text-indigo-600">
                             {{ $class->subject?->name ?? 'No Subject' }}
-                        </p>
+                        </p> -->
 
                         <h2 class="mt-2 text-lg font-semibold text-slate-950">
                             {{ $class->name }}

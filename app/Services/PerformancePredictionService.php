@@ -190,29 +190,26 @@ class PerformancePredictionService
         | Save latest prediction
         |--------------------------------------------------------------------------
         */
+        $predictionType = match (true) {
+    $predictedScore >= 90 => 'high achiever',
+    $riskLevel === 'High' || $riskLevel === 'Moderate' => 'at risk',
+    default => 'on track',
+};
 
-        return Prediction::updateOrCreate(
-            [
-                'student_id' => $studentId,
-                'subject_id' => null,
-            ],
-            [
-                'predicted_score' =>
-                round($predictedScore, 2),
-
-                'predicted_level' =>
-                $predictedLevel,
-
-                'risk_level' =>
-                $riskLevel,
-
-                'confidence_level' =>
-                $confidence,
-
-                'reason' =>
-                $reason,
-            ]
-        );
+return Prediction::updateOrCreate(
+    [
+        'student_id' => $studentId,
+        'subject_id' => null,
+    ],
+    [
+        'prediction_type' => $predictionType,
+        'predicted_score' => round($predictedScore, 2),
+        'predicted_level' => $predictedLevel,
+        'risk_level' => $riskLevel,
+        'confidence_level' => $confidence,
+        'reason' => $reason,
+    ]
+);
     }
 
 

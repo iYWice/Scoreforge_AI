@@ -7,19 +7,19 @@
 <div class="max-w-7xl mx-auto space-y-6">
 
     {{-- Header --}}
-    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900
-                rounded-2xl p-6 text-white">
+    <div class="bg-gradient-to-r from-slate-100 via-indigo-100 to-slate-100
+                rounded-2xl p-6 text-slate-900">
 
         <p class="text-xs uppercase tracking-widest
-                  text-indigo-400 font-bold">
+              text-indigo-600 font-bold">
             Predictive Analytics
         </p>
 
-        <h1 class="text-2xl font-black mt-1">
+        <h1 class="text-2xl font-black mt-1 text-slate-900">
             Student Performance Predictions
         </h1>
 
-        <p class="text-sm text-slate-400 mt-2">
+        <p class="text-sm text-slate-600 mt-2">
             Identify potential exam achievers and students
             who may require additional academic support.
         </p>
@@ -35,9 +35,7 @@
     {{-- Summary --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-        <div class="bg-white dark:bg-slate-900
-                    border border-slate-200 dark:border-slate-800
-                    rounded-2xl p-5">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
 
             <p class="text-xs uppercase font-bold text-slate-400">
                 Likely Achievers
@@ -50,9 +48,7 @@
         </div>
 
 
-        <div class="bg-white dark:bg-slate-900
-                    border border-slate-200 dark:border-slate-800
-                    rounded-2xl p-5">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
 
             <p class="text-xs uppercase font-bold text-slate-400">
                 Potential Achievers
@@ -65,9 +61,7 @@
         </div>
 
 
-        <div class="bg-white dark:bg-slate-900
-                    border border-slate-200 dark:border-slate-800
-                    rounded-2xl p-5">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
 
             <p class="text-xs uppercase font-bold text-slate-400">
                 At-Risk Students
@@ -83,12 +77,9 @@
 
 
     {{-- Achievers --}}
-    <div class="bg-white dark:bg-slate-900
-                rounded-2xl border
-                border-slate-200 dark:border-slate-800">
+    <div class="bg-white rounded-2xl border border-slate-200">
 
-        <div class="p-6 border-b
-                    border-slate-200 dark:border-slate-800">
+        <div class="p-6 border-b border-slate-200">
 
             <h2 class="font-bold text-lg">
                 Predicted Exam Achievers
@@ -104,9 +95,7 @@
 
             @forelse($achievers as $prediction)
 
-            <div class="flex items-center justify-between
-                            border-b border-slate-100
-                            dark:border-slate-800 pb-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
 
                 <div>
 
@@ -153,12 +142,9 @@
 
 
     {{-- At Risk --}}
-    <div class="bg-white dark:bg-slate-900
-                rounded-2xl border
-                border-slate-200 dark:border-slate-800">
+    <div class="bg-white rounded-2xl border border-slate-200">
 
-        <div class="p-6 border-b
-                    border-slate-200 dark:border-slate-800">
+        <div class="p-6 border-b border-slate-200">
 
             <h2 class="font-bold text-lg">
                 Students Requiring Attention
@@ -174,16 +160,16 @@
 
             <table class="w-full text-sm">
 
-                <thead class="bg-slate-50 dark:bg-slate-950">
+                <thead class="bg-slate-50">
 
                     <tr class="text-left text-xs uppercase
-                               text-slate-500">
+                               text-slate-500 ">
 
                         <th class="px-6 py-3">
                             Student
                         </th>
 
-                        <th class="px-6 py-3">
+                        <th class="px-6 py-3 >
                             Predicted
                         </th>
 
@@ -203,9 +189,7 @@
 
                 </thead>
 
-                <tbody class="divide-y
-                              divide-slate-100
-                              dark:divide-slate-800">
+                <tbody class="divide-y divide-slate-100">
 
                     @forelse($atRiskStudents as $prediction)
 
