@@ -70,4 +70,8 @@ class SchoolClass extends Model
 
         return $code;
     }
+    public function classSubjects()
+{
+    return $this->hasMany(ClassSubject::class, 'class_id');
+}
 }

@@ -66,6 +66,21 @@
                 <x-input-error :messages="$errors->get('email')" class="mt-1.5" />
             </div>
 
+            {{-- STUDENT ID: REQUIRED FOR STUDENTS --}}
+<div>
+    <x-input-label for="student_id" :value="__('Student ID (students only)')" />
+    <x-text-input
+        id="student_id"
+        class="mt-1.5 block w-full rounded-lg border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500"
+        type="text"
+        name="student_id"
+        :value="old('student_id')"
+        autocomplete="off"
+        placeholder="Enter your school student ID"
+    />
+    <x-input-error :messages="$errors->get('student_id')" class="mt-1.5" />
+</div>
+
             {{-- ROLE --}}
             <div>
                 <x-input-label for="role" :value="__('Select Your Role')" class="font-medium" />

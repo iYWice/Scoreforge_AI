@@ -20,6 +20,7 @@ use App\Models\AcademicReadiness;
     'email',
     'password',
     'role',
+        'student_id',
 ])]
 #[Hidden([
     'password',

@@ -49,11 +49,13 @@ class ClassController extends Controller
             403
         );
 
-        $class->load([
-            'subject',
-            'students',
-            'exams' => fn($query) => $query->latest(),
-        ]);
+$class->load([
+    'subject',
+    'students',
+    'classSubjects.subject',
+    'classSubjects.students',
+    'exams' => fn ($query) => $query->latest(),
+]);
 
         return view(
             'teacher.classes.show',

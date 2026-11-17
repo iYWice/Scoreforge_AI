@@ -109,15 +109,18 @@ class ClassController extends Controller
 
         abort_unless($isEnrolled, 403);
 
-        $class->load([
-            'subject',
-            'teacher',
-            'exams' => function ($query) {
-                $query
-                    ->where('status', 'published')
-                    ->latest();
-            },
-        ]);
+$class->load([
+    'subject',
+    'teacher',
+    'classSubjects' => function ($query) use ($student) {
+        $query->whereHas('students', function ($students) use ($student) {
+            $students->where('users.id', $student->id);
+        })->with('subject');
+    },
+    'exams' => function ($query) {
+        $query->where('status', 'published')->latest();
+    },
+]);
 
         return view(
             'student.classes.show',

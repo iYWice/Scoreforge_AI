@@ -57,7 +57,32 @@
 
     </section>
 
+<section>
+    <h3 class="text-xl font-extrabold text-slate-950">My Subjects</h3>
+    <p class="mt-1 text-sm text-slate-500">
+        Subjects your teacher assigned to you in this class.
+    </p>
 
+    <div class="mt-5 grid gap-4 md:grid-cols-2">
+        @forelse($class->classSubjects as $offering)
+            <article class="rounded-xl border border-slate-200 bg-white p-5">
+                <h4 class="font-bold text-slate-900">
+                    {{ $offering->subject->name }}
+                </h4>
+                <p class="mt-2 text-sm text-slate-600">
+                    EDP Code: <span class="font-mono">{{ $offering->edp_code }}</span>
+                </p>
+                <p class="mt-1 text-sm text-slate-600">
+                    Schedule: {{ $offering->schedule }}
+                </p>
+            </article>
+        @empty
+            <p class="text-sm text-slate-500">
+                Your teacher has not assigned you to a subject yet.
+            </p>
+        @endforelse
+    </div>
+</section>
     {{-- Exams --}}
     <section>
 

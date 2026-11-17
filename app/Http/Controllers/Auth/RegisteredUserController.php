@@ -41,17 +41,33 @@ class RegisteredUserController extends Controller
             403,
             'Public registration is currently disabled.'
         );
-        $request->validate([
-            'fname' => ['required', 'string', 'max:255'],
-            'lname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
-            'role' => ['required', 'in:teacher,student'],
-            'password' => [
-                'required',
-                'confirmed',
-                Rules\Password::min(8)->letters()->numbers(),
-            ],
-        ]);
+$validated = $request->validate([
+    'fname' => ['required', 'string', 'max:255'],
+    'lname' => ['required', 'string', 'max:255'],
+    'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
+    'role' => ['required', 'in:teacher,student'],
+    'student_id' => [
+        'required_if:role,student',
+        'nullable',
+        'string',
+        'max:50',
+        'unique:users,student_id',
+    ],
+    'password' => [
+        'required',
+        'confirmed',
+        Rules\Password::min(8)->letters()->numbers(),
+    ],
+]);
+
+$user = User::create([
+    'fname' => $validated['fname'],
+    'lname' => $validated['lname'],
+    'email' => $validated['email'],
+    'role' => $validated['role'],
+    'student_id' => $validated['student_id'] ?? null,
+    'password' => Hash::make($validated['password']),
+]);
 
         $user = User::create([
             'fname' => $request->fname,

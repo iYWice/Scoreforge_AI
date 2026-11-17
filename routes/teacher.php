@@ -6,6 +6,7 @@ use App\Http\Controllers\Teacher\QuestionController;
 use App\Http\Controllers\Teacher\AnalyticsController;
 use App\Http\Controllers\Teacher\ClassController;
 use App\Http\Controllers\Teacher\AIQuestionBuilderController;
+use App\Http\Controllers\Teacher\ClassSubjectController;
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
 
@@ -166,4 +167,14 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         '/teacher/analytics/predictions/export',
         [AnalyticsController::class, 'exportPredictions']
     )->name('teacher.analytics.predictions.export');
+
+    Route::post(
+    '/teacher/classes/{class}/subjects',
+    [ClassSubjectController::class, 'store']
+)->name('teacher.classes.subjects.store');
+
+Route::post(
+    '/teacher/class-subjects/{classSubject}/students',
+    [ClassSubjectController::class, 'assignStudents']
+)->name('teacher.class-subjects.students.assign');
 });
