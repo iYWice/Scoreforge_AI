@@ -215,4 +215,12 @@ Route::post(
     '/teacher/students/{student}/analysis/overall/ai-draft',
     [StudentPerformanceController::class, 'generateOverallDraft']
 )->name('teacher.students.analysis.overall.generate');
+Route::post(
+    '/teacher/student-attempts/{attempt}/reset',
+    [StudentPerformanceController::class, 'resetAttempt']
+)->name('teacher.students.attempts.reset');
+Route::delete(
+    '/teacher/classes/{class}/students/{student}',
+    [ClassController::class, 'removeStudent']
+)->name('teacher.classes.students.remove');
 });

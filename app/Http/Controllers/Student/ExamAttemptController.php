@@ -50,32 +50,28 @@ class ExamAttemptController extends Controller
             );
         }
 
-        $existingAttempt = ExamAttempt::where(
-            'exam_id',
-            $exam->id
-        )
-            ->where(
-                'student_id',
-                auth()->id()
-            )
-            ->latest()
-            ->first();
+        $ongoingAttempt = ExamAttempt::where('exam_id', $exam->id)
+    ->where('student_id', auth()->id())
+    ->where('status', 'ongoing')
+    ->latest('id')
+    ->first();
 
-        if ($existingAttempt) {
+if ($ongoingAttempt) {
+    return redirect()->route('student.exam.take', $ongoingAttempt->id);
+}
 
-            if ($existingAttempt->status === 'completed') {
+$latestCompletedAttempt = ExamAttempt::where('exam_id', $exam->id)
+    ->where('student_id', auth()->id())
+    ->where('status', 'completed')
+    ->latest('id')
+    ->first();
 
-                return redirect()->route(
-                    'student.exam.result',
-                    $existingAttempt->id
-                );
-            }
-
-            return redirect()->route(
-                'student.exam.take',
-                $existingAttempt->id
-            );
-        }
+if ($latestCompletedAttempt && !$latestCompletedAttempt->retake_allowed) {
+    return redirect()->route(
+        'student.exam.result',
+        $latestCompletedAttempt->id
+    );
+}
 
         return view(
             'student.exam.instructions',
@@ -107,30 +103,33 @@ class ExamAttemptController extends Controller
         }
 
         // Check if the student already has an attempt
-        $existingAttempt = ExamAttempt::where(
-            'exam_id',
-            $exam->id
-        )
-            ->where('student_id', auth()->id())
-            ->latest()
-            ->first();
+        $ongoingAttempt = ExamAttempt::where('exam_id', $exam->id)
+    ->where('student_id', auth()->id())
+    ->where('status', 'ongoing')
+    ->latest('id')
+    ->first();
 
-        if ($existingAttempt) {
+if ($ongoingAttempt) {
+    return redirect()->route('student.exam.take', $ongoingAttempt->id);
+}
 
-            // Already completed
-            if ($existingAttempt->status === 'completed') {
-                return redirect()->route(
-                    'student.exam.result',
-                    $existingAttempt->id
-                );
-            }
+$latestCompletedAttempt = ExamAttempt::where('exam_id', $exam->id)
+    ->where('student_id', auth()->id())
+    ->where('status', 'completed')
+    ->latest('id')
+    ->first();
 
-            // Resume ongoing attempt
-            return redirect()->route(
-                'student.exam.take',
-                $existingAttempt->id
-            );
-        }
+if ($latestCompletedAttempt) {
+    if (!$latestCompletedAttempt->retake_allowed) {
+        return redirect()->route(
+            'student.exam.result',
+            $latestCompletedAttempt->id
+        );
+    }
+
+    // Consume the teacher's one-time retry permission.
+    $latestCompletedAttempt->update(['retake_allowed' => false]);
+}
 
         // Create attempt only when none exists
         $attempt = ExamAttempt::create([

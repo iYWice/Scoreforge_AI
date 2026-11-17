@@ -39,7 +39,11 @@ class StudentPerformanceController extends Controller
     ->whereHas('exam', fn ($query) => $query->where('created_by', $teacherId))
     ->latest('submitted_at')
     ->get();
-
+$latestAttemptIds = $attempts
+    ->groupBy('exam_id')
+    ->map(fn ($examAttempts) => $examAttempts->first()->id)
+    ->values()
+    ->all();
 // PUT THE TOPIC CALCULATION HERE
 $topicStatsByAttempt = $attempts->mapWithKeys(function ($attempt) {
     $topics = $attempt->answers
@@ -74,7 +78,8 @@ return view('teacher.students.performance', compact(
     'student',
     'attempts',
     'analyses',
-    'topicStatsByAttempt' // ADD THIS
+    'topicStatsByAttempt',
+        'latestAttemptIds'
 ));
     }
 
@@ -330,5 +335,41 @@ private function cleanAiText(string $text): string
     $text = preg_replace('/\n{3,}/', "\n\n", $text);
 
     return trim($text);
+}
+public function resetAttempt(ExamAttempt $attempt)
+{
+    abort_unless(
+        (int) $attempt->exam?->created_by === (int) auth()->id(),
+        403
+    );
+
+    abort_unless($attempt->status === 'completed', 422);
+
+    $latestCompletedAttempt = ExamAttempt::where('exam_id', $attempt->exam_id)
+        ->where('student_id', $attempt->student_id)
+        ->where('status', 'completed')
+        ->latest('id')
+        ->first();
+
+    abort_unless(
+        $latestCompletedAttempt &&
+        (int) $latestCompletedAttempt->id === (int) $attempt->id,
+        422,
+        'Only the student’s latest completed attempt can be reset.'
+    );
+
+    $attempt->update(['retake_allowed' => true]);
+
+    app(\App\Services\ActivityLogger::class)->log(
+        'exam.retake_allowed',
+        'Teacher allowed a student to retry an examination.',
+        $attempt,
+        ['exam_id' => $attempt->exam_id]
+    );
+
+    return back()->with(
+        'success',
+        'Retry allowed. The student’s completed result remains in their history.'
+    );
 }
 }

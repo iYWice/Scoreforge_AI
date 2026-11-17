@@ -21,11 +21,13 @@ class ExamAttempt extends Model
         'started_at',
         'submitted_at',
         'total_score',
+            'retake_allowed',
     ];
 
     protected $casts = [
         'started_at' => 'datetime',
         'submitted_at' => 'datetime',
+            'retake_allowed' => 'boolean',
     ];
 
     public function student()
