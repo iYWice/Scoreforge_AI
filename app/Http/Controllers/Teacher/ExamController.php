@@ -59,13 +59,9 @@ $validated = $request->validate([
     'class_id' => ['required', 'exists:classes,id'],
     'total_items' => ['required', 'integer', 'min:1'],
     'duration' => ['required', 'integer', 'min:1'],
-    'passing_score' => [
-        'required',
-        'integer',
-        'min:0',
-        'lte:total_items',
-    ],
 ]);
+
+$validated['passing_score'] = (int) ceil($validated['total_items'] * 0.75);
 
 $subject = Subject::firstOrCreate([
     'name' => trim($validated['subject']),
@@ -148,13 +144,17 @@ $exam = Exam::create([
         if ($exam->created_by !== auth()->id()) {
             abort(403, 'You are not authorized to update this exam.');
         }
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'subject_id' => 'required|exists:subjects,id',
-            'class_id' => 'required|exists:classes,id',
-            'duration' => 'required|integer|min:1',
-            'passing_score' => 'required|integer|min:1',
-        ]);
+$validated = $request->validate([
+    'title' => ['required', 'string', 'max:255'],
+    'subject_id' => ['required', 'exists:subjects,id'],
+    'class_id' => ['required', 'exists:classes,id'],
+    'total_items' => ['required', 'integer', 'min:1'],
+    'duration' => ['required', 'integer', 'min:1'],
+]);
+
+$validated['passing_score'] = (int) ceil($validated['total_items'] * 0.75);
+
+$exam->update($validated);
 
         $exam->update($request->only([
 

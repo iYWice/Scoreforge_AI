@@ -13,7 +13,22 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const totalItems = document.getElementById('total_items');
+    const passingScore = document.getElementById('passing_score');
 
+    if (!totalItems || !passingScore) return;
+
+    function updatePassingScore() {
+        const items = parseInt(totalItems.value, 10) || 0;
+        passingScore.value = items > 0 ? Math.ceil(items * 0.75) : '';
+    }
+
+    totalItems.addEventListener('input', updatePassingScore);
+    updatePassingScore();
+});
+</script>
 <body class="bg-slate-50 dark:bg-slate-900 font-sans antialiased text-slate-800 dark:text-slate-100 flex items-center justify-center min-h-screen p-4 sm:p-6">
 
     <div class="w-full sm:max-w-lg bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-700/80 transition-all duration-300">
@@ -83,32 +98,61 @@
                 </div>
             </div>
 
-            {{-- DURATION & PASSING SCORE GRID --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {{-- DURATION --}}
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Duration (mins)</label>
-                    <input
-                        type="number"
-                        name="duration"
-                        min="1"
-                        required
-                        placeholder="e.g., 60"
-                        class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-600 dark:focus:border-indigo-500 outline-none transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:border-slate-400 hover:scale-[1.01] focus:scale-[1.01]">
-                </div>
+            {{-- TOTAL ITEMS, DURATION & AUTOMATIC PASSING SCORE --}}
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div>
+        <label for="total_items"
+               class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
+            Total Items
+        </label>
+        <input
+            type="number"
+            id="total_items"
+            name="total_items"
+            min="1"
+            value="{{ old('total_items', 1) }}"
+            required
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+        @error('total_items')
+            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+        @enderror
+    </div>
 
-                {{-- PASSING SCORE --}}
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Passing Score</label>
-                    <input
-                        type="number"
-                        name="passing_score"
-                        min="0"
-                        required
-                        placeholder="e.g., 70"
-                        class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-600 dark:focus:border-indigo-500 outline-none transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:border-slate-400 hover:scale-[1.01] focus:scale-[1.01]">
-                </div>
-            </div>
+    <div>
+        <label for="duration"
+               class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
+            Duration (mins)
+        </label>
+        <input
+            type="number"
+            id="duration"
+            name="duration"
+            min="1"
+            value="{{ old('duration') }}"
+            required
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+        @error('duration')
+            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div>
+        <label for="passing_score"
+               class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
+            Passing Score (75%)
+        </label>
+        <input
+            type="number"
+            id="passing_score"
+            name="passing_score"
+            value="{{ old('passing_score', 1) }}"
+            readonly
+            class="w-full rounded-xl border border-slate-300 bg-slate-100 px-4 py-2.5">
+        <p class="mt-1 text-xs text-slate-500">
+            Automatically calculated from total items.
+        </p>
+    </div>
+</div>
 
             {{-- ACTION BUTTON --}}
             <div class="pt-3">

@@ -116,46 +116,61 @@
 
             </div>
 
-            {{-- Duration & Passing Score Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {{-- TOTAL ITEMS, DURATION & AUTOMATIC PASSING SCORE --}}
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+    <div class="space-y-1.5">
+        <label for="total_items"
+               class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            Total Items
+        </label>
+        <input
+            type="number"
+            id="total_items"
+            name="total_items"
+            value="{{ old('total_items', $exam->total_items) }}"
+            min="1"
+            required
+            class="w-full rounded-xl border border-slate-200 px-4 py-3">
+        @error('total_items')
+            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+        @enderror
+    </div>
 
-                {{-- Duration --}}
-                <div class="space-y-1.5">
-                    <label for="duration" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                        Duration (Minutes)
-                    </label>
-                    <input
-                        type="number"
-                        id="duration"
-                        name="duration"
-                        value="{{ old('duration', $exam->duration) }}"
-                        min="1"
-                        required
-                        class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
-                    @error('duration')
-                    <p class="text-[11px] font-semibold text-rose-500 mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+    <div class="space-y-1.5">
+        <label for="duration"
+               class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            Duration (Minutes)
+        </label>
+        <input
+            type="number"
+            id="duration"
+            name="duration"
+            value="{{ old('duration', $exam->duration) }}"
+            min="1"
+            required
+            class="w-full rounded-xl border border-slate-200 px-4 py-3">
+        @error('duration')
+            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+        @enderror
+    </div>
 
-                {{-- Passing Score --}}
-                <div class="space-y-1.5">
-                    <label for="passing_score" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                        Passing Score
-                    </label>
-                    <input
-                        type="number"
-                        id="passing_score"
-                        name="passing_score"
-                        value="{{ old('passing_score', $exam->passing_score) }}"
-                        min="0"
-                        required
-                        class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
-                    @error('passing_score')
-                    <p class="text-[11px] font-semibold text-rose-500 mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-            </div>
+    <div class="space-y-1.5">
+        <label for="passing_score"
+               class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+            Passing Score (75%)
+        </label>
+        <input
+            type="number"
+            id="passing_score"
+            name="passing_score"
+            value="{{ old('passing_score', (int) ceil($exam->total_items * 0.75)) }}"
+            readonly
+            class="w-full rounded-xl border border-slate-200 bg-slate-100 px-4 py-3">
+        <p class="mt-1 text-xs text-slate-500">
+            Automatically calculated from total items.
+        </p>
+    </div>
+</div>
 
             {{-- Action Buttons --}}
             <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
@@ -177,5 +192,20 @@
     </div>
 
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const totalItems = document.getElementById('total_items');
+    const passingScore = document.getElementById('passing_score');
 
+    if (!totalItems || !passingScore) return;
+
+    function updatePassingScore() {
+        const items = parseInt(totalItems.value, 10) || 0;
+        passingScore.value = items > 0 ? Math.ceil(items * 0.75) : '';
+    }
+
+    totalItems.addEventListener('input', updatePassingScore);
+    updatePassingScore();
+});
+</script>
 @endsection
