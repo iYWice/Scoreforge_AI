@@ -40,27 +40,40 @@
             Analyze the student’s completed exams from your classes.
         </p>
 
-        <form method="POST"
-              action="{{ route('teacher.students.analysis.overall', $student) }}"
-              class="mt-4 space-y-3">
-            @csrf
+        <form
+    method="POST"
+    action="{{ route('teacher.students.analysis.overall', $student) }}"
+    data-ai-url="{{ route('teacher.students.analysis.overall.generate', $student) }}"
+    class="mt-4 space-y-3">
+    @csrf
 
-            <select name="method" class="rounded-lg border-slate-300">
-                <option value="ai">Generate AI draft</option>
-                <option value="manual">Write manually</option>
-            </select>
+    <input type="hidden" name="method" value="manual" data-analysis-method>
 
-            <textarea
-                name="content"
-                rows="4"
-                maxlength="10000"
-                placeholder="For manual analysis, enter feedback here. For AI, this field is ignored."
-                class="w-full rounded-lg border-slate-300"></textarea>
+    <textarea
+        name="content"
+        rows="4"
+        required
+        maxlength="10000"
+        placeholder="Generate an AI draft or write your overall feedback here."
+        class="w-full rounded-lg border-slate-300"></textarea>
 
-            <button class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700">
-                Create Overall Analysis Draft
-            </button>
-        </form>
+    <p data-ai-status class="text-sm text-slate-500"></p>
+
+    <div class="flex flex-wrap gap-3">
+        <button
+            type="button"
+            data-generate-ai
+            class="rounded-lg border border-indigo-200 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
+            Generate AI Draft
+        </button>
+
+        <button
+            type="submit"
+            class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-700">
+            Send to Student
+        </button>
+    </div>
+</form>
     </section>
 
     <section>
@@ -93,7 +106,7 @@
                             <p class="text-sm text-slate-500">
                                 {{ number_format($percentage, 1) }}%
                             </p>
-                                <a
+    <a
         href="{{ route('teacher.students.attempt-result', $attempt) }}"
         class="mt-2 inline-block text-xs font-semibold text-indigo-600 hover:text-indigo-800">
         View student result →
@@ -109,17 +122,14 @@
     class="mt-4 space-y-3 border-t border-slate-100 pt-4">
     @csrf
 
-    <select name="method" class="rounded-lg border-slate-300">
-        <option value="ai">AI draft</option>
-        <option value="manual">Write manually</option>
-    </select>
+    <input type="hidden" name="method" value="manual">
 
     <textarea
         name="content"
         rows="4"
         required
         maxlength="10000"
-        placeholder="Click Generate AI Draft to fill this box, or write feedback manually."
+        placeholder="Generate an AI draft or write feedback for this exam here."
         class="w-full rounded-lg border-slate-300"></textarea>
 
     <p data-ai-status class="text-sm text-slate-500"></p>
@@ -134,8 +144,8 @@
 
         <button
             type="submit"
-            class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">
-            Save Analysis Draft
+            class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-700">
+            Send to Student
         </button>
     </div>
 </form>
@@ -212,13 +222,8 @@ document.addEventListener('click', async function (event) {
 
     const form = button.closest('form');
     const textarea = form.querySelector('textarea[name="content"]');
-    const method = form.querySelector('select[name="method"]');
+    const method = form.querySelector('[data-analysis-method]');
     const status = form.querySelector('[data-ai-status]');
-
-    if (method.value !== 'ai') {
-        status.textContent = 'Choose “AI draft” first.';
-        return;
-    }
 
     button.disabled = true;
     button.textContent = 'Generating…';
@@ -242,7 +247,8 @@ document.addEventListener('click', async function (event) {
 
         textarea.value = data.content;
         textarea.dispatchEvent(new Event('input', { bubbles: true }));
-        status.textContent = 'AI draft added to the text box. Review or edit it, then save.';
+        method.value = 'ai';
+        status.textContent = 'Draft added. Review or edit it, then send it to the student.';
     } catch (error) {
         status.textContent = error.message;
     } finally {

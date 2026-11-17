@@ -211,4 +211,8 @@ Route::post(
     '/teacher/students/{student}/attempts/{attempt}/analysis/ai-draft',
     [StudentPerformanceController::class, 'generateExamDraft']
 )->name('teacher.students.analysis.exam.generate');
+Route::post(
+    '/teacher/students/{student}/analysis/overall/ai-draft',
+    [StudentPerformanceController::class, 'generateOverallDraft']
+)->name('teacher.students.analysis.overall.generate');
 });

@@ -74,62 +74,41 @@ class StudentPerformanceController extends Controller
         'scope' => 'exam',
         'method' => $validated['method'],
         'content' => trim($validated['content']),
+        'sent_at' => now(),
     ]);
 
-    return back()->with(
-        'success',
-        'Analysis saved as a private draft. Review it, then send it to the student.'
-    );
+    return back()->with('success', 'Exam feedback sent to the student.');
 }
 
-    public function storeOverall(
-        Request $request,
-        User $student,
-        GeminiService $gemini
-    ) {
-        abort_unless($student->role === 'student', 404);
+public function storeOverall(
+    Request $request,
+    User $student
+) {
+    abort_unless($student->role === 'student', 404);
 
-        $attempts = $this->teacherAttempts($student);
+    abort_if(
+        $this->teacherAttempts($student)->isEmpty(),
+        422,
+        'This student has no completed exams from your classes yet.'
+    );
 
-        abort_if($attempts->isEmpty(), 422, 'This student has no completed exams from your classes yet.');
+    $validated = $request->validate([
+        'method' => ['required', 'in:ai,manual'],
+        'content' => ['required', 'string', 'min:5', 'max:10000'],
+    ]);
 
-        $validated = $request->validate([
-            'method' => ['required', 'in:ai,manual'],
-            'content' => ['nullable', 'string', 'max:10000'],
-        ]);
+    StudentPerformanceAnalysis::create([
+        'student_id' => $student->id,
+        'teacher_id' => auth()->id(),
+        'exam_attempt_id' => null,
+        'scope' => 'overall',
+        'method' => $validated['method'],
+        'content' => trim($validated['content']),
+        'sent_at' => now(),
+    ]);
 
-        if ($validated['method'] === 'manual') {
-            $request->validate([
-                'content' => ['required', 'string', 'min:5', 'max:10000'],
-            ]);
-
-            $content = trim($validated['content']);
-        } else {
-            try {
-                $content = $this->generateOverallAnalysis($attempts, $gemini);
-            } catch (Throwable $exception) {
-                Log::error('Overall student analysis generation failed.', [
-                    'student_id' => $student->id,
-                    'message' => $exception->getMessage(),
-                ]);
-
-                return back()->withErrors([
-                    'analysis' => 'AI could not create the analysis. Check the Gemini API configuration or write the analysis manually.',
-                ]);
-            }
-        }
-
-        StudentPerformanceAnalysis::create([
-            'student_id' => $student->id,
-            'teacher_id' => auth()->id(),
-            'exam_attempt_id' => null,
-            'scope' => 'overall',
-            'method' => $validated['method'],
-            'content' => $content,
-        ]);
-
-        return back()->with('success', 'Overall analysis saved as a private draft. Review it, then send it to the student.');
-    }
+    return back()->with('success', 'Overall feedback sent to the student.');
+}
 
     public function updateDraft(Request $request, StudentPerformanceAnalysis $analysis)
     {
@@ -200,7 +179,7 @@ class StudentPerformanceController extends Controller
             . "Correct answers: {$correct} of {$answered}\n"
             . "Topic results: " . json_encode($topics, JSON_UNESCAPED_UNICODE);
 
-        return $gemini->generate($prompt);
+        return $this->cleanAiText($gemini->generate($prompt));
     }
 
     private function generateOverallAnalysis(Collection $attempts, GeminiService $gemini): string
@@ -226,7 +205,7 @@ class StudentPerformanceController extends Controller
             . "Average score: {$average}%\n"
             . "Completed exam results: " . json_encode($examResults, JSON_UNESCAPED_UNICODE);
 
-        return $gemini->generate($prompt);
+        return $this->cleanAiText($gemini->generate($prompt));
     }
     public function showResult(ExamAttempt $attempt)
 {
@@ -270,5 +249,54 @@ public function generateExamDraft(
             'message' => 'AI could not generate the draft. Check the Gemini API key or write the feedback manually.',
         ], 422);
     }
+}
+public function generateOverallDraft(
+    User $student,
+    GeminiService $gemini
+) {
+    abort_unless($student->role === 'student', 404);
+
+    $attempts = $this->teacherAttempts($student);
+
+    abort_if(
+        $attempts->isEmpty(),
+        422,
+        'This student has no completed exams from your classes yet.'
+    );
+
+    try {
+        return response()->json([
+            'content' => $this->generateOverallAnalysis($attempts, $gemini),
+        ]);
+    } catch (Throwable $exception) {
+        Log::warning('Overall student analysis generation failed.', [
+            'student_id' => $student->id,
+            'message' => $exception->getMessage(),
+        ]);
+
+        return response()->json([
+            'message' => 'AI could not generate the draft. Check the Gemini API key or write feedback manually.',
+        ], 422);
+    }
+}
+private function cleanAiText(string $text): string
+{
+    // Turn Markdown headings into plain text headings.
+    $text = preg_replace('/^\s{0,3}#{1,6}\s*/m', '', $text);
+
+    // Remove common Markdown formatting characters.
+    $text = str_replace(['**', '__', '~~', '`', '*'], '', $text);
+
+    // Keep link labels, discard Markdown link syntax.
+    $text = preg_replace('/\[([^\]]+)\]\([^)]+\)/', '$1', $text);
+
+    // Replace Markdown list markers with plain bullets.
+    $text = preg_replace('/^\s*[-+]\s+/m', '• ', $text);
+
+    $text = str_replace(["\r\n", "\r"], "\n", $text);
+    $text = preg_replace('/[ \t]+/', ' ', $text);
+    $text = preg_replace('/\n{3,}/', "\n\n", $text);
+
+    return trim($text);
 }
 }

@@ -230,6 +230,7 @@ IMPORTANT RULES:
 - Each question must have one clearly correct answer.
 - Assign a concise topic to every question.
 - Use 1 point for every generated question.
+- Return plain text only. Do not use Markdown symbols such as #, *, _, or backticks. Use simple headings and paragraphs. Use the actual exam and topic names from the supplied data; do not invent placeholder names such as “Unit Name” or “Test Case ID” unless those are actual supplied topics.
 
 QUESTION TYPE RULES:
 
