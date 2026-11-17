@@ -474,7 +474,120 @@
         </div>
 
     </section>
+@php
+    $answersByQuestion = $attempt->answers->keyBy('question_id');
+@endphp
 
+<section class="border-t border-slate-200 py-8">
+    <div class="mb-5">
+        <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">
+            Exam Content
+        </p>
+        <h2 class="mt-1 text-xl font-extrabold text-slate-950">
+            Question-by-question review
+        </h2>
+        <p class="mt-1 text-sm text-slate-500">
+            Review each question, your answer, and the correct answer.
+        </p>
+    </div>
+
+    <div class="space-y-4">
+        @forelse($attempt->exam->questions as $index => $question)
+            @php
+                $answer = $answersByQuestion->get($question->id);
+                $isCorrect = (bool) ($answer?->is_correct ?? false);
+
+                $correctOptions = $question->options
+                    ->filter(fn ($option) => (bool) $option->is_correct);
+
+                $correctAnswer = $correctOptions->isNotEmpty()
+                    ? $correctOptions->pluck('option_text')->implode(', ')
+                    : $question->correct_answer;
+
+                $studentAnswer = trim((string) ($answer?->answer_text ?? ''));
+            @endphp
+
+            <article class="rounded-xl border {{ $isCorrect ? 'border-emerald-200' : 'border-rose-200' }} bg-white p-5">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wide text-slate-400">
+                            Question {{ $index + 1 }}
+                            @if($question->topic)
+                                · {{ $question->topic }}
+                            @endif
+                        </p>
+
+                        <h3 class="mt-2 font-bold text-slate-900">
+                            {{ $question->question_text }}
+                        </h3>
+                    </div>
+
+                    <span class="rounded-full px-3 py-1 text-xs font-bold {{ $isCorrect ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700' }}">
+                        {{ $isCorrect ? 'Correct' : 'Incorrect' }}
+                    </span>
+                </div>
+
+                @if($question->options->isNotEmpty())
+                    <div class="mt-4 space-y-2">
+                        @foreach($question->options as $option)
+                            @php
+                                $isStudentChoice = $studentAnswer !== ''
+                                    && $studentAnswer === trim((string) $option->option_text);
+                                $isCorrectOption = (bool) $option->is_correct;
+
+                                $optionClass = $isCorrectOption
+                                    ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                                    : ($isStudentChoice
+                                        ? 'border-rose-200 bg-rose-50 text-rose-800'
+                                        : 'border-slate-200 bg-slate-50 text-slate-700');
+                            @endphp
+
+                            <div class="rounded-lg border px-4 py-3 text-sm {{ $optionClass }}">
+                                <span>{{ $option->option_text }}</span>
+
+                                @if($isStudentChoice)
+                                    <span class="ml-2 font-semibold">Your answer</span>
+                                @endif
+
+                                @if($isCorrectOption)
+                                    <span class="ml-2 font-semibold">Correct answer</span>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                        <div class="rounded-lg bg-slate-50 p-4">
+                            <p class="text-xs font-bold uppercase tracking-wide text-slate-400">
+                                Your answer
+                            </p>
+                            <p class="mt-1 whitespace-pre-line text-sm text-slate-800">
+                                {{ $studentAnswer !== '' ? $studentAnswer : 'No answer submitted' }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-lg bg-emerald-50 p-4">
+                            <p class="text-xs font-bold uppercase tracking-wide text-emerald-700">
+                                Correct answer
+                            </p>
+                            <p class="mt-1 whitespace-pre-line text-sm text-emerald-900">
+                                {{ $correctAnswer ?: 'Correct answer unavailable' }}
+                            </p>
+                        </div>
+                    </div>
+                @endif
+
+                <p class="mt-3 text-xs text-slate-500">
+                    Points: {{ $isCorrect ? $question->points : 0 }} / {{ $question->points }}
+                </p>
+            </article>
+        @empty
+            <p class="rounded-xl border border-dashed border-slate-300 p-6 text-sm text-slate-500">
+                No questions are available for this exam.
+            </p>
+        @endforelse
+    </div>
+</section>
 
 
     {{-- ====================================================== --}}

@@ -114,7 +114,65 @@
 
                         </div>
                     </div>
+@php
+    $topicStats = $topicStatsByAttempt->get($attempt->id, collect());
 
+    $strengthTopics = $topicStats->filter(
+        fn ($topic) => $topic['percentage'] >= 75
+    );
+
+    $reviewTopics = $topicStats->filter(
+        fn ($topic) => $topic['percentage'] < 75
+    );
+@endphp
+
+<div class="mt-4 grid gap-4 border-t border-slate-100 pt-4 md:grid-cols-2">
+    <section class="rounded-lg border border-emerald-100 bg-emerald-50/50 p-4">
+        <h4 class="text-sm font-bold text-emerald-800">Strengths</h4>
+
+        @forelse($strengthTopics as $topic)
+            <div class="mt-3 flex justify-between gap-3 text-sm">
+                <span class="font-medium text-slate-800">
+                    {{ $topic['topic'] }}
+                </span>
+                <span class="whitespace-nowrap text-emerald-700">
+                    {{ $topic['correct'] }}/{{ $topic['total'] }}
+                    · {{ number_format($topic['percentage'], 1) }}%
+                </span>
+            </div>
+        @empty
+            <p class="mt-2 text-sm text-slate-500">
+                No topics reached 75% on this exam.
+            </p>
+        @endforelse
+    </section>
+
+    <section class="rounded-lg border border-amber-100 bg-amber-50/50 p-4">
+        <h4 class="text-sm font-bold text-amber-800">Areas for review</h4>
+
+        @forelse($reviewTopics as $topic)
+            <div class="mt-3 flex justify-between gap-3 text-sm">
+                <span class="font-medium text-slate-800">
+                    {{ $topic['topic'] }}
+                </span>
+                <span class="whitespace-nowrap text-amber-700">
+                    {{ $topic['correct'] }}/{{ $topic['total'] }}
+                    · {{ number_format($topic['percentage'], 1) }}%
+                </span>
+            </div>
+        @empty
+            <p class="mt-2 text-sm text-slate-500">
+                No topics fell below 75% on this exam.
+            </p>
+        @endforelse
+    </section>
+</div>
+
+@if($topicStats->isEmpty())
+    <p class="mt-3 text-xs text-slate-500">
+        Topic analysis isn’t available because this exam’s questions don’t have topic labels.
+    </p>
+@endif
                     <form
     method="POST"
     action="{{ route('teacher.students.analysis.exam', [$student, $attempt]) }}"

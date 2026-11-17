@@ -30,24 +30,52 @@ class StudentPerformanceController extends Controller
 
         abort_unless($hasClassAccess || $hasExamAccess, 403);
 
-        $attempts = ExamAttempt::with('exam.subject')
-            ->where('student_id', $student->id)
-            ->where('status', 'completed')
-            ->whereHas('exam', fn ($query) => $query->where('created_by', $teacherId))
-            ->latest('submitted_at')
-            ->get();
+        $attempts = ExamAttempt::with([
+    'exam.subject',
+    'answers.question',
+])
+    ->where('student_id', $student->id)
+    ->where('status', 'completed')
+    ->whereHas('exam', fn ($query) => $query->where('created_by', $teacherId))
+    ->latest('submitted_at')
+    ->get();
 
-        $analyses = StudentPerformanceAnalysis::with('attempt.exam.subject')
-            ->where('student_id', $student->id)
-            ->where('teacher_id', $teacherId)
-            ->latest()
-            ->get();
+// PUT THE TOPIC CALCULATION HERE
+$topicStatsByAttempt = $attempts->mapWithKeys(function ($attempt) {
+    $topics = $attempt->answers
+        ->filter(fn ($answer) => trim((string) $answer->question?->topic) !== '')
+        ->groupBy(fn ($answer) => trim((string) $answer->question->topic))
+        ->map(function ($answers, $topic) {
+            $total = $answers->count();
+            $correct = $answers->where('is_correct', true)->count();
 
-        return view('teacher.students.performance', compact(
-            'student',
-            'attempts',
-            'analyses'
-        ));
+            return [
+                'topic' => $topic,
+                'correct' => $correct,
+                'total' => $total,
+                'percentage' => $total > 0
+                    ? round(($correct / $total) * 100, 1)
+                    : 0,
+            ];
+        })
+        ->sortBy('percentage')
+        ->values();
+
+    return [$attempt->id => $topics];
+});
+
+$analyses = StudentPerformanceAnalysis::with('attempt.exam.subject')
+    ->where('student_id', $student->id)
+    ->where('teacher_id', $teacherId)
+    ->latest()
+    ->get();
+
+return view('teacher.students.performance', compact(
+    'student',
+    'attempts',
+    'analyses',
+    'topicStatsByAttempt' // ADD THIS
+));
     }
 
     public function storeExam(
@@ -216,7 +244,11 @@ public function storeOverall(
         403
     );
 
-    $attempt->load('exam.subject');
+    $attempt->load([
+    'exam.subject',
+    'exam.questions.options',
+    'answers.question.options',
+]);
 
     return view('student.exam.result', [
         'attempt' => $attempt,

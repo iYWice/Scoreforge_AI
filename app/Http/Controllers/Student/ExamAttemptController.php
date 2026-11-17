@@ -405,7 +405,11 @@ class ExamAttemptController extends Controller
                 );
         }
 
-        $attempt->load('exam');
+        $attempt->load([
+    'exam.subject',
+    'exam.questions.options',
+    'answers.question.options',
+]);
 
         return view(
             'student.exam.result',
