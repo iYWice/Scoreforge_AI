@@ -302,6 +302,10 @@
            active:scale-95">
                             History
                         </a>
+                        <a href="{{ route('student.feedback.index') }}"
+   class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+    Teacher Feedback
+</a>
 
                         <!-- <span
                             class="flex h-full items-center

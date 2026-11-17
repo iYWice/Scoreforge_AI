@@ -4,6 +4,7 @@ use App\Http\Controllers\Student\DashboardController;
 use App\Http\Controllers\Student\ExamAttemptController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Student\ClassController;
+use App\Http\Controllers\Student\FeedbackController;
 
 Route::middleware(['auth', 'role:student'])->group(function () {
 
@@ -73,5 +74,8 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     '/student/exam-history',
     [DashboardController::class, 'history']
 )->name('student.exam.history');
+
+Route::get('/student/feedback', [FeedbackController::class, 'index'])
+    ->name('student.feedback.index');
 });
 

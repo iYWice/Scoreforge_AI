@@ -52,115 +52,7 @@
                 </div>
             </div>
         </div>
-<section class="mt-8 rounded-xl border border-slate-200 bg-white p-6">
-    <h2 class="text-lg font-semibold text-slate-950">Class Subjects</h2>
-    <p class="mt-1 text-sm text-slate-500">
-        Add a subject with its EDP code and schedule, then assign students who joined this class.
-    </p>
 
-    @if(session('success'))
-        <p class="mt-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">
-            {{ session('success') }}
-        </p>
-    @endif
-
-    <form
-        method="POST"
-        action="{{ route('teacher.classes.subjects.store', $class) }}"
-        class="mt-5 grid gap-4 md:grid-cols-4">
-        @csrf
-
-        <input
-            name="subject_name"
-            value="{{ old('subject_name') }}"
-            required
-            placeholder="Subject name"
-            class="rounded-lg border-slate-300">
-
-        <input
-            name="edp_code"
-            value="{{ old('edp_code') }}"
-            required
-            placeholder="EDP code"
-            class="rounded-lg border-slate-300">
-
-        <input
-            name="schedule"
-            value="{{ old('schedule') }}"
-            required
-            placeholder="Schedule, e.g. MWF 8:00–9:00 AM"
-            class="rounded-lg border-slate-300">
-
-        <button class="rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700">
-            Add Subject
-        </button>
-
-        @error('subject_name') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-        @error('edp_code') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-        @error('schedule') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
-    </form>
-
-    <div class="mt-8 space-y-5">
-        @forelse($class->classSubjects as $offering)
-            <article class="rounded-xl border border-slate-200 p-5">
-                <div class="flex flex-wrap justify-between gap-3">
-                    <div>
-                        <h3 class="font-bold text-slate-900">
-                            {{ $offering->subject->name }}
-                        </h3>
-                        <p class="mt-1 text-sm text-slate-500">
-                            EDP: {{ $offering->edp_code }} · {{ $offering->schedule }}
-                        </p>
-                    </div>
-                    <span class="text-sm text-slate-500">
-                        {{ $offering->students->count() }} assigned
-                    </span>
-                </div>
-
-                <form
-                    method="POST"
-                    action="{{ route('teacher.class-subjects.students.assign', $offering) }}"
-                    class="mt-4">
-                    @csrf
-
-                    <p class="mb-2 text-sm font-semibold text-slate-700">
-                        Select students enrolled in this class
-                    </p>
-
-                    <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                        @forelse($class->students as $student)
-                            <label class="flex items-center gap-2 rounded-lg bg-slate-50 p-3 text-sm">
-                                <input
-                                    type="checkbox"
-                                    name="student_ids[]"
-                                    value="{{ $student->id }}"
-                                    @checked($offering->students->contains('id', $student->id))>
-                                <span>
-                                    {{ $student->fname }} {{ $student->lname }}
-                                    @if($student->student_id)
-                                        <span class="text-slate-500">({{ $student->student_id }})</span>
-                                    @endif
-                                </span>
-                            </label>
-                        @empty
-                            <p class="text-sm text-slate-500">
-                                No students have joined this class yet.
-                            </p>
-                        @endforelse
-                    </div>
-
-                    <button class="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
-                        Save Student Assignments
-                    </button>
-                </form>
-            </article>
-        @empty
-            <p class="border-t border-slate-100 pt-5 text-sm text-slate-500">
-                No subjects have been added to this class yet.
-            </p>
-        @endforelse
-    </div>
-</section>
         {{-- Stats --}}
         <div class="mt-8 grid gap-4 sm:grid-cols-2">
             <div class="rounded-xl border border-slate-200 bg-white p-5">
@@ -213,10 +105,15 @@
                                 {{ $student->fname }}
                                 {{ $student->lname }}
                             </p>
+<p class="text-xs text-slate-500">
+    {{ $student->email }}
+</p>
 
-                            <p class="text-xs text-slate-500">
-                                {{ $student->email }}
-                            </p>
+<a
+    href="{{ route('teacher.students.performance', $student) }}"
+    class="mt-1 inline-block text-xs font-semibold text-indigo-600 hover:text-indigo-800">
+    View performance →
+</a>
                         </div>
                     </div>
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\Teacher\AnalyticsController;
 use App\Http\Controllers\Teacher\ClassController;
 use App\Http\Controllers\Teacher\AIQuestionBuilderController;
 use App\Http\Controllers\Teacher\ClassSubjectController;
+use App\Http\Controllers\Teacher\StudentPerformanceController;
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
 
@@ -177,4 +178,29 @@ Route::post(
     '/teacher/class-subjects/{classSubject}/students',
     [ClassSubjectController::class, 'assignStudents']
 )->name('teacher.class-subjects.students.assign');
+
+Route::get(
+    '/teacher/students/{student}/performance',
+    [StudentPerformanceController::class, 'show']
+)->name('teacher.students.performance');
+
+Route::post(
+    '/teacher/students/{student}/attempts/{attempt}/analysis',
+    [StudentPerformanceController::class, 'storeExam']
+)->name('teacher.students.analysis.exam');
+
+Route::post(
+    '/teacher/students/{student}/analysis/overall',
+    [StudentPerformanceController::class, 'storeOverall']
+)->name('teacher.students.analysis.overall');
+
+Route::patch(
+    '/teacher/performance-analyses/{analysis}',
+    [StudentPerformanceController::class, 'updateDraft']
+)->name('teacher.performance-analyses.update');
+
+Route::post(
+    '/teacher/performance-analyses/{analysis}/send',
+    [StudentPerformanceController::class, 'send']
+)->name('teacher.performance-analyses.send');
 });
