@@ -596,7 +596,7 @@
         </div>
 
 
-        <a
+        <!-- <a
             href="{{ route('student.dashboard') }}"
             class="group inline-flex items-center
                    justify-center gap-2 rounded-xl
@@ -618,7 +618,14 @@
                 →
             </span>
 
-        </a>
+        </a> -->
+        <a
+    href="{{ !empty($teacherView)
+        ? route('teacher.students.performance', $attempt->student_id)
+        : route('student.dashboard') }}"
+    class="group inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-xs font-bold text-white">
+    {{ !empty($teacherView) ? 'Back to student performance' : 'View Performance' }}
+</a>
 
     </section>
 

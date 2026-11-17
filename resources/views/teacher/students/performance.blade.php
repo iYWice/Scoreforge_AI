@@ -93,31 +93,52 @@
                             <p class="text-sm text-slate-500">
                                 {{ number_format($percentage, 1) }}%
                             </p>
+                                <a
+        href="{{ route('teacher.students.attempt-result', $attempt) }}"
+        class="mt-2 inline-block text-xs font-semibold text-indigo-600 hover:text-indigo-800">
+        View student result →
+    </a>
 
                         </div>
                     </div>
 
-                    <form method="POST"
-                          action="{{ route('teacher.students.analysis.exam', [$student, $attempt]) }}"
-                          class="mt-4 space-y-3 border-t border-slate-100 pt-4">
-                        @csrf
+                    <form
+    method="POST"
+    action="{{ route('teacher.students.analysis.exam', [$student, $attempt]) }}"
+    data-ai-url="{{ route('teacher.students.analysis.exam.generate', [$student, $attempt]) }}"
+    class="mt-4 space-y-3 border-t border-slate-100 pt-4">
+    @csrf
 
-                        <select name="method" class="rounded-lg border-slate-300">
-                            <option value="ai">Generate AI draft</option>
-                            <option value="manual">Write manually</option>
-                        </select>
+    <select name="method" class="rounded-lg border-slate-300">
+        <option value="ai">AI draft</option>
+        <option value="manual">Write manually</option>
+    </select>
 
-                        <textarea
-                            name="content"
-                            rows="3"
-                            maxlength="10000"
-                            placeholder="For manual analysis, enter feedback here. For AI, this field is ignored."
-                            class="w-full rounded-lg border-slate-300"></textarea>
+    <textarea
+        name="content"
+        rows="4"
+        required
+        maxlength="10000"
+        placeholder="Click Generate AI Draft to fill this box, or write feedback manually."
+        class="w-full rounded-lg border-slate-300"></textarea>
 
-                        <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">
-                            Create Exam Analysis Draft
-                        </button>
-                    </form>
+    <p data-ai-status class="text-sm text-slate-500"></p>
+
+    <div class="flex flex-wrap gap-3">
+        <button
+            type="button"
+            data-generate-ai
+            class="rounded-lg border border-indigo-200 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
+            Generate AI Draft
+        </button>
+
+        <button
+            type="submit"
+            class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white hover:bg-slate-700">
+            Save Analysis Draft
+        </button>
+    </div>
+</form>
                 </article>
             @empty
                 <p class="rounded-xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
@@ -184,3 +205,49 @@
     </section>
 </div>
 @endsection
+<script>
+document.addEventListener('click', async function (event) {
+    const button = event.target.closest('[data-generate-ai]');
+    if (!button) return;
+
+    const form = button.closest('form');
+    const textarea = form.querySelector('textarea[name="content"]');
+    const method = form.querySelector('select[name="method"]');
+    const status = form.querySelector('[data-ai-status]');
+
+    if (method.value !== 'ai') {
+        status.textContent = 'Choose “AI draft” first.';
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Generating…';
+    status.textContent = 'Generating draft. Please wait.';
+
+    try {
+        const response = await fetch(form.dataset.aiUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Could not generate the AI draft.');
+        }
+
+        textarea.value = data.content;
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        status.textContent = 'AI draft added to the text box. Review or edit it, then save.';
+    } catch (error) {
+        status.textContent = error.message;
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Generate AI Draft';
+    }
+});
+</script>

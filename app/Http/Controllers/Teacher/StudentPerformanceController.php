@@ -51,52 +51,36 @@ class StudentPerformanceController extends Controller
     }
 
     public function storeExam(
-        Request $request,
-        User $student,
-        ExamAttempt $attempt,
-        GeminiService $gemini
-    ) {
-        abort_unless($attempt->student_id === $student->id, 404);
-        abort_unless($attempt->status === 'completed', 403);
-        abort_unless((int) $attempt->exam?->created_by === (int) auth()->id(), 403);
+    Request $request,
+    User $student,
+    ExamAttempt $attempt
+) {
+    abort_unless((int) $attempt->student_id === (int) $student->id, 404);
+    abort_unless($attempt->status === 'completed', 403);
+    abort_unless(
+        (int) $attempt->exam?->created_by === (int) auth()->id(),
+        403
+    );
 
-        $validated = $request->validate([
-            'method' => ['required', 'in:ai,manual'],
-            'content' => ['nullable', 'string', 'max:10000'],
-        ]);
+    $validated = $request->validate([
+        'method' => ['required', 'in:ai,manual'],
+        'content' => ['required', 'string', 'min:5', 'max:10000'],
+    ]);
 
-        if ($validated['method'] === 'manual') {
-            $request->validate([
-                'content' => ['required', 'string', 'min:5', 'max:10000'],
-            ]);
+    StudentPerformanceAnalysis::create([
+        'student_id' => $student->id,
+        'teacher_id' => auth()->id(),
+        'exam_attempt_id' => $attempt->id,
+        'scope' => 'exam',
+        'method' => $validated['method'],
+        'content' => trim($validated['content']),
+    ]);
 
-            $content = trim($validated['content']);
-        } else {
-            try {
-                $content = $this->generateExamAnalysis($attempt, $gemini);
-            } catch (Throwable $exception) {
-                Log::error('Student exam analysis generation failed.', [
-                    'attempt_id' => $attempt->id,
-                    'message' => $exception->getMessage(),
-                ]);
-
-                return back()->withErrors([
-                    'analysis' => 'AI could not create the analysis. Check the Gemini API configuration or write the analysis manually.',
-                ]);
-            }
-        }
-
-        StudentPerformanceAnalysis::create([
-            'student_id' => $student->id,
-            'teacher_id' => auth()->id(),
-            'exam_attempt_id' => $attempt->id,
-            'scope' => 'exam',
-            'method' => $validated['method'],
-            'content' => $content,
-        ]);
-
-        return back()->with('success', 'Analysis saved as a private draft. Review it, then send it to the student.');
-    }
+    return back()->with(
+        'success',
+        'Analysis saved as a private draft. Review it, then send it to the student.'
+    );
+}
 
     public function storeOverall(
         Request $request,
@@ -244,4 +228,47 @@ class StudentPerformanceController extends Controller
 
         return $gemini->generate($prompt);
     }
+    public function showResult(ExamAttempt $attempt)
+{
+    abort_if($attempt->status !== 'completed', 404);
+
+    abort_unless(
+        (int) $attempt->exam?->created_by === (int) auth()->id(),
+        403
+    );
+
+    $attempt->load('exam.subject');
+
+    return view('student.exam.result', [
+        'attempt' => $attempt,
+        'teacherView' => true,
+    ]);
+}
+public function generateExamDraft(
+    User $student,
+    ExamAttempt $attempt,
+    GeminiService $gemini
+) {
+    abort_unless((int) $attempt->student_id === (int) $student->id, 404);
+    abort_unless($attempt->status === 'completed', 403);
+    abort_unless(
+        (int) $attempt->exam?->created_by === (int) auth()->id(),
+        403
+    );
+
+    try {
+        return response()->json([
+            'content' => $this->generateExamAnalysis($attempt, $gemini),
+        ]);
+    } catch (Throwable $exception) {
+        Log::warning('AI student feedback draft failed.', [
+            'attempt_id' => $attempt->id,
+            'message' => $exception->getMessage(),
+        ]);
+
+        return response()->json([
+            'message' => 'AI could not generate the draft. Check the Gemini API key or write the feedback manually.',
+        ], 422);
+    }
+}
 }

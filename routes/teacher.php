@@ -203,4 +203,12 @@ Route::post(
     '/teacher/performance-analyses/{analysis}/send',
     [StudentPerformanceController::class, 'send']
 )->name('teacher.performance-analyses.send');
+Route::get(
+    '/teacher/student-attempts/{attempt}/result',
+    [StudentPerformanceController::class, 'showResult']
+)->name('teacher.students.attempt-result');
+Route::post(
+    '/teacher/students/{student}/attempts/{attempt}/analysis/ai-draft',
+    [StudentPerformanceController::class, 'generateExamDraft']
+)->name('teacher.students.analysis.exam.generate');
 });
