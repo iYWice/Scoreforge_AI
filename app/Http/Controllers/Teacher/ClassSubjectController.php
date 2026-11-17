@@ -13,7 +13,9 @@ class ClassSubjectController extends Controller
 {
     public function index()
     {
-        $classes = SchoolClass::latest()->get();
+        $classes = SchoolClass::where('created_by', auth()->id())
+    ->latest()
+    ->get();
         $subjects = Subject::latest()->get();
 
         return view('teacher.class-subjects.index', compact(

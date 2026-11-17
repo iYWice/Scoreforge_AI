@@ -9,6 +9,7 @@ use App\Models\Subject;
 use App\Models\SchoolClass;
 use Illuminate\Support\Str;
 use App\Models\Question;
+use Illuminate\Validation\Rule;
 
 class ExamController extends Controller
 {
@@ -24,7 +25,9 @@ class ExamController extends Controller
 
         $subjects = Subject::all();
 
-        $classes = SchoolClass::all();
+        $classes = SchoolClass::where('created_by', auth()->id())
+    ->orderBy('name')
+    ->get();
 
         return view('teacher.exams.index', compact(
             'exams',
@@ -38,7 +41,9 @@ class ExamController extends Controller
      */
     public function create()
     {
-        $classes = SchoolClass::all();
+        $classes = SchoolClass::where('created_by', auth()->id())
+    ->orderBy('name')
+    ->get();
         $subjects = Subject::all();
 
         return view('teacher.exams.create', compact(
@@ -56,7 +61,11 @@ class ExamController extends Controller
 $validated = $request->validate([
     'title' => ['required', 'string', 'max:255'],
     'subject' => ['required', 'string', 'max:255'],
-    'class_id' => ['required', 'exists:classes,id'],
+    'class_id' => [
+    'required',
+    Rule::exists('classes', 'id')
+        ->where('created_by', auth()->id()),
+],
     'total_items' => ['required', 'integer', 'min:1'],
     'duration' => ['required', 'integer', 'min:1'],
 ]);
@@ -124,7 +133,9 @@ $exam = Exam::create([
         }
 
         $subjects = Subject::all();
-        $classes = SchoolClass::all();
+        $classes = SchoolClass::where('created_by', auth()->id())
+    ->orderBy('name')
+    ->get();
 
         return view(
             'teacher.exams.edit',
@@ -147,7 +158,11 @@ $exam = Exam::create([
 $validated = $request->validate([
     'title' => ['required', 'string', 'max:255'],
     'subject_id' => ['required', 'exists:subjects,id'],
-    'class_id' => ['required', 'exists:classes,id'],
+    'class_id' => [
+    'required',
+    Rule::exists('classes', 'id')
+        ->where('created_by', auth()->id()),
+],
     'total_items' => ['required', 'integer', 'min:1'],
     'duration' => ['required', 'integer', 'min:1'],
 ]);
