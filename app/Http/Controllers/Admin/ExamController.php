@@ -8,33 +8,29 @@ use Illuminate\Http\Request;
 
 class ExamController extends Controller
 {
-    public function index(Request $request)
-    {
-        $exams = Exam::query()
-            ->with(['teacher', 'subject', 'class'])
-            ->withCount(['questions', 'attempts'])
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $search = $request->input('search');
+    public function index()
+{
+    $student = auth()->user();
 
-                $query->where(function ($q) use ($search) {
-                    $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('exam_code', 'like', "%{$search}%")
-                        ->orWhereHas('teacher', function ($teacher) use ($search) {
-                            $teacher->where('fname', 'like', "%{$search}%")
-                                ->orWhere('lname', 'like', "%{$search}%");
-                        });
-                });
-            })
-            ->when(
-                in_array($request->input('status'), ['draft', 'published', 'closed'], true),
-                fn($query) => $query->where('status', $request->input('status'))
-            )
-            ->latest()
-            ->paginate(10)
-            ->withQueryString();
+    $classes = $student->enrolledClasses()
+        ->with([
+            'teacher',
+            'classSubjects' => function ($query) use ($student) {
+                $query->whereHas('students', function ($students) use ($student) {
+                    $students->where('users.id', $student->id);
+                })->with('subject');
+            },
+        ])
+        ->withCount([
+            'exams as published_exams_count' => function ($query) {
+                $query->where('status', 'published');
+            },
+        ])
+        ->latest('class_enrollments.created_at')
+        ->get();
 
-        return view('admin.exams.index', compact('exams'));
-    }
+    return view('student.classes.index', compact('classes'));
+}
 
     public function show(Exam $exam)
     {

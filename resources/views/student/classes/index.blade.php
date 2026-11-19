@@ -111,17 +111,24 @@
                 <div class="flex items-start justify-between gap-4">
 
                     <div>
-                        <p class="text-[10px] font-extrabold
-                                          uppercase tracking-[0.18em]
-                                          text-indigo-600">
-                            {{ $class->subject?->name ?? 'Subject' }}
-                        </p>
+    <p class="text-[10px] font-extrabold uppercase tracking-[0.18em] text-indigo-600">
+        Your subjects
+    </p>
 
-                        <h3 class="mt-2 text-lg font-extrabold
-                                           tracking-tight text-slate-950">
-                            {{ $class->name }}
-                        </h3>
-                    </div>
+    <div class="mt-2 flex flex-wrap gap-2">
+        @forelse ($class->classSubjects as $offering)
+            <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+                {{ $offering->subject->name }} · {{ $offering->edp_code }}
+            </span>
+        @empty
+            <span class="text-sm text-slate-500">No subjects assigned yet</span>
+        @endforelse
+    </div>
+
+    <h3 class="mt-2 text-lg font-extrabold tracking-tight text-slate-950">
+        {{ $class->name }}
+    </h3>
+</div>
 
                     <span
                         class="flex h-9 w-9 items-center

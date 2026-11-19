@@ -196,7 +196,20 @@
                             @endif
                         </a>
 
+{{-- Subjects --}}
+<a
+    href="{{ route('teacher.subjects.index') }}"
+    class="relative flex h-full items-center px-4 text-sm font-semibold
+           transition-all duration-200 hover:text-indigo-600 active:scale-95
+           {{ request()->routeIs('teacher.subjects.*')
+                ? 'text-slate-950'
+                : 'text-slate-500' }}">
+    Subjects
 
+    @if(request()->routeIs('teacher.subjects.*'))
+        <span class="absolute inset-x-4 bottom-0 h-[3px] rounded-t-full bg-indigo-600"></span>
+    @endif
+</a>
                         {{-- Analytics --}}
                         <a
                             href="{{ route('teacher.analytics.index') }}"

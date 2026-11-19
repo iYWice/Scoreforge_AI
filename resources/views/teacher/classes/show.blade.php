@@ -183,5 +183,154 @@
         </section>
 
     </div>
+    {{-- Subject offerings --}}
+<section class="space-y-5">
+    <div>
+        <h2 class="text-xl font-bold text-slate-950">Subjects</h2>
+        <p class="mt-1 text-sm text-slate-500">
+            Create subject offerings for this class, then select which class members are enrolled.
+        </p>
+    </div>
+
+    {{-- Create an offering --}}
+    <form
+        method="POST"
+        action="{{ route('teacher.classes.subjects.store', $class) }}"
+        class="grid gap-4 rounded-xl border border-slate-200 bg-white p-5 md:grid-cols-2">
+        @csrf
+
+        <div>
+            <label for="subject_name" class="text-sm font-semibold text-slate-700">
+                Subject name
+            </label>
+            <input
+                id="subject_name"
+                name="subject_name"
+                type="text"
+                value="{{ old('subject_name') }}"
+                placeholder="e.g. Database Management"
+                required
+                class="mt-1 w-full rounded-lg border-slate-300 text-sm">
+            @error('subject_name')
+                <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div>
+            <label for="edp_code" class="text-sm font-semibold text-slate-700">
+                EDP code
+            </label>
+            <input
+                id="edp_code"
+                name="edp_code"
+                type="text"
+                value="{{ old('edp_code') }}"
+                placeholder="e.g. 12345"
+                required
+                class="mt-1 w-full rounded-lg border-slate-300 text-sm">
+            @error('edp_code')
+                <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="md:col-span-2">
+            <label for="schedule" class="text-sm font-semibold text-slate-700">
+                Schedule
+            </label>
+            <input
+                id="schedule"
+                name="schedule"
+                type="text"
+                value="{{ old('schedule') }}"
+                placeholder="e.g. Mon/Wed, 10:00 AM–11:30 AM"
+                required
+                class="mt-1 w-full rounded-lg border-slate-300 text-sm">
+            @error('schedule')
+                <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <div class="md:col-span-2">
+            <button
+                type="submit"
+                class="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">
+                Create subject offering
+            </button>
+        </div>
+    </form>
+
+    {{-- Existing offerings and their student rosters --}}
+    <div class="space-y-4">
+        @forelse ($class->classSubjects as $offering)
+            <article class="rounded-xl border border-slate-200 bg-white p-5">
+                <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-950">
+                            {{ $offering->subject->name }}
+                        </h3>
+                        <p class="mt-1 text-sm text-slate-600">
+                            EDP: <span class="font-mono">{{ $offering->edp_code }}</span>
+                        </p>
+                        <p class="text-sm text-slate-600">
+                            Schedule: {{ $offering->schedule }}
+                        </p>
+                    </div>
+
+                    <span class="text-sm text-slate-500">
+                        {{ $offering->students->count() }}
+                        {{ Str::plural('student', $offering->students->count()) }} enrolled
+                    </span>
+                </div>
+
+                <form
+                    method="POST"
+                    action="{{ route('teacher.class-subjects.students.assign', $offering) }}"
+                    class="mt-5 border-t border-slate-100 pt-4">
+                    @csrf
+
+                    <p class="mb-3 text-sm font-semibold text-slate-700">
+                        Enroll students from this class
+                    </p>
+
+                    @forelse ($class->students as $student)
+                        <label class="flex items-center gap-3 border-b border-slate-100 py-2 last:border-0">
+                            <input
+                                type="checkbox"
+                                name="student_ids[]"
+                                value="{{ $student->id }}"
+                                @checked($offering->students->contains('id', $student->id))
+                                class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                            <span class="text-sm text-slate-700">
+                                {{ $student->fname }} {{ $student->lname }}
+                                <span class="text-slate-400">({{ $student->email }})</span>
+                            </span>
+                        </label>
+                    @empty
+                        <p class="text-sm text-slate-500">
+                            No students have joined this class yet.
+                        </p>
+                    @endforelse
+
+                    <p class="mt-3 text-xs text-slate-500">
+                        Saving updates this subject’s roster. Unchecked students will be removed from this subject only.
+                    </p>
+
+                    <button
+                        type="submit"
+                        class="mt-3 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                        Save subject roster
+                    </button>
+                </form>
+            </article>
+        @empty
+            <div class="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
+                <p class="font-semibold text-slate-800">No subjects created for this class</p>
+                <p class="mt-1 text-sm text-slate-500">
+                    Create a subject offering above to add its EDP code, schedule, and students.
+                </p>
+            </div>
+        @endforelse
+    </div>
+</section>
 </div>
 @endsection

@@ -179,4 +179,18 @@ public function assignStudents(Request $request, ClassSubject $classSubject)
 
     return back()->with('success', 'Students assigned to the subject offering.');
 }
+public function teacherSubjects()
+{
+    $offerings = ClassSubject::query()
+        ->where('teacher_id', auth()->id())
+        ->whereHas('schoolClass', function ($query) {
+            $query->where('created_by', auth()->id());
+        })
+        ->with(['subject', 'schoolClass', 'students'])
+        ->withCount('students')
+        ->orderBy('subject_id')
+        ->get();
+
+    return view('teacher.subjects.index', compact('offerings'));
+}
 }

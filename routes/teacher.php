@@ -169,9 +169,9 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         [AnalyticsController::class, 'exportPredictions']
     )->name('teacher.analytics.predictions.export');
 
-    Route::post(
+Route::post(
     '/teacher/classes/{class}/subjects',
-    [ClassSubjectController::class, 'store']
+    [ClassSubjectController::class, 'storeOffering']
 )->name('teacher.classes.subjects.store');
 
 Route::post(
@@ -223,4 +223,8 @@ Route::delete(
     '/teacher/classes/{class}/students/{student}',
     [ClassController::class, 'removeStudent']
 )->name('teacher.classes.students.remove');
+Route::get(
+    '/teacher/subjects',
+    [ClassSubjectController::class, 'teacherSubjects']
+)->name('teacher.subjects.index');
 });
