@@ -131,6 +131,25 @@
                             placeholder="e.g. Room 205"
                             class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     </div>
+
+                    <div>
+                        <label for="class_id" class="text-sm font-semibold text-slate-700">Class</label>
+                        <select
+                            id="class_id"
+                            name="class_id"
+                            required
+                            class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Select a class</option>
+                            @foreach ($classes as $class)
+                                <option value="{{ $class->id }}" @selected(old('class_id') == $class->id)>
+                                    {{ $class->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('class_id')
+                            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="flex min-h-64 flex-col">

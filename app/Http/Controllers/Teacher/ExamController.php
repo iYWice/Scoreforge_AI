@@ -25,17 +25,17 @@ class ExamController extends Controller
             ->withCount('questions')
             ->get();
 
-        $subjects = Subject::all();
-
         $classes = SchoolClass::where('created_by', auth()->id())
+            ->with([
+                'classSubjects' => function ($query) {
+                    $query->where('teacher_id', auth()->id())
+                        ->with('subject');
+                },
+            ])
             ->orderBy('name')
             ->get();
 
-        return view('teacher.exams.index', compact(
-            'exams',
-            'subjects',
-            'classes'
-        ));
+        return view('teacher.exams.index', compact('exams', 'classes'));
     }
 
     /*

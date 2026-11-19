@@ -427,68 +427,52 @@ $closedCount = $exams->where('status', 'closed')->count();
 
 
 
-                        {{-- Subject --}}
-                        <div>
-
-                            <label class="mb-2 block text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-500">
-                                Subject
-                            </label>
-
-                            <input
-                                type="text"
-                                name="subject"
-                                value="{{ old('subject') }}"
-                                required
-                                maxlength="255"
-                                placeholder="e.g. Information Management"
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 outline-none transition-all placeholder:font-normal placeholder:text-slate-400 hover:border-slate-300 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100">
-
-                            @error('subject')
-                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                            @enderror
-
-                            </select>
-
-                        </div>
-
-
-
                         {{-- Class --}}
-                        <div>
+<div>
+    <label for="exam_class_id" class="mb-2 block text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-500">
+        Class
+    </label>
 
-                            <label class="mb-2 block text-[10px]
-                                          font-extrabold uppercase
-                                          tracking-[0.16em]
-                                          text-slate-500">
-                                Class
-                            </label>
+    <select
+        id="exam_class_id"
+        name="class_id"
+        required
+        class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+        <option value="">Select class</option>
 
-                            <select
-                                name="class_id"
-                                required
-                                class="w-full rounded-xl
-                                       border border-slate-200
-                                       bg-slate-50 px-4 py-3
-                                       text-sm font-semibold
-                                       text-slate-700 outline-none
-                                       transition-all
-                                       hover:border-slate-300
-                                       focus:border-indigo-500
-                                       focus:bg-white
-                                       focus:ring-4
-                                       focus:ring-indigo-100">
+        @foreach ($classes as $class)
+            <option value="{{ $class->id }}">
+                {{ $class->name }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
-                                <option value="">Select class</option>
+{{-- Subject offered in selected class --}}
+<div>
+    <label for="exam_subject_id" class="mb-2 block text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-500">
+        Subject
+    </label>
 
-                                @foreach($classes as $class)
-                                <option value="{{ $class->id }}">
-                                    {{ $class->name }}
-                                </option>
-                                @endforeach
+    <select
+        id="exam_subject_id"
+        name="subject_id"
+        required
+        disabled
+        class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-60">
+        <option value="">Select a class first</option>
 
-                            </select>
-
-                        </div>
+        @foreach ($classes as $class)
+            @foreach ($class->classSubjects->unique('subject_id') as $offering)
+                <option
+                    value="{{ $offering->subject_id }}"
+                    data-class-id="{{ $class->id }}">
+                    {{ $offering->subject->name }}
+                </option>
+            @endforeach
+        @endforeach
+    </select>
+</div>
 
 
 
@@ -1171,7 +1155,38 @@ $closedCount = $exams->where('status', 'closed')->count();
 
     }
 
+const examClassSelect = document.getElementById('exam_class_id');
+const examSubjectSelect = document.getElementById('exam_subject_id');
 
+if (examClassSelect && examSubjectSelect) {
+    function filterExamSubjects(resetSelection = false) {
+        const selectedClassId = examClassSelect.value;
+
+        Array.from(examSubjectSelect.options).forEach(function (option, index) {
+            if (index === 0) return;
+
+            const belongsToClass = option.dataset.classId === selectedClassId;
+            option.hidden = !belongsToClass;
+            option.disabled = !belongsToClass;
+        });
+
+        examSubjectSelect.disabled = !selectedClassId;
+
+        if (
+            resetSelection ||
+            examSubjectSelect.selectedOptions.length === 0 ||
+            examSubjectSelect.selectedOptions[0].disabled
+        ) {
+            examSubjectSelect.value = '';
+        }
+    }
+
+    examClassSelect.addEventListener('change', function () {
+        filterExamSubjects(true);
+    });
+
+    filterExamSubjects();
+}
     const createExamForm = document.getElementById('createExamForm');
 
 
