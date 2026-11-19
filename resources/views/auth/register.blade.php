@@ -11,6 +11,18 @@
             </p>
         </div>
 
+        {{-- Validation Errors --}}
+        @if ($errors->any())
+            <div class="mb-5 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
+                <p class="font-semibold">Please correct the following:</p>
+                <ul class="mt-2 list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('register') }}" class="space-y-5">
             @csrf
 

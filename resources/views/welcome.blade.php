@@ -52,6 +52,7 @@
     <div
         x-data="{
         tab: '{{ $errors->any() && old('role') ? 'register' : 'login' }}',
+        registerRole: '{{ old('role', '') }}',
         loginLoading: false,
         registerLoading: false,
         mobileAuth: false
@@ -1112,6 +1113,7 @@
                                     <select
                                         id="role"
                                         name="role"
+                                        x-model="registerRole"
                                         required
                                         class="w-full rounded-xl
                                                border border-slate-200
@@ -1171,6 +1173,51 @@
 
                                     @enderror
 
+                                </div>
+
+
+                                {{-- Account ID --}}
+                                <div>
+                                    <label
+                                        for="account_id"
+                                        class="mb-2 block
+                                               text-[9px]
+                                               font-extrabold uppercase
+                                               tracking-[0.15em]
+                                               text-slate-500">
+                                        Account ID
+                                    </label>
+
+                                    <div class="flex gap-2">
+                                        <input
+                                            id="account_id"
+                                            type="text"
+                                            name="account_id"
+                                            value="{{ old('account_id') }}"
+                                            autocomplete="off"
+                                            maxlength="50"
+                                            placeholder="Enter your account ID"
+                                            class="min-w-0 flex-1 rounded-xl
+                                                   border border-slate-200
+                                                   bg-slate-50
+                                                   px-3 py-3 text-sm
+                                                   font-medium
+                                                   outline-none
+                                                   transition-all
+                                                   focus:border-indigo-400
+                                                   focus:bg-white
+                                                   focus:ring-4
+                                                   focus:ring-indigo-100/60">
+
+                                        <button
+                                            type="button"
+                                            id="check-account-id"
+                                            class="shrink-0 rounded-xl border border-indigo-200 bg-indigo-50 px-3 text-[10px] font-extrabold text-indigo-700 transition hover:bg-indigo-100">
+                                            Check
+                                        </button>
+                                    </div>
+
+                                    <p id="account_id_status" class="mt-1 min-h-4 text-[10px] font-semibold"></p>
                                 </div>
 
 
@@ -1380,6 +1427,65 @@
 
     </div>
 
+    <script>
+        const accountIdCheck = document.getElementById('check-account-id');
+        const accountIdInput = document.getElementById('account_id');
+        const accountIdStatus = document.getElementById('account_id_status');
+
+        accountIdCheck?.addEventListener('click', async () => {
+            const value = accountIdInput?.value.trim() || '';
+            const role = document.getElementById('role')?.value || '';
+
+            if (!value) {
+                accountIdStatus.textContent = 'Enter an Account ID first.';
+                accountIdStatus.className = 'mt-1 min-h-4 text-[10px] font-semibold text-amber-600';
+                accountIdInput.focus();
+                return;
+            }
+
+            if (!['student', 'teacher'].includes(role)) {
+                accountIdStatus.textContent = 'Select your account role first.';
+                accountIdStatus.className = 'mt-1 min-h-4 text-[10px] font-semibold text-amber-600';
+                document.getElementById('role')?.focus();
+                return;
+            }
+
+            accountIdStatus.textContent = 'Checking...';
+            accountIdStatus.className = 'mt-1 min-h-4 text-[10px] font-semibold text-slate-500';
+            accountIdCheck.disabled = true;
+
+            try {
+                const response = await fetch('{{ route('register.check.account-id') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ account_id: value, role: role })
+                });
+
+                const data = await response.json();
+                accountIdStatus.textContent = data.message;
+                accountIdStatus.className = data.available
+                    ? 'mt-1 min-h-4 text-[10px] font-semibold text-emerald-600'
+                    : 'mt-1 min-h-4 text-[10px] font-semibold text-rose-600';
+
+                accountIdInput.setAttribute('aria-invalid', data.available ? 'false' : 'true');
+            } catch (error) {
+                accountIdStatus.textContent = 'Could not check the ID. Please try again.';
+                accountIdStatus.className = 'mt-1 min-h-4 text-[10px] font-semibold text-rose-600';
+            } finally {
+                accountIdCheck.disabled = false;
+            }
+        });
+
+        accountIdInput?.addEventListener('input', () => {
+            accountIdStatus.textContent = '';
+            accountIdInput.removeAttribute('aria-invalid');
+        });
+    </script>
 </body>
 
 </html>

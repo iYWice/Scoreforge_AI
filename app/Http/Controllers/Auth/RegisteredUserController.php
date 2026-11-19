@@ -48,26 +48,33 @@ class RegisteredUserController extends Controller
             'lname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'role' => ['required', 'in:teacher,student'],
-            'student_id' => [
-                'exclude_unless:role,student',
-                'required',
-                'string',
-                'max:50',
-                'unique:users,student_id',
-            ],
+            'account_id' => ['required', 'string', 'max:50'],
             'password' => [
                 'required',
                 'confirmed',
                 Rules\Password::min(8)->letters()->numbers(),
             ],
+            'student_id' => ['nullable', 'string', 'max:50'],
+            'teacher_id' => ['nullable', 'string', 'max:50'],
         ]);
+
+        $idColumn = $request->role === 'teacher' ? 'teacher_id' : 'student_id';
+
+        $accountIdTaken = User::where($idColumn, $validated['account_id'])->exists();
+
+        if ($accountIdTaken) {
+            throw ValidationException::withMessages([
+                'account_id' => 'This Account ID is already taken.',
+            ]);
+        }
 
         $user = User::create([
             'fname' => $validated['fname'],
             'lname' => $validated['lname'],
             'email' => $validated['email'],
             'role' => $validated['role'],
-            'student_id' => $validated['student_id'] ?? null,
+            'student_id' => $validated['role'] === 'student' ? $validated['account_id'] : null,
+            'teacher_id' => $validated['role'] === 'teacher' ? $validated['account_id'] : null,
             'password' => Hash::make($validated['password']),
         ]);
 

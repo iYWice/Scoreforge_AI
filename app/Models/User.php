@@ -2,17 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Exam;
-use App\Models\ExamAttempt;
-use App\Models\Prediction;
-use App\Models\Recommendation;
-use App\Models\StudentAnalytics;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\AcademicReadiness;
 
 #[Fillable([
     'fname',
@@ -20,7 +14,8 @@ use App\Models\AcademicReadiness;
     'email',
     'password',
     'role',
-        'student_id',
+    'student_id',
+    'teacher_id',
 ])]
 #[Hidden([
     'password',
@@ -62,6 +57,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function academicReadiness()
     {
         return $this->hasOne(

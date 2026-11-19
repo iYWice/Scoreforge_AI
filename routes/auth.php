@@ -9,6 +9,8 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -33,6 +35,27 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    Route::post('check-account-id', function (Request $request) {
+        $value = trim((string) $request->input('account_id'));
+        $role = $request->input('role');
+
+        if ($value === '') {
+            return response()->json(['available' => false, 'message' => 'Enter an Account ID first.']);
+        }
+
+        if (! in_array($role, ['student', 'teacher'], true)) {
+            return response()->json(['available' => false, 'message' => 'Select your account role first.']);
+        }
+
+        $column = $role === 'student' ? 'student_id' : 'teacher_id';
+        $taken = User::where($column, $value)->exists();
+
+        return response()->json([
+            'available' => ! $taken,
+            'message' => $taken ? 'This Account ID is already taken.' : 'This Account ID is available.',
+        ]);
+    })->name('register.check.account-id');
 });
 
 Route::middleware('auth')->group(function () {
