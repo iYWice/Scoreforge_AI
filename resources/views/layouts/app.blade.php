@@ -199,11 +199,10 @@
 {{-- Subjects --}}
 <a
     href="{{ route('teacher.subjects.index') }}"
-    class="relative flex h-full items-center px-4 text-sm font-semibold
-           transition-all duration-200 hover:text-indigo-600 active:scale-95
-           {{ request()->routeIs('teacher.subjects.*')
-                ? 'text-slate-950'
-                : 'text-slate-500' }}">
+    class="relative flex h-full items-center px-4 text-sm font-semibold transition-all duration-200 hover:text-indigo-600
+        {{ request()->routeIs('teacher.subjects.*')
+            ? 'text-slate-950'
+            : 'text-slate-500' }}">
     Subjects
 
     @if(request()->routeIs('teacher.subjects.*'))
@@ -669,6 +668,11 @@
                                    active:scale-[0.98]">
                             Classes & Subjects
                         </a>
+                        <a
+    href="{{ route('teacher.subjects.index') }}"
+    class="rounded-xl px-4 py-3 text-sm font-semibold transition-all hover:bg-slate-100">
+    Subjects
+</a>
 
                         <a
                             href="{{ route('teacher.analytics.index') }}"

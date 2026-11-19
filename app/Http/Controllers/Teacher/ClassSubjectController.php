@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClassSubject;
 use App\Models\SchoolClass;
 use App\Models\Subject;
-use Illuminate\Http\Request;
-use App\Models\ClassSubject;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClassSubjectController extends Controller
 {
     public function index()
     {
         $classes = SchoolClass::where('created_by', auth()->id())
-    ->latest()
-    ->get();
+            ->latest()
+            ->get();
         $subjects = Subject::latest()->get();
 
         return view('teacher.class-subjects.index', compact(
@@ -23,7 +24,6 @@ class ClassSubjectController extends Controller
             'subjects'
         ));
     }
-
 
     // CREATE CLASS
     public function storeClass(Request $request)
@@ -37,14 +37,13 @@ class ClassSubjectController extends Controller
 
         SchoolClass::create([
             'name' => $validated['name'],
-                'created_by' => auth()->id(),
+            'created_by' => auth()->id(),
         ]);
 
         return redirect()
             ->route('teacher.class-subjects.index')
             ->with('success', 'Class created successfully.');
     }
-
 
     // CREATE SUBJECT
     public function storeSubject(Request $request)
@@ -67,7 +66,6 @@ class ClassSubjectController extends Controller
             ->with('success', 'Subject created successfully.');
     }
 
-
     // DELETE CLASS
     public function destroyClass($id)
     {
@@ -89,7 +87,6 @@ class ClassSubjectController extends Controller
         );
     }
 
-
     // DELETE SUBJECT
     public function destroySubject($id)
     {
@@ -110,87 +107,181 @@ class ClassSubjectController extends Controller
             'Subject deleted successfully.'
         );
     }
+
     // ADD A SUBJECT OFFERING TO A CLASS
-public function storeOffering(Request $request, SchoolClass $class)
-{
-    abort_unless((int) $class->created_by === (int) auth()->id(), 403);
+    public function storeOffering(Request $request, SchoolClass $class)
+    {
+        abort_unless((int) $class->created_by === (int) auth()->id(), 403);
 
-    $validated = $request->validate([
-        'subject_name' => ['required', 'string', 'max:255'],
-        'edp_code' => ['required', 'string', 'max:50', 'unique:class_subjects,edp_code'],
-        'schedule' => ['required', 'string', 'max:255'],
-    ]);
-
-    $subject = Subject::firstOrCreate([
-        'name' => trim($validated['subject_name']),
-    ]);
-
-    $class->classSubjects()->create([
-        'subject_id' => $subject->id,
-        'teacher_id' => auth()->id(),
-        'edp_code' => strtoupper(trim($validated['edp_code'])),
-        'schedule' => trim($validated['schedule']),
-    ]);
-
-    return back()->with('success', 'Subject offering added to the class.');
-}
-
-
-// ASSIGN JOINED STUDENTS TO A SUBJECT OFFERING
-public function assignStudents(Request $request, ClassSubject $classSubject)
-{
-    $class = $classSubject->schoolClass;
-
-    abort_unless(
-        $class && (int) $class->created_by === (int) auth()->id(),
-        403
-    );
-
-    $validated = $request->validate([
-        'student_ids' => ['nullable', 'array'],
-        'student_ids.*' => ['integer', 'distinct', 'exists:users,id'],
-    ]);
-
-    $studentIds = collect($validated['student_ids'] ?? [])
-        ->map(fn ($id) => (int) $id)
-        ->unique()
-        ->values();
-
-    $eligibleStudentIds = User::query()
-        ->where('role', 'student')
-        ->whereIn('id', $studentIds)
-        ->whereHas('enrolledClasses', function ($query) use ($class) {
-            $query->where('classes.id', $class->id);
-        })
-        ->pluck('id');
-
-    if ($eligibleStudentIds->count() !== $studentIds->count()) {
-        return back()->withErrors([
-            'student_ids' => 'Select only students who joined this class.',
+        $validated = $request->validate([
+            'subject_name' => ['required', 'string', 'max:255'],
+            'edp_code' => ['required', 'string', 'max:50', 'unique:class_subjects,edp_code'],
+            'schedule' => ['required', 'string', 'max:255'],
         ]);
+
+        $subject = Subject::firstOrCreate([
+            'name' => trim($validated['subject_name']),
+        ]);
+
+        $class->classSubjects()->create([
+            'subject_id' => $subject->id,
+            'teacher_id' => auth()->id(),
+            'edp_code' => strtoupper(trim($validated['edp_code'])),
+            'schedule' => trim($validated['schedule']),
+        ]);
+
+        return back()->with('success', 'Subject offering added to the class.');
     }
 
-    $syncData = $studentIds->mapWithKeys(fn ($id) => [
-        $id => ['assigned_by' => auth()->id()],
-    ])->all();
+    // ASSIGN JOINED STUDENTS TO A SUBJECT OFFERING
+    public function assignStudents(Request $request, ClassSubject $classSubject)
+    {
+        $class = $classSubject->schoolClass;
 
-    // This replaces the offering's current student list with the selected list.
-    $classSubject->students()->sync($syncData);
+        abort_unless(
+            $class && (int) $class->created_by === (int) auth()->id(),
+            403
+        );
 
-    return back()->with('success', 'Students assigned to the subject offering.');
-}
-public function teacherSubjects()
-{
-    $offerings = ClassSubject::query()
-        ->where('teacher_id', auth()->id())
-        ->whereHas('schoolClass', function ($query) {
-            $query->where('created_by', auth()->id());
-        })
-        ->with(['subject', 'schoolClass', 'students'])
-        ->withCount('students')
-        ->orderBy('subject_id')
-        ->get();
+        $validated = $request->validate([
+            'student_ids' => ['nullable', 'array'],
+            'student_ids.*' => ['integer', 'distinct', 'exists:users,id'],
+        ]);
 
-    return view('teacher.subjects.index', compact('offerings'));
-}
+        $studentIds = collect($validated['student_ids'] ?? [])
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        $eligibleStudentIds = User::query()
+            ->where('role', 'student')
+            ->whereIn('id', $studentIds)
+            ->whereHas('enrolledClasses', function ($query) use ($class) {
+                $query->where('classes.id', $class->id);
+            })
+            ->pluck('id');
+
+        if ($eligibleStudentIds->count() !== $studentIds->count()) {
+            return back()->withErrors([
+                'student_ids' => 'Select only students who joined this class.',
+            ]);
+        }
+
+        $syncData = $studentIds->mapWithKeys(fn ($id) => [
+            $id => ['assigned_by' => auth()->id()],
+        ])->all();
+
+        // This replaces the offering's current student list with the selected list.
+        $classSubject->students()->sync($syncData);
+
+        return back()->with('success', 'Students assigned to the subject offering.');
+    }
+
+    public function teacherSubjects()
+    {
+        $offerings = ClassSubject::query()
+            ->where('teacher_id', auth()->id())
+            ->with(['subject', 'schoolClass', 'students'])
+            ->withCount('students')
+            ->latest()
+            ->get();
+
+        $students = User::query()
+            ->where('role', 'student')
+            ->orderBy('lname')
+            ->orderBy('fname')
+            ->get(['id', 'fname', 'lname', 'email']);
+
+        return view('teacher.subjects.index', compact('offerings', 'students'));
+    }
+
+    public function storeIndependentSubject(Request $request)
+    {
+        $request->merge([
+            'edp_code' => strtoupper(trim((string) $request->input('edp_code'))),
+        ]);
+
+        $validated = $request->validate([
+            'subject_name' => ['required', 'string', 'max:255'],
+            'edp_code' => ['required', 'string', 'max:50', 'unique:class_subjects,edp_code'],
+            'schedule' => ['required', 'string', 'max:255'],
+            'student_ids' => ['nullable', 'array'],
+            'student_ids.*' => ['integer', 'distinct', 'exists:users,id'],
+        ]);
+
+        $studentIds = array_map('intval', $validated['student_ids'] ?? []);
+
+        $eligibleIds = User::query()
+            ->where('role', 'student')
+            ->whereIn('id', $studentIds)
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        if (count($eligibleIds) !== count($studentIds)) {
+            return back()
+                ->withInput()
+                ->withErrors(['student_ids' => 'Select valid student accounts only.']);
+        }
+
+        DB::transaction(function () use ($validated, $studentIds) {
+            $subject = Subject::firstOrCreate([
+                'name' => trim($validated['subject_name']),
+            ]);
+
+            $offering = ClassSubject::create([
+                'class_id' => null,
+                'subject_id' => $subject->id,
+                'teacher_id' => auth()->id(),
+                'edp_code' => $validated['edp_code'],
+                'schedule' => trim($validated['schedule']),
+            ]);
+
+            $syncData = collect($studentIds)->mapWithKeys(fn ($id) => [
+                $id => ['assigned_by' => auth()->id()],
+            ])->all();
+
+            $offering->students()->sync($syncData);
+        });
+
+        return redirect()
+            ->route('teacher.subjects.index')
+            ->with('success', 'Subject created and students enrolled.');
+    }
+
+    public function syncTeacherSubjectStudents(Request $request, ClassSubject $classSubject)
+    {
+        abort_unless(
+            (int) $classSubject->teacher_id === (int) auth()->id(),
+            403
+        );
+
+        $validated = $request->validate([
+            'student_ids' => ['nullable', 'array'],
+            'student_ids.*' => ['integer', 'distinct', 'exists:users,id'],
+        ]);
+
+        $studentIds = array_map('intval', $validated['student_ids'] ?? []);
+
+        $eligibleIds = User::query()
+            ->where('role', 'student')
+            ->whereIn('id', $studentIds)
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        if (count($eligibleIds) !== count($studentIds)) {
+            return back()->withErrors([
+                'student_ids' => 'Select valid student accounts only.',
+            ]);
+        }
+
+        $syncData = collect($studentIds)->mapWithKeys(fn ($id) => [
+            $id => ['assigned_by' => auth()->id()],
+        ])->all();
+
+        $classSubject->students()->sync($syncData);
+
+        return back()->with('success', 'Subject student list updated.');
+    }
 }

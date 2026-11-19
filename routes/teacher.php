@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Teacher\ExamController;
-use App\Http\Controllers\Teacher\QuestionController;
+use App\Http\Controllers\Teacher\AIQuestionBuilderController;
 use App\Http\Controllers\Teacher\AnalyticsController;
 use App\Http\Controllers\Teacher\ClassController;
-use App\Http\Controllers\Teacher\AIQuestionBuilderController;
 use App\Http\Controllers\Teacher\ClassSubjectController;
+use App\Http\Controllers\Teacher\ExamController;
+use App\Http\Controllers\Teacher\QuestionController;
 use App\Http\Controllers\Teacher\StudentPerformanceController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:teacher'])->group(function () {
 
@@ -94,7 +94,6 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         [QuestionController::class, 'destroy']
     )->name('teacher.questions.destroy');
 
-
     Route::patch(
         '/teacher/exams/{exam}/status',
         [ExamController::class, 'updateStatus']
@@ -109,7 +108,6 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         '/teacher/analytics/exam/{exam}/ai-insight/regenerate',
         [AnalyticsController::class, 'regenerateAiInsight']
     )->name('teacher.analytics.ai-insight.regenerate');
-
 
     Route::get(
         '/teacher/classes',
@@ -136,12 +134,10 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         [AIQuestionBuilderController::class, 'create']
     )->name('teacher.ai-questions.create');
 
-
     Route::post(
         '/teacher/exams/{exam}/ai-question-builder',
         [AIQuestionBuilderController::class, 'generate']
     )->name('teacher.ai-questions.generate');
-
 
     Route::get(
         '/teacher/exams/{exam}/ai-question-builder/{session}',
@@ -169,62 +165,72 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         [AnalyticsController::class, 'exportPredictions']
     )->name('teacher.analytics.predictions.export');
 
-Route::post(
-    '/teacher/classes/{class}/subjects',
-    [ClassSubjectController::class, 'storeOffering']
-)->name('teacher.classes.subjects.store');
+    Route::post(
+        '/teacher/classes/{class}/subjects',
+        [ClassSubjectController::class, 'storeOffering']
+    )->name('teacher.classes.subjects.store');
 
-Route::post(
-    '/teacher/class-subjects/{classSubject}/students',
-    [ClassSubjectController::class, 'assignStudents']
-)->name('teacher.class-subjects.students.assign');
+    Route::post(
+        '/teacher/class-subjects/{classSubject}/students',
+        [ClassSubjectController::class, 'assignStudents']
+    )->name('teacher.class-subjects.students.assign');
 
-Route::get(
-    '/teacher/students/{student}/performance',
-    [StudentPerformanceController::class, 'show']
-)->name('teacher.students.performance');
+    Route::get(
+        '/teacher/students/{student}/performance',
+        [StudentPerformanceController::class, 'show']
+    )->name('teacher.students.performance');
 
-Route::post(
-    '/teacher/students/{student}/attempts/{attempt}/analysis',
-    [StudentPerformanceController::class, 'storeExam']
-)->name('teacher.students.analysis.exam');
+    Route::post(
+        '/teacher/students/{student}/attempts/{attempt}/analysis',
+        [StudentPerformanceController::class, 'storeExam']
+    )->name('teacher.students.analysis.exam');
 
-Route::post(
-    '/teacher/students/{student}/analysis/overall',
-    [StudentPerformanceController::class, 'storeOverall']
-)->name('teacher.students.analysis.overall');
+    Route::post(
+        '/teacher/students/{student}/analysis/overall',
+        [StudentPerformanceController::class, 'storeOverall']
+    )->name('teacher.students.analysis.overall');
 
-Route::patch(
-    '/teacher/performance-analyses/{analysis}',
-    [StudentPerformanceController::class, 'updateDraft']
-)->name('teacher.performance-analyses.update');
+    Route::patch(
+        '/teacher/performance-analyses/{analysis}',
+        [StudentPerformanceController::class, 'updateDraft']
+    )->name('teacher.performance-analyses.update');
 
-Route::post(
-    '/teacher/performance-analyses/{analysis}/send',
-    [StudentPerformanceController::class, 'send']
-)->name('teacher.performance-analyses.send');
-Route::get(
-    '/teacher/student-attempts/{attempt}/result',
-    [StudentPerformanceController::class, 'showResult']
-)->name('teacher.students.attempt-result');
-Route::post(
-    '/teacher/students/{student}/attempts/{attempt}/analysis/ai-draft',
-    [StudentPerformanceController::class, 'generateExamDraft']
-)->name('teacher.students.analysis.exam.generate');
-Route::post(
-    '/teacher/students/{student}/analysis/overall/ai-draft',
-    [StudentPerformanceController::class, 'generateOverallDraft']
-)->name('teacher.students.analysis.overall.generate');
-Route::post(
-    '/teacher/student-attempts/{attempt}/reset',
-    [StudentPerformanceController::class, 'resetAttempt']
-)->name('teacher.students.attempts.reset');
-Route::delete(
-    '/teacher/classes/{class}/students/{student}',
-    [ClassController::class, 'removeStudent']
-)->name('teacher.classes.students.remove');
-Route::get(
-    '/teacher/subjects',
-    [ClassSubjectController::class, 'teacherSubjects']
-)->name('teacher.subjects.index');
+    Route::post(
+        '/teacher/performance-analyses/{analysis}/send',
+        [StudentPerformanceController::class, 'send']
+    )->name('teacher.performance-analyses.send');
+    Route::get(
+        '/teacher/student-attempts/{attempt}/result',
+        [StudentPerformanceController::class, 'showResult']
+    )->name('teacher.students.attempt-result');
+    Route::post(
+        '/teacher/students/{student}/attempts/{attempt}/analysis/ai-draft',
+        [StudentPerformanceController::class, 'generateExamDraft']
+    )->name('teacher.students.analysis.exam.generate');
+    Route::post(
+        '/teacher/students/{student}/analysis/overall/ai-draft',
+        [StudentPerformanceController::class, 'generateOverallDraft']
+    )->name('teacher.students.analysis.overall.generate');
+    Route::post(
+        '/teacher/student-attempts/{attempt}/reset',
+        [StudentPerformanceController::class, 'resetAttempt']
+    )->name('teacher.students.attempts.reset');
+    Route::delete(
+        '/teacher/classes/{class}/students/{student}',
+        [ClassController::class, 'removeStudent']
+    )->name('teacher.classes.students.remove');
+    Route::get(
+        '/teacher/subjects',
+        [ClassSubjectController::class, 'teacherSubjects']
+    )->name('teacher.subjects.index');
+
+    Route::post(
+        '/teacher/subjects',
+        [ClassSubjectController::class, 'storeIndependentSubject']
+    )->name('teacher.subjects.store');
+
+    Route::post(
+        '/teacher/subjects/{classSubject}/students',
+        [ClassSubjectController::class, 'syncTeacherSubjectStudents']
+    )->name('teacher.subjects.students.sync');
 });

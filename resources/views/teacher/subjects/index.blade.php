@@ -20,15 +20,21 @@
                         {{ $offering->subject->name }}
                     </h2>
                     <p class="mt-1 text-sm text-slate-500">
-                        Class: {{ $offering->schoolClass->name }}
+                        Class: {{ $offering->schoolClass?->name ?? 'Independent subject' }}
                     </p>
                 </div>
 
+                @if ($offering->schoolClass)
                 <a
                     href="{{ route('teacher.classes.show', $offering->schoolClass) }}"
                     class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
                     Manage class →
                 </a>
+                @else
+                <span class="text-sm font-semibold text-slate-500">
+                    Independent subject
+                </span>
+                @endif
             </div>
 
             <div class="grid gap-4 bg-slate-50 p-5 sm:grid-cols-3">
