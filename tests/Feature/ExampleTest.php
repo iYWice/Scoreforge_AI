@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ClassSubject;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
 use App\Models\SchoolClass;
@@ -31,6 +32,17 @@ test('take exam view receives the remaining seconds countdown value', function (
         'school_year' => '2026',
     ]);
 
+    $class->students()->attach($student->id);
+
+    $offering = ClassSubject::create([
+        'class_id' => $class->id,
+        'subject_id' => $subject->id,
+        'teacher_id' => $teacher->id,
+        'edp_code' => '246810',
+        'schedule' => 'Mon | 09:00-10:00',
+    ]);
+    $offering->students()->attach($student->id, ['assigned_by' => $teacher->id]);
+
     $exam = Exam::create([
         'title' => 'Sample Exam',
         'exam_code' => 'SAMPLE2026',
@@ -52,7 +64,7 @@ test('take exam view receives the remaining seconds countdown value', function (
 
     $response = $this
         ->actingAs($student)
-        ->get('/student/exam/' . $attempt->id . '/take');
+        ->get('/student/exam/'.$attempt->id.'/take');
 
     $response->assertOk();
     $response->assertViewHas('remainingSeconds');

@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Answer;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
-use Illuminate\Http\Request;
-use App\Services\StudentAnalyticsService;
-use App\Services\RecommendationService;
-use App\Services\StudentRankingService;
-use App\Services\PerformancePredictionService;
 use App\Services\AcademicReadinessService;
+use App\Services\ActivityLogger;
+use App\Services\PerformancePredictionService;
+use App\Services\RecommendationService;
+use App\Services\StudentAnalyticsService;
+use App\Services\StudentRankingService;
+use Illuminate\Http\Request;
 
 class ExamAttemptController extends Controller
 {
@@ -25,11 +26,10 @@ class ExamAttemptController extends Controller
         return view('student.enter-code');
     }
 
-
     public function startExam(Request $request)
     {
         $request->validate([
-            'exam_code' => 'required'
+            'exam_code' => 'required',
         ]);
 
         $exam = Exam::where(
@@ -42,7 +42,7 @@ class ExamAttemptController extends Controller
             )
             ->first();
 
-        if (!$exam) {
+        if (! $exam) {
 
             return back()->with(
                 'error',
@@ -50,28 +50,30 @@ class ExamAttemptController extends Controller
             );
         }
 
+        $this->authorizeExam($exam);
+
         $ongoingAttempt = ExamAttempt::where('exam_id', $exam->id)
-    ->where('student_id', auth()->id())
-    ->where('status', 'ongoing')
-    ->latest('id')
-    ->first();
+            ->where('student_id', auth()->id())
+            ->where('status', 'ongoing')
+            ->latest('id')
+            ->first();
 
-if ($ongoingAttempt) {
-    return redirect()->route('student.exam.take', $ongoingAttempt->id);
-}
+        if ($ongoingAttempt) {
+            return redirect()->route('student.exam.take', $ongoingAttempt->id);
+        }
 
-$latestCompletedAttempt = ExamAttempt::where('exam_id', $exam->id)
-    ->where('student_id', auth()->id())
-    ->where('status', 'completed')
-    ->latest('id')
-    ->first();
+        $latestCompletedAttempt = ExamAttempt::where('exam_id', $exam->id)
+            ->where('student_id', auth()->id())
+            ->where('status', 'completed')
+            ->latest('id')
+            ->first();
 
-if ($latestCompletedAttempt && !$latestCompletedAttempt->retake_allowed) {
-    return redirect()->route(
-        'student.exam.result',
-        $latestCompletedAttempt->id
-    );
-}
+        if ($latestCompletedAttempt && ! $latestCompletedAttempt->retake_allowed) {
+            return redirect()->route(
+                'student.exam.result',
+                $latestCompletedAttempt->id
+            );
+        }
 
         return view(
             'student.exam.instructions',
@@ -93,7 +95,7 @@ if ($latestCompletedAttempt && !$latestCompletedAttempt->retake_allowed) {
             ->where('status', 'published')
             ->first();
 
-        if (!$exam) {
+        if (! $exam) {
             return redirect()
                 ->route('student.dashboard')
                 ->with(
@@ -102,34 +104,36 @@ if ($latestCompletedAttempt && !$latestCompletedAttempt->retake_allowed) {
                 );
         }
 
+        $this->authorizeExam($exam);
+
         // Check if the student already has an attempt
         $ongoingAttempt = ExamAttempt::where('exam_id', $exam->id)
-    ->where('student_id', auth()->id())
-    ->where('status', 'ongoing')
-    ->latest('id')
-    ->first();
+            ->where('student_id', auth()->id())
+            ->where('status', 'ongoing')
+            ->latest('id')
+            ->first();
 
-if ($ongoingAttempt) {
-    return redirect()->route('student.exam.take', $ongoingAttempt->id);
-}
+        if ($ongoingAttempt) {
+            return redirect()->route('student.exam.take', $ongoingAttempt->id);
+        }
 
-$latestCompletedAttempt = ExamAttempt::where('exam_id', $exam->id)
-    ->where('student_id', auth()->id())
-    ->where('status', 'completed')
-    ->latest('id')
-    ->first();
+        $latestCompletedAttempt = ExamAttempt::where('exam_id', $exam->id)
+            ->where('student_id', auth()->id())
+            ->where('status', 'completed')
+            ->latest('id')
+            ->first();
 
-if ($latestCompletedAttempt) {
-    if (!$latestCompletedAttempt->retake_allowed) {
-        return redirect()->route(
-            'student.exam.result',
-            $latestCompletedAttempt->id
-        );
-    }
+        if ($latestCompletedAttempt) {
+            if (! $latestCompletedAttempt->retake_allowed) {
+                return redirect()->route(
+                    'student.exam.result',
+                    $latestCompletedAttempt->id
+                );
+            }
 
-    // Consume the teacher's one-time retry permission.
-    $latestCompletedAttempt->update(['retake_allowed' => false]);
-}
+            // Consume the teacher's one-time retry permission.
+            $latestCompletedAttempt->update(['retake_allowed' => false]);
+        }
 
         // Create attempt only when none exists
         $attempt = ExamAttempt::create([
@@ -139,7 +143,7 @@ if ($latestCompletedAttempt) {
             'status' => 'ongoing',
         ]);
 
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'exam.started',
             'Student started an examination.',
             $attempt,
@@ -235,8 +239,7 @@ if ($latestCompletedAttempt) {
         $totalScore = 0;
 
         foreach (
-            $attempt->exam->questions
-            as $question
+            $attempt->exam->questions as $question
         ) {
 
             $studentAnswer =
@@ -307,17 +310,13 @@ if ($latestCompletedAttempt) {
 
             Answer::create([
 
-                'attempt_id'
-                => $attempt->id,
+                'attempt_id' => $attempt->id,
 
-                'question_id'
-                => $question->id,
+                'question_id' => $question->id,
 
-                'answer_text'
-                => $studentAnswer,
+                'answer_text' => $studentAnswer,
 
-                'is_correct'
-                => $isCorrect,
+                'is_correct' => $isCorrect,
 
             ]);
 
@@ -337,17 +336,13 @@ if ($latestCompletedAttempt) {
 
         $attempt->update([
 
-            'score'
-            => $score,
+            'score' => $score,
 
-            'total_score'
-            => $totalScore,
+            'total_score' => $totalScore,
 
-            'submitted_at'
-            => now(),
+            'submitted_at' => now(),
 
-            'status'
-            => 'completed',
+            'status' => 'completed',
 
         ]);
 
@@ -373,12 +368,13 @@ if ($latestCompletedAttempt) {
         app(AcademicReadinessService::class)
             ->evaluate($attempt->student_id);
 
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'exam.submitted',
             'Student submitted an examination.',
             $attempt,
             ['exam_id' => $attempt->exam_id]
         );
+
         return redirect()->route(
             'student.exam.result',
             $attempt->id
@@ -405,20 +401,32 @@ if ($latestCompletedAttempt) {
         }
 
         $attempt->load([
-    'exam.subject',
-    'exam.questions.options',
-    'answers.question.options',
-]);
+            'exam.subject',
+            'exam.questions.options',
+            'answers.question.options',
+        ]);
 
         return view(
             'student.exam.result',
             compact('attempt')
         );
     }
+
     private function authorizeAttempt(ExamAttempt $attempt): void
     {
         if ($attempt->student_id !== auth()->id()) {
             abort(403, 'You are not authorized to access this exam attempt.');
         }
+
+        $this->authorizeExam($attempt->exam);
+    }
+
+    private function authorizeExam(Exam $exam): void
+    {
+        abort_unless(
+            $exam->isAvailableToStudent(auth()->user()),
+            403,
+            'You are not enrolled in this subject.'
+        );
     }
 }

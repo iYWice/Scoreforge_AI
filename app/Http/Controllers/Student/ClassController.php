@@ -22,7 +22,7 @@ class ClassController extends Controller
             ->withCount([
                 'exams as published_exams_count' => function ($query) {
                     $query->where('status', 'published');
-                }
+                },
             ])
             ->latest('class_enrollments.created_at')
             ->get();
@@ -55,12 +55,11 @@ class ClassController extends Controller
             $code
         )->first();
 
-        if (!$class) {
+        if (! $class) {
             return back()
                 ->withInput()
                 ->withErrors([
-                    'class_code' =>
-                    'The class code you entered is invalid.',
+                    'class_code' => 'The class code you entered is invalid.',
                 ]);
         }
 
@@ -68,8 +67,8 @@ class ClassController extends Controller
 
         if (
             $student->enrolledClasses()
-            ->where('classes.id', $class->id)
-            ->exists()
+                ->where('classes.id', $class->id)
+                ->exists()
         ) {
             return back()->with(
                 'info',
@@ -85,13 +84,13 @@ class ClassController extends Controller
         );
         $class->load('classSubjects');
 
-foreach ($class->classSubjects as $offering) {
-    $offering->students()->syncWithoutDetaching([
-        $student->id => [
-            'assigned_by' => $class->created_by,
-        ],
-    ]);
-}
+        foreach ($class->classSubjects as $offering) {
+            $offering->students()->syncWithoutDetaching([
+                $student->id => [
+                    'assigned_by' => $class->created_by,
+                ],
+            ]);
+        }
 
         return redirect()
             ->route('student.classes.show', $class)
@@ -118,18 +117,20 @@ foreach ($class->classSubjects as $offering) {
 
         abort_unless($isEnrolled, 403);
 
-$class->load([
-    'subject',
-    'teacher',
-    'classSubjects' => function ($query) use ($student) {
-        $query->whereHas('students', function ($students) use ($student) {
-            $students->where('users.id', $student->id);
-        })->with('subject');
-    },
-    'exams' => function ($query) {
-        $query->where('status', 'published')->latest();
-    },
-]);
+        $class->load([
+            'subject',
+            'teacher',
+            'classSubjects' => function ($query) use ($student) {
+                $query->whereHas('students', function ($students) use ($student) {
+                    $students->where('users.id', $student->id);
+                })->with('subject');
+            },
+            'exams' => function ($query) use ($student) {
+                $query->where('status', 'published')
+                    ->availableToStudent($student)
+                    ->latest();
+            },
+        ]);
 
         return view(
             'student.classes.show',

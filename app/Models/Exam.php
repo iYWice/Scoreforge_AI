@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\ExamAttempt;
-use App\Models\SchoolClass;
-use App\Models\Subject;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Exam extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'id',
         'title',
@@ -26,7 +25,6 @@ class Exam extends Model
         'duration',
         'passing_score',
     ];
-
 
     public function subject()
     {
@@ -56,5 +54,40 @@ class Exam extends Model
     public function aiInsights()
     {
         return $this->hasMany(AiInsight::class);
+    }
+
+    public function scopeAvailableToStudent(Builder $query, User $student): Builder
+    {
+        $offering = new ClassSubject;
+        $examTable = $query->getModel()->getTable();
+        $offeringTable = $offering->getTable();
+        $enrollmentTable = $offering->students()->getTable();
+
+        return $query->whereExists(function ($subquery) use (
+            $student,
+            $examTable,
+            $offeringTable,
+            $enrollmentTable
+        ) {
+            $subquery->selectRaw('1')
+                ->from($offeringTable.' as eligible_offerings')
+                ->join(
+                    $enrollmentTable.' as eligible_enrollments',
+                    'eligible_enrollments.class_subject_id',
+                    '=',
+                    'eligible_offerings.id'
+                )
+                ->whereColumn('eligible_offerings.class_id', $examTable.'.class_id')
+                ->whereColumn('eligible_offerings.subject_id', $examTable.'.subject_id')
+                ->where('eligible_enrollments.student_id', $student->getKey());
+        });
+    }
+
+    public function isAvailableToStudent(User $student): bool
+    {
+        return static::query()
+            ->whereKey($this->getKey())
+            ->availableToStudent($student)
+            ->exists();
     }
 }

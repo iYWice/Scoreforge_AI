@@ -11,6 +11,7 @@ class FeedbackController extends Controller
     {
         $analyses = StudentPerformanceAnalysis::with('attempt.exam.subject')
             ->where('student_id', auth()->id())
+            ->whereHas('attempt.exam', fn ($query) => $query->availableToStudent(auth()->user()))
             ->whereNotNull('sent_at')
             ->latest('sent_at')
             ->paginate(15);

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\AcademicReadiness;
 use App\Models\ExamAttempt;
-use App\Models\StudentAnalytics;
+use App\Models\Prediction;
 use App\Models\Recommendation;
+use App\Models\StudentAnalytics;
 use App\Services\StudentPerformanceService;
 
 class DashboardController extends Controller
@@ -17,6 +19,7 @@ class DashboardController extends Controller
         $attempts = ExamAttempt::with('exam')
             ->where('student_id', $studentId)
             ->where('status', 'completed')
+            ->whereHas('exam', fn ($query) => $query->availableToStudent(auth()->user()))
             ->latest('submitted_at')
             ->get();
 
@@ -30,17 +33,17 @@ class DashboardController extends Controller
                 'student_id',
                 $studentId
             )
-            ->with('subject')
-            ->latest()
-            ->first();
+                ->with('subject')
+                ->latest()
+                ->first();
 
         $performance =
             $performanceService
-            ->getStudentPerformance(
-                $studentId
-            );
+                ->getStudentPerformance(
+                    $studentId
+                );
 
-        $prediction = \App\Models\Prediction::where(
+        $prediction = Prediction::where(
             'student_id',
             auth()->id()
         )
@@ -48,7 +51,7 @@ class DashboardController extends Controller
             ->latest('updated_at')
             ->first();
 
-        $readiness = \App\Models\AcademicReadiness::where(
+        $readiness = AcademicReadiness::where(
             'student_id',
             auth()->id()
         )->first();
@@ -67,13 +70,14 @@ class DashboardController extends Controller
     }
 
     public function history()
-{
-    $attempts = ExamAttempt::with('exam.subject')
-        ->where('student_id', auth()->id())
-        ->where('status', 'completed')
-        ->latest('submitted_at')
-        ->paginate(15);
+    {
+        $attempts = ExamAttempt::with('exam.subject')
+            ->where('student_id', auth()->id())
+            ->where('status', 'completed')
+            ->whereHas('exam', fn ($query) => $query->availableToStudent(auth()->user()))
+            ->latest('submitted_at')
+            ->paginate(15);
 
-    return view('student.exam-history', compact('attempts'));
-}
+        return view('student.exam-history', compact('attempts'));
+    }
 }
