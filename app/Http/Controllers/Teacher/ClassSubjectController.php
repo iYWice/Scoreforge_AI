@@ -165,15 +165,15 @@ class ClassSubjectController extends Controller
             ->unique()
             ->values();
 
-        $eligibleStudentIds = User::query()
-            ->where('role', 'student')
-            ->whereIn('id', $studentIds)
-            ->pluck('id')
+        $eligibleStudentIds = $class->students()
+            ->where('users.role', 'student')
+            ->whereIn('users.id', $studentIds)
+            ->pluck('users.id')
             ->map(fn ($id) => (int) $id);
 
         if ($eligibleStudentIds->count() !== $studentIds->count()) {
             return back()->withErrors([
-                'student_ids' => 'Select valid student accounts only.',
+                'student_ids' => 'Select students enrolled in the selected class only.',
             ]);
         }
 
@@ -244,16 +244,16 @@ class ClassSubjectController extends Controller
             ->unique()
             ->values();
 
-        $eligibleStudentIds = User::query()
-            ->where('role', 'student')
-            ->whereIn('id', $studentIds)
-            ->pluck('id')
+        $eligibleStudentIds = $class->students()
+            ->where('users.role', 'student')
+            ->whereIn('users.id', $studentIds)
+            ->pluck('users.id')
             ->map(fn ($id) => (int) $id);
 
         if ($eligibleStudentIds->count() !== $studentIds->count()) {
             return back()
                 ->withInput()
-                ->withErrors(['student_ids' => 'Select valid student accounts only.']);
+                ->withErrors(['student_ids' => 'Select students enrolled in the selected class only.']);
         }
 
         $schedule = implode(', ', $validated['schedule_days'])
@@ -315,15 +315,15 @@ class ClassSubjectController extends Controller
             ->unique()
             ->values();
 
-        $eligibleStudentIds = User::query()
-            ->where('role', 'student')
-            ->whereIn('id', $studentIds)
-            ->pluck('id')
+        $eligibleStudentIds = $class->students()
+            ->where('users.role', 'student')
+            ->whereIn('users.id', $studentIds)
+            ->pluck('users.id')
             ->map(fn ($id) => (int) $id);
 
         if ($eligibleStudentIds->count() !== $studentIds->count()) {
             return back()->withErrors([
-                'student_ids' => 'Select valid student accounts only.',
+                'student_ids' => 'Select students enrolled in the selected class only.',
             ]);
         }
 

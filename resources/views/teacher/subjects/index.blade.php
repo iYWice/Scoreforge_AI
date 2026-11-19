@@ -34,7 +34,7 @@
             <p class="mt-1 text-sm text-slate-500">Add the offering details and choose enrolled students.</p>
         </div>
 
-        <form method="POST" action="{{ route('teacher.subjects.store') }}" class="p-5 sm:p-6">
+        <form id="create-subject-form" method="POST" action="{{ route('teacher.subjects.store') }}" class="p-5 sm:p-6">
             @csrf
 
             <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -155,12 +155,18 @@
                 <div class="flex min-h-64 flex-col">
                     <div class="flex items-center justify-between">
                         <h3 class="text-sm font-semibold text-slate-700">Select students</h3>
-                        <span class="text-xs font-medium text-slate-400">{{ $students->count() }} available</span>
+                        <span class="student-count text-xs font-medium text-slate-400">0 available</span>
                     </div>
 
                     <div class="mt-2 max-h-72 flex-1 overflow-y-auto rounded-xl border border-slate-200">
                         @forelse ($students as $student)
-                            <label class="flex cursor-pointer items-center gap-3 border-b border-slate-100 px-4 py-3 transition last:border-0 hover:bg-slate-50">
+                            @php
+                                $studentClassIds = $classes
+                                    ->filter(fn ($class) => $class->students->contains('id', $student->id))
+                                    ->pluck('id')
+                                    ->implode(',');
+                            @endphp
+                            <label data-student-option data-class-ids="{{ $studentClassIds }}" style="display: none;" class="flex cursor-pointer items-center gap-3 border-b border-slate-100 px-4 py-3 transition last:border-0 hover:bg-slate-50">
                                 <input
                                     type="checkbox"
                                     name="student_ids[]"
@@ -195,7 +201,7 @@
 
         @forelse ($offerings as $offering)
             <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <form method="POST" action="{{ route('teacher.subjects.students.sync', $offering) }}">
+                <form data-student-filter method="POST" action="{{ route('teacher.subjects.students.sync', $offering) }}">
                     @csrf
 
                     <div class="grid gap-4 border-b border-slate-100 bg-slate-50 p-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -237,7 +243,13 @@
 
                     <div class="mt-3 grid max-h-72 gap-2 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">
                         @forelse ($students as $student)
-                            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 px-3 py-3 transition hover:border-indigo-200 hover:bg-indigo-50/40">
+                            @php
+                                $studentClassIds = $classes
+                                    ->filter(fn ($class) => $class->students->contains('id', $student->id))
+                                    ->pluck('id')
+                                    ->implode(',');
+                            @endphp
+                            <label data-student-option data-class-ids="{{ $studentClassIds }}" style="display: none;" class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 px-3 py-3 transition hover:border-indigo-200 hover:bg-indigo-50/40">
                                 <input
                                     type="checkbox"
                                     name="student_ids[]"
@@ -275,6 +287,45 @@
 
 @push('scripts')
     <script>
+        function filterStudents(form) {
+            const classSelect = form.querySelector('[name="class_id"]');
+            const options = [...form.querySelectorAll('[data-student-option]')];
+            let visibleCount = 0;
+
+            options.forEach((option) => {
+                const checkbox = option.querySelector('input[type="checkbox"]');
+                const classIds = (option.dataset.classIds || '').split(',');
+                const isEligible = classSelect.value !== '' && classIds.includes(classSelect.value);
+
+                option.style.display = isEligible ? '' : 'none';
+                checkbox.disabled = !isEligible;
+
+                if (!isEligible) {
+                    checkbox.checked = false;
+                } else {
+                    visibleCount++;
+                }
+            });
+
+            const count = form.querySelector('.student-count');
+            if (count) {
+                count.textContent = `${visibleCount} available`;
+            }
+        }
+
+        document.querySelectorAll('form[data-student-filter]').forEach((form) => {
+            const classSelect = form.querySelector('[name="class_id"]');
+            classSelect?.addEventListener('change', () => filterStudents(form));
+            filterStudents(form);
+        });
+
+        const createForm = document.getElementById('create-subject-form');
+        const createClassSelect = createForm?.querySelector('[name="class_id"]');
+        createClassSelect?.addEventListener('change', () => filterStudents(createForm));
+        if (createForm) {
+            filterStudents(createForm);
+        }
+
         document.getElementById('generate-edp-code')?.addEventListener('click', function () {
             const edpCode = document.getElementById('edp_code');
             if (edpCode) {
