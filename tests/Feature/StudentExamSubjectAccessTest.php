@@ -1,11 +1,20 @@
 <?php
 
+use App\Models\AcademicReadiness;
 use App\Models\ClassSubject;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
+use App\Models\Prediction;
+use App\Models\Recommendation;
 use App\Models\SchoolClass;
+use App\Models\StudentAnalytics;
 use App\Models\Subject;
 use App\Models\User;
+use App\Services\AcademicReadinessService;
+use App\Services\PerformancePredictionService;
+use App\Services\RecommendationService;
+use App\Services\StudentAnalyticsService;
+use App\Services\StudentRankingService;
 
 function createStudentExamAccessFixture(): array
 {
@@ -79,4 +88,67 @@ test('a student assigned to the class subject can access its exam', function () 
     $this->post(route('student.exam.start'), ['exam_code' => $exam->exam_code])
         ->assertSuccessful()
         ->assertSee($exam->title);
+});
+
+test('eligible student can submit an exam and reach the results page', function () {
+    [
+        'student' => $student,
+        'class' => $class,
+        'offering' => $offering,
+        'exam' => $exam,
+    ] = createStudentExamAccessFixture();
+    $class->students()->attach($student->id);
+    $offering->students()->attach($student->id);
+    $attempt = ExamAttempt::create([
+        'exam_id' => $exam->id,
+        'student_id' => $student->id,
+        'status' => 'ongoing',
+        'started_at' => now(),
+    ]);
+
+    app()->instance(
+        StudentAnalyticsService::class,
+        Mockery::mock(StudentAnalyticsService::class)
+            ->shouldReceive('updateStudentAnalytics')
+            ->once()
+            ->andReturn(new StudentAnalytics)
+            ->getMock()
+    );
+    app()->instance(
+        StudentRankingService::class,
+        Mockery::mock(StudentRankingService::class)
+            ->shouldReceive('updateRankings')
+            ->once()
+            ->getMock()
+    );
+    app()->instance(
+        RecommendationService::class,
+        Mockery::mock(RecommendationService::class)
+            ->shouldReceive('generate')
+            ->once()
+            ->andReturn(new Recommendation)
+            ->getMock()
+    );
+    app()->instance(
+        PerformancePredictionService::class,
+        Mockery::mock(PerformancePredictionService::class)
+            ->shouldReceive('predict')
+            ->once()
+            ->andReturn(new Prediction)
+            ->getMock()
+    );
+    app()->instance(
+        AcademicReadinessService::class,
+        Mockery::mock(AcademicReadinessService::class)
+            ->shouldReceive('evaluate')
+            ->once()
+            ->andReturn(new AcademicReadiness)
+            ->getMock()
+    );
+
+    $this->actingAs($student)
+        ->post(route('student.exam.submit', $attempt))
+        ->assertRedirect(route('student.exam.result', $attempt));
+
+    expect($attempt->fresh()->status)->toBe('completed');
 });
