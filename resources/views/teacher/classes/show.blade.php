@@ -224,8 +224,11 @@
                 id="edp_code"
                 name="edp_code"
                 type="text"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                maxlength="6"
                 value="{{ old('edp_code') }}"
-                placeholder="e.g. 12345"
+                placeholder="e.g. 123456"
                 required
                 class="mt-1 w-full rounded-lg border-slate-300 text-sm">
             @error('edp_code')

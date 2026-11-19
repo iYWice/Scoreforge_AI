@@ -115,19 +115,30 @@ class ClassSubjectController extends Controller
 
         $validated = $request->validate([
             'subject_name' => ['required', 'string', 'max:255'],
-            'edp_code' => ['required', 'string', 'max:50', 'unique:class_subjects,edp_code'],
-            'schedule' => ['required', 'string', 'max:255'],
+            'edp_code' => ['required', 'digits:6', 'unique:class_subjects,edp_code'],
+            'schedule_days' => ['required', 'array', 'min:1'],
+            'schedule_days.*' => ['required', 'string', 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+            'room' => ['nullable', 'string', 'max:255'],
         ]);
 
         $subject = Subject::firstOrCreate([
             'name' => trim($validated['subject_name']),
         ]);
 
+        $schedule = implode(', ', $validated['schedule_days'])
+            .' | '.$validated['start_time'].'-'.$validated['end_time'];
+
+        if (! empty($validated['room'])) {
+            $schedule .= ' | '.$validated['room'];
+        }
+
         $class->classSubjects()->create([
             'subject_id' => $subject->id,
             'teacher_id' => auth()->id(),
             'edp_code' => strtoupper(trim($validated['edp_code'])),
-            'schedule' => trim($validated['schedule']),
+            'schedule' => $schedule,
         ]);
 
         return back()->with('success', 'Subject offering added to the class.');
@@ -203,11 +214,22 @@ class ClassSubjectController extends Controller
 
         $validated = $request->validate([
             'subject_name' => ['required', 'string', 'max:255'],
-            'edp_code' => ['required', 'string', 'max:50', 'unique:class_subjects,edp_code'],
-            'schedule' => ['required', 'string', 'max:255'],
+            'edp_code' => ['required', 'digits:6', 'unique:class_subjects,edp_code'],
+            'schedule_days' => ['required', 'array', 'min:1'],
+            'schedule_days.*' => ['required', 'string', 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+            'room' => ['nullable', 'string', 'max:255'],
             'student_ids' => ['nullable', 'array'],
             'student_ids.*' => ['integer', 'distinct', 'exists:users,id'],
         ]);
+
+        $schedule = implode(', ', $validated['schedule_days'])
+            .' | '.$validated['start_time'].'-'.$validated['end_time'];
+
+        if (! empty($validated['room'])) {
+            $schedule .= ' | '.$validated['room'];
+        }
 
         $studentIds = array_map('intval', $validated['student_ids'] ?? []);
 
@@ -224,7 +246,7 @@ class ClassSubjectController extends Controller
                 ->withErrors(['student_ids' => 'Select valid student accounts only.']);
         }
 
-        DB::transaction(function () use ($validated, $studentIds) {
+        DB::transaction(function () use ($validated, $studentIds, $schedule) {
             $subject = Subject::firstOrCreate([
                 'name' => trim($validated['subject_name']),
             ]);
@@ -234,7 +256,7 @@ class ClassSubjectController extends Controller
                 'subject_id' => $subject->id,
                 'teacher_id' => auth()->id(),
                 'edp_code' => $validated['edp_code'],
-                'schedule' => trim($validated['schedule']),
+                'schedule' => $schedule,
             ]);
 
             $syncData = collect($studentIds)->mapWithKeys(fn ($id) => [
