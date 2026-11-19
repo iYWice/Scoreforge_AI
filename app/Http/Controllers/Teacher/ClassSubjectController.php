@@ -9,6 +9,7 @@ use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class ClassSubjectController extends Controller
 {
@@ -222,7 +223,13 @@ class ClassSubjectController extends Controller
             'room' => ['nullable', 'string', 'max:255'],
             'student_ids' => ['nullable', 'array'],
             'student_ids.*' => ['integer', 'distinct', 'exists:users,id'],
+            'class_id' => [
+    'required',
+    Rule::exists('classes', 'id')
+        ->where('created_by', auth()->id()),
+],
         ]);
+        
 
         $schedule = implode(', ', $validated['schedule_days'])
             .' | '.$validated['start_time'].'-'.$validated['end_time'];
@@ -232,7 +239,21 @@ class ClassSubjectController extends Controller
         }
 
         $studentIds = array_map('intval', $validated['student_ids'] ?? []);
+$class = SchoolClass::with('students')->findOrFail($validated['class_id']);
 
+$offering = ClassSubject::create([
+    'class_id' => $class->id,
+    'subject_id' => $subject->id,
+    'teacher_id' => auth()->id(),
+    'edp_code' => $validated['edp_code'],
+    'schedule' => $schedule,
+]);
+
+$syncData = $class->students->mapWithKeys(fn ($student) => [
+    $student->id => ['assigned_by' => auth()->id()],
+])->all();
+
+$offering->students()->sync($syncData);
         $eligibleIds = User::query()
             ->where('role', 'student')
             ->whereIn('id', $studentIds)

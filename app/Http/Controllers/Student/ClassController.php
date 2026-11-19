@@ -83,6 +83,15 @@ class ClassController extends Controller
                 'joined_at' => now(),
             ]
         );
+        $class->load('classSubjects');
+
+foreach ($class->classSubjects as $offering) {
+    $offering->students()->syncWithoutDetaching([
+        $student->id => [
+            'assigned_by' => $class->created_by,
+        ],
+    ]);
+}
 
         return redirect()
             ->route('student.classes.show', $class)

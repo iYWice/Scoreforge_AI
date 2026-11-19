@@ -45,6 +45,17 @@ class ExamController extends Controller
     ->orderBy('name')
     ->get();
         $subjects = Subject::all();
+        $classes = SchoolClass::where('created_by', auth()->id())
+    ->with([
+        'classSubjects' => function ($query) {
+            $query->where('teacher_id', auth()->id())
+                ->with('subject');
+        },
+    ])
+    ->orderBy('name')
+    ->get();
+
+return view('teacher.exams.create', compact('classes'));
 
         return view('teacher.exams.create', compact(
             'classes',
@@ -136,7 +147,17 @@ $exam = Exam::create([
         $classes = SchoolClass::where('created_by', auth()->id())
     ->orderBy('name')
     ->get();
+$classes = SchoolClass::where('created_by', auth()->id())
+    ->with([
+        'classSubjects' => function ($query) {
+            $query->where('teacher_id', auth()->id())
+                ->with('subject');
+        },
+    ])
+    ->orderBy('name')
+    ->get();
 
+return view('teacher.exams.create', compact('classes'));
         return view(
             'teacher.exams.edit',
             compact(
