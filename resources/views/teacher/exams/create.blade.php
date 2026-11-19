@@ -1,39 +1,16 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-50">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Exam</title>
+@section('title', 'Create Exam')
 
-    {{-- Inter Font CDN for refined academic typography --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+@section('content')
+<div class="mx-auto max-w-4xl space-y-6">
+    <div>
+        <h1 class="text-2xl font-extrabold tracking-tight text-slate-950">Create New Exam</h1>
+        <p class="mt-1 text-sm text-slate-500">Set up the exam parameters and select its class and subject.</p>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const totalItems = document.getElementById('total_items');
-    const passingScore = document.getElementById('passing_score');
-
-    if (!totalItems || !passingScore) return;
-
-    function updatePassingScore() {
-        const items = parseInt(totalItems.value, 10) || 0;
-        passingScore.value = items > 0 ? Math.ceil(items * 0.75) : '';
-    }
-
-    totalItems.addEventListener('input', updatePassingScore);
-    updatePassingScore();
-});
-</script>
-<body class="bg-slate-50 dark:bg-slate-900 font-sans antialiased text-slate-800 dark:text-slate-100 flex items-center justify-center min-h-screen p-4 sm:p-6">
-
-    <div class="w-full sm:max-w-lg bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/80 dark:border-slate-700/80 transition-all duration-300">
-
-        {{-- HEADER SECTION --}}
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+        {{-- EXAM TITLE --}}
         <div class="mb-8 text-center">
             <div class="inline-flex items-center justify-center w-12 h-12 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl mb-3 border border-indigo-100 dark:border-indigo-800/50 shadow-sm">
                 {{-- Academic Assessment Icon --}}
@@ -41,60 +18,84 @@ document.addEventListener('DOMContentLoaded', function () {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
             </div>
-            <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-                {{ __('Create New Exam') }}
-            </h1>
-            <p class="mt-1.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                {{ __('Set up the parameters and rules for your new assessment.') }}
-            </p>
         </div>
 
-        <form method="POST" action="/teacher/exams" class="space-y-5">
+        <form method="POST" action="{{ route('teacher.exams.store') }}" class="space-y-5">
             @csrf
 
             {{-- EXAM TITLE --}}
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Exam Title</label>
+                <label for="title" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">Exam Title</label>
                 <input
+                    id="title"
                     type="text"
                     name="title"
+                    value="{{ old('title') }}"
                     required
                     placeholder="e.g., Midterm Examination"
-                    class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-600 dark:focus:border-indigo-500 outline-none transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:border-slate-400 hover:scale-[1.01] focus:scale-[1.01]">
+                    class="w-full rounded-xl border border-slate-300 bg-slate-50/50 px-4 py-2.5 text-slate-900 outline-none transition focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/30">
+                @error('title')
+                    <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                @enderror
             </div>
 
             {{-- SUBJECT & CLASS GRID --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {{-- SUBJECT --}}
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Subject</label>
-                    <select
-                        name="subject_id"
-                        required
-                        class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-600 dark:focus:border-indigo-500 outline-none transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:border-slate-400 hover:scale-[1.01] focus:scale-[1.01] cursor-pointer">
-                        <option value="" disabled selected>Select Subject</option>
-                        @foreach($subjects as $subject)
-                        <option value="{{ $subject->id }}">
-                            {{ $subject->name }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
+            @php
+                $selectedClassId = old('class_id', '');
+                $selectedSubjectId = old('subject_id', '');
+            @endphp
 
-                {{-- CLASS --}}
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Target Class</label>
+                    <label for="class_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
+                        Target Class
+                    </label>
+
                     <select
+                        id="class_id"
                         name="class_id"
                         required
-                        class="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-900/60 text-slate-900 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-600 dark:focus:border-indigo-500 outline-none transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:border-slate-400 hover:scale-[1.01] focus:scale-[1.01] cursor-pointer">
-                        <option value="" disabled selected>Select Class</option>
-                        @foreach($classes as $class)
-                        <option value="{{ $class->id }}">
-                            {{ $class->name }}
-                        </option>
+                        class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+                        <option value="">Select Class</option>
+                        @foreach ($classes as $class)
+                            <option value="{{ $class->id }}" @selected($selectedClassId == $class->id)>
+                                {{ $class->name }}
+                            </option>
                         @endforeach
                     </select>
+
+                    @error('class_id')
+                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="subject_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
+                        Subject
+                    </label>
+
+                    <select
+                        id="subject_id"
+                        name="subject_id"
+                        required
+                        class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+                        <option value="">Select a class first</option>
+
+                        @foreach ($classes as $class)
+                            @foreach ($class->classSubjects as $offering)
+                                <option
+                                    value="{{ $offering->subject_id }}"
+                                    data-class-id="{{ $class->id }}"
+                                    @selected($selectedClassId == $class->id && $selectedSubjectId == $offering->subject_id)>
+                                    {{ $offering->subject->name }} — EDP {{ $offering->edp_code }}
+                                </option>
+                            @endforeach
+                        @endforeach
+                    </select>
+
+                    @error('subject_id')
+                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
@@ -167,7 +168,56 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         </form>
     </div>
+</div>
+@endsection
 
-</body>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const classSelect = document.getElementById('class_id');
+    const subjectSelect = document.getElementById('subject_id');
+    const totalItems = document.getElementById('total_items');
+    const passingScore = document.getElementById('passing_score');
 
-</html>
+    if (classSelect && subjectSelect) {
+        function filterSubjects(resetSelection = false) {
+            const classId = classSelect.value;
+
+            Array.from(subjectSelect.options).forEach(function (option, index) {
+                if (index === 0) return;
+
+                const belongsToClass = option.dataset.classId === classId;
+                option.hidden = !belongsToClass;
+                option.disabled = !belongsToClass;
+            });
+
+            subjectSelect.disabled = !classId;
+
+            if (
+                resetSelection ||
+                !subjectSelect.selectedOptions.length ||
+                subjectSelect.selectedOptions[0].disabled
+            ) {
+                subjectSelect.value = '';
+            }
+        }
+
+        classSelect.addEventListener('change', function () {
+            filterSubjects(true);
+        });
+
+        filterSubjects();
+    }
+
+    if (totalItems && passingScore) {
+        function updatePassingScore() {
+            const items = parseInt(totalItems.value, 10) || 0;
+            passingScore.value = items > 0 ? Math.ceil(items * 0.75) : '';
+        }
+
+        totalItems.addEventListener('input', updatePassingScore);
+        updatePassingScore();
+    }
+});
+</script>
+@endpush

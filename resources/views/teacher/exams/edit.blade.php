@@ -52,69 +52,106 @@
             </div>
 
             {{-- Subject & Class Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            @php
+    $selectedClassId = old('class_id', isset($exam) ? $exam->class_id : '');
+    $selectedSubjectId = old('subject_id', isset($exam) ? $exam->subject_id : '');
+@endphp
 
-                {{-- Subject Selection --}}
-                <div class="space-y-1.5">
-                    <label for="subject_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                        Subject
-                    </label>
-                    <div class="relative">
-                        <select
-                            id="subject_id"
-                            name="subject_id"
-                            required
-                            class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all appearance-none cursor-pointer">
-                            @foreach($subjects as $subject)
-                            <option
-                                value="{{ $subject->id }}"
-                                {{ old('subject_id', $exam->subject_id) == $subject->id ? 'selected' : '' }}>
-                                {{ $subject->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                    @error('subject_id')
-                    <p class="text-[11px] font-semibold text-rose-500 mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div>
+        <label for="class_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
+            Target Class
+        </label>
 
-                {{-- Class Selection --}}
-                <div class="space-y-1.5">
-                    <label for="class_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                        Class / Section
-                    </label>
-                    <div class="relative">
-                        <select
-                            id="class_id"
-                            name="class_id"
-                            required
-                            class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all appearance-none cursor-pointer">
-                            @foreach($classes as $class)
-                            <option
-                                value="{{ $class->id }}"
-                                {{ old('class_id', $exam->class_id) == $class->id ? 'selected' : '' }}>
-                                {{ $class->name }}
-                            </option>
-                            @endforeach
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                    @error('class_id')
-                    <p class="text-[11px] font-semibold text-rose-500 mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+        <select
+            id="class_id"
+            name="class_id"
+            required
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+            <option value="">Select Class</option>
+            @foreach ($classes as $class)
+                <option
+                    value="{{ $class->id }}"
+                    @selected($selectedClassId == $class->id)>
+                    {{ $class->name }}
+                </option>
+            @endforeach
+        </select>
 
-            </div>
+        @error('class_id')
+            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div>
+        <label for="subject_id" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-600">
+            Subject
+        </label>
+
+        <select
+            id="subject_id"
+            name="subject_id"
+            required
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+            <option value="">Select a class first</option>
+
+            @foreach ($classes as $class)
+                @foreach ($class->classSubjects as $offering)
+                    <option
+                        value="{{ $offering->subject_id }}"
+                        data-class-id="{{ $class->id }}"
+                        @selected(
+                            $selectedClassId == $class->id &&
+                            $selectedSubjectId == $offering->subject_id
+                        )>
+                        {{ $offering->subject->name }} — EDP {{ $offering->edp_code }}
+                    </option>
+                @endforeach
+            @endforeach
+        </select>
+
+        @error('subject_id')
+            <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+        @enderror
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const classSelect = document.getElementById('class_id');
+    const subjectSelect = document.getElementById('subject_id');
+
+    if (!classSelect || !subjectSelect) return;
+
+    function filterSubjects(resetSelection = false) {
+        const classId = classSelect.value;
+
+        Array.from(subjectSelect.options).forEach(function (option, index) {
+            if (index === 0) return;
+
+            const belongsToClass = option.dataset.classId === classId;
+            option.hidden = !belongsToClass;
+            option.disabled = !belongsToClass;
+        });
+
+        subjectSelect.disabled = !classId;
+
+        if (
+            resetSelection ||
+            !subjectSelect.selectedOptions.length ||
+            subjectSelect.selectedOptions[0].disabled
+        ) {
+            subjectSelect.value = '';
+        }
+    }
+
+    classSelect.addEventListener('change', function () {
+        filterSubjects(true);
+    });
+
+    filterSubjects();
+});
+</script>
 
             {{-- TOTAL ITEMS, DURATION & AUTOMATIC PASSING SCORE --}}
 <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">

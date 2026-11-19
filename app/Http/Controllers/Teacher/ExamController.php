@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\ClassSubject;
 use App\Models\Exam;
-use App\Models\Subject;
-use App\Models\SchoolClass;
-use Illuminate\Support\Str;
 use App\Models\Question;
+use App\Models\SchoolClass;
+use App\Models\Subject;
+use App\Services\ActivityLogger;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class ExamController extends Controller
@@ -26,8 +28,8 @@ class ExamController extends Controller
         $subjects = Subject::all();
 
         $classes = SchoolClass::where('created_by', auth()->id())
-    ->orderBy('name')
-    ->get();
+            ->orderBy('name')
+            ->get();
 
         return view('teacher.exams.index', compact(
             'exams',
@@ -42,68 +44,66 @@ class ExamController extends Controller
     public function create()
     {
         $classes = SchoolClass::where('created_by', auth()->id())
-    ->orderBy('name')
-    ->get();
-        $subjects = Subject::all();
-        $classes = SchoolClass::where('created_by', auth()->id())
-    ->with([
-        'classSubjects' => function ($query) {
-            $query->where('teacher_id', auth()->id())
-                ->with('subject');
-        },
-    ])
-    ->orderBy('name')
-    ->get();
+            ->with([
+                'classSubjects' => function ($query) {
+                    $query->where('teacher_id', auth()->id())
+                        ->with('subject');
+                },
+            ])
+            ->orderBy('name')
+            ->get();
 
-return view('teacher.exams.create', compact('classes'));
-
-        return view('teacher.exams.create', compact(
-            'classes',
-            'subjects'
-        ));
+        return view('teacher.exams.create', compact('classes'));
     }
-
 
     /*
      Store a newly created exam in storage.
      */
     public function store(Request $request)
     {
-$validated = $request->validate([
-    'title' => ['required', 'string', 'max:255'],
-    'subject' => ['required', 'string', 'max:255'],
-    'class_id' => [
-    'required',
-    Rule::exists('classes', 'id')
-        ->where('created_by', auth()->id()),
-],
-    'total_items' => ['required', 'integer', 'min:1'],
-    'duration' => ['required', 'integer', 'min:1'],
-]);
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'class_id' => [
+                'required',
+                Rule::exists('classes', 'id')
+                    ->where('created_by', auth()->id()),
+            ],
+            'total_items' => ['required', 'integer', 'min:1'],
+            'duration' => ['required', 'integer', 'min:1'],
+        ]);
 
-$validated['passing_score'] = (int) ceil($validated['total_items'] * 0.75);
+        $offeringExists = ClassSubject::where('class_id', $validated['class_id'])
+            ->where('teacher_id', auth()->id())
+            ->where('subject_id', $validated['subject_id'])
+            ->exists();
 
-$subject = Subject::firstOrCreate([
-    'name' => trim($validated['subject']),
-]);
+        if (! $offeringExists) {
+            return back()
+                ->withInput()
+                ->withErrors(['subject_id' => 'The selected subject is not offered in this class.']);
+        }
 
-$exam = Exam::create([
-    'title' => $validated['title'],
-    'exam_code' => $this->generateExamCode($subject->name),
-    'subject_id' => $subject->id,
-    'class_id' => $validated['class_id'],
-    'created_by' => auth()->id(),
-    'total_items' => $validated['total_items'],
-    'duration' => $validated['duration'],
-    'passing_score' => $validated['passing_score'],
-    'status' => 'draft',
-]);
+        $validated['passing_score'] = (int) ceil($validated['total_items'] * 0.75);
 
-        app(\App\Services\ActivityLogger::class)->log(
+        $exam = Exam::create([
+            'title' => $validated['title'],
+            'exam_code' => $this->generateExamCode(),
+            'subject_id' => $validated['subject_id'],
+            'class_id' => $validated['class_id'],
+            'created_by' => auth()->id(),
+            'total_items' => $validated['total_items'],
+            'duration' => $validated['duration'],
+            'passing_score' => $validated['passing_score'],
+            'status' => 'draft',
+        ]);
+
+        app(ActivityLogger::class)->log(
             'exam.created',
             'Teacher created an examination.',
             $exam
         );
+
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
@@ -115,7 +115,6 @@ $exam = Exam::create([
             ->route('teacher.exams.index')
             ->with('success', 'Exam created successfully.');
     }
-
 
     /*
      Display the specified exam.
@@ -139,33 +138,23 @@ $exam = Exam::create([
      */
     public function edit(Exam $exam)
     {
-        if ($exam->created_by != auth()->id()) {
-            abort(403);
+        if ((int) $exam->created_by !== (int) auth()->id()) {
+            abort(403, 'You are not authorized to edit this exam.');
         }
 
-        $subjects = Subject::all();
         $classes = SchoolClass::where('created_by', auth()->id())
-    ->orderBy('name')
-    ->get();
-$classes = SchoolClass::where('created_by', auth()->id())
-    ->with([
-        'classSubjects' => function ($query) {
-            $query->where('teacher_id', auth()->id())
-                ->with('subject');
-        },
-    ])
-    ->orderBy('name')
-    ->get();
+            ->with([
+                'classSubjects' => function ($query) {
+                    $query->where('teacher_id', auth()->id())
+                        ->with('subject');
+                },
+            ])
+            ->orderBy('name')
+            ->get();
 
-return view('teacher.exams.create', compact('classes'));
-        return view(
-            'teacher.exams.edit',
-            compact(
-                'exam',
-                'subjects',
-                'classes'
-            )
-        );
+        $subjects = Subject::all();
+
+        return view('teacher.exams.edit', compact('exam', 'subjects', 'classes'));
     }
 
     /*
@@ -173,40 +162,27 @@ return view('teacher.exams.create', compact('classes'));
      */
     public function update(Request $request, Exam $exam)
     {
-        if ($exam->created_by !== auth()->id()) {
+        if ((int) $exam->created_by !== (int) auth()->id()) {
             abort(403, 'You are not authorized to update this exam.');
         }
-$validated = $request->validate([
-    'title' => ['required', 'string', 'max:255'],
-    'subject_id' => ['required', 'exists:subjects,id'],
-    'class_id' => [
-    'required',
-    Rule::exists('classes', 'id')
-        ->where('created_by', auth()->id()),
-],
-    'total_items' => ['required', 'integer', 'min:1'],
-    'duration' => ['required', 'integer', 'min:1'],
-]);
 
-$validated['passing_score'] = (int) ceil($validated['total_items'] * 0.75);
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'class_id' => [
+                'required',
+                Rule::exists('classes', 'id')
+                    ->where('created_by', auth()->id()),
+            ],
+            'total_items' => ['required', 'integer', 'min:1'],
+            'duration' => ['required', 'integer', 'min:1'],
+        ]);
 
-$exam->update($validated);
+        $validated['passing_score'] = (int) ceil($validated['total_items'] * 0.75);
 
-        $exam->update($request->only([
+        $exam->update($validated);
 
-            'title',
-
-            'subject_id',
-
-            'class_id',
-
-            'duration',
-
-            'passing_score',
-
-        ]));
-
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'exam.updated',
             'Teacher updated an examination.',
             $exam
@@ -225,14 +201,12 @@ $exam->update($validated);
         if ($exam->created_by != auth()->id()) {
             abort(403);
         }
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'exam.deleted',
             'Teacher deleted an examination.',
             $exam
         );
         $exam->delete();
-
-
 
         return redirect()
             ->route('teacher.exams.index')
@@ -241,17 +215,21 @@ $exam->update($validated);
                 'Exam deleted successfully.'
             );
     }
-    private function generateExamCode($subjectName)
+
+    private function generateExamCode(?string $subjectName = null)
     {
-        $prefix = strtoupper(substr($subjectName, 0, 4));
+        $prefix = $subjectName
+            ? strtoupper(substr($subjectName, 0, 4))
+            : 'EXAM';
 
         do {
-            $random = strtoupper(\Illuminate\Support\Str::random(4));
-            $code = $prefix . '-' . $random;
-        } while (\App\Models\Exam::where('exam_code', $code)->exists());
+            $random = strtoupper(Str::random(4));
+            $code = $prefix.'-'.$random;
+        } while (Exam::where('exam_code', $code)->exists());
 
         return $code;
     }
+
     /*
      Update the status of the specified exam.
      */
@@ -279,7 +257,7 @@ $exam->update($validated);
             'status' => $request->status,
         ]);
 
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             $request->status === 'published' ? 'exam.published' : 'exam.status_changed',
             'Teacher changed the examination status.',
             $exam,
