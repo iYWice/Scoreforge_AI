@@ -168,14 +168,12 @@ class ClassSubjectController extends Controller
         $eligibleStudentIds = User::query()
             ->where('role', 'student')
             ->whereIn('id', $studentIds)
-            ->whereHas('enrolledClasses', function ($query) use ($class) {
-                $query->where('classes.id', $class->id);
-            })
-            ->pluck('id');
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id);
 
         if ($eligibleStudentIds->count() !== $studentIds->count()) {
             return back()->withErrors([
-                'student_ids' => 'Select only students who joined this class.',
+                'student_ids' => 'Select valid student accounts only.',
             ]);
         }
 
@@ -249,16 +247,13 @@ class ClassSubjectController extends Controller
         $eligibleStudentIds = User::query()
             ->where('role', 'student')
             ->whereIn('id', $studentIds)
-            ->whereHas('enrolledClasses', function ($query) use ($class) {
-                $query->where('classes.id', $class->id);
-            })
             ->pluck('id')
             ->map(fn ($id) => (int) $id);
 
         if ($eligibleStudentIds->count() !== $studentIds->count()) {
             return back()
                 ->withInput()
-                ->withErrors(['student_ids' => 'Select only students who joined this class.']);
+                ->withErrors(['student_ids' => 'Select valid student accounts only.']);
         }
 
         $schedule = implode(', ', $validated['schedule_days'])
@@ -301,31 +296,49 @@ class ClassSubjectController extends Controller
         );
 
         $validated = $request->validate([
+            'class_id' => [
+                'required',
+                Rule::exists('classes', 'id')
+                    ->where('created_by', auth()->id()),
+            ],
             'student_ids' => ['nullable', 'array'],
             'student_ids.*' => ['integer', 'distinct', 'exists:users,id'],
         ]);
 
-        $studentIds = array_map('intval', $validated['student_ids'] ?? []);
+        $class = SchoolClass::query()
+            ->whereKey($validated['class_id'])
+            ->where('created_by', auth()->id())
+            ->firstOrFail();
 
-        $eligibleIds = User::query()
+        $studentIds = collect($validated['student_ids'] ?? [])
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        $eligibleStudentIds = User::query()
             ->where('role', 'student')
             ->whereIn('id', $studentIds)
             ->pluck('id')
-            ->map(fn ($id) => (int) $id)
-            ->all();
+            ->map(fn ($id) => (int) $id);
 
-        if (count($eligibleIds) !== count($studentIds)) {
+        if ($eligibleStudentIds->count() !== $studentIds->count()) {
             return back()->withErrors([
                 'student_ids' => 'Select valid student accounts only.',
             ]);
         }
 
-        $syncData = collect($studentIds)->mapWithKeys(fn ($id) => [
-            $id => ['assigned_by' => auth()->id()],
-        ])->all();
+        DB::transaction(function () use ($class, $studentIds, $classSubject) {
+            $classSubject->update([
+                'class_id' => $class->id,
+            ]);
 
-        $classSubject->students()->sync($syncData);
+            $syncData = $studentIds->mapWithKeys(fn ($id) => [
+                $id => ['assigned_by' => auth()->id()],
+            ])->all();
 
-        return back()->with('success', 'Subject student list updated.');
+            $classSubject->students()->sync($syncData);
+        });
+
+        return back()->with('success', 'Subject class and student list updated.');
     }
 }

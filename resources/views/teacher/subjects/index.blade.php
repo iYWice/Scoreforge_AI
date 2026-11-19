@@ -195,23 +195,39 @@
 
         @forelse ($offerings as $offering)
             <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div class="grid gap-4 border-b border-slate-100 bg-slate-50 p-5 sm:grid-cols-3">
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Subject</p>
-                        <p class="mt-1 font-bold text-slate-900">{{ $offering->subject->name }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">EDP code</p>
-                        <p class="mt-1 font-mono font-semibold text-slate-800">{{ $offering->edp_code }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Schedule</p>
-                        <p class="mt-1 font-semibold text-slate-800">{{ $offering->schedule }}</p>
-                    </div>
-                </div>
-
-                <form method="POST" action="{{ route('teacher.subjects.students.sync', $offering) }}" class="p-5">
+                <form method="POST" action="{{ route('teacher.subjects.students.sync', $offering) }}">
                     @csrf
+
+                    <div class="grid gap-4 border-b border-slate-100 bg-slate-50 p-5 sm:grid-cols-2 xl:grid-cols-4">
+                        <div>
+                            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Subject</p>
+                            <p class="mt-1 font-bold text-slate-900">{{ $offering->subject->name }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">EDP code</p>
+                            <p class="mt-1 font-mono font-semibold text-slate-800">{{ $offering->edp_code }}</p>
+                        </div>
+                        <div>
+                            <label for="class-{{ $offering->id }}" class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Class</label>
+                            <select
+                                id="class-{{ $offering->id }}"
+                                name="class_id"
+                                required
+                                class="mt-1 w-full rounded-xl border-slate-300 bg-white text-sm font-semibold text-slate-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                @foreach ($classes as $class)
+                                    <option value="{{ $class->id }}" @selected((int) $offering->class_id === (int) $class->id)>
+                                        {{ $class->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Schedule</p>
+                            <p class="mt-1 font-semibold text-slate-800">{{ $offering->schedule }}</p>
+                        </div>
+                    </div>
+
+                    <div class="p-5">
                     <div class="flex items-center justify-between gap-3">
                         <h3 class="text-sm font-bold text-slate-800">Enrolled students</h3>
                         <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600">
@@ -241,8 +257,9 @@
                     <div class="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
                         <p class="text-xs text-slate-500">Unchecked students will be removed from this subject.</p>
                         <button type="submit" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 active:scale-[0.98]">
-                            Save student list
+                            Save changes
                         </button>
+                    </div>
                     </div>
                 </form>
             </article>
