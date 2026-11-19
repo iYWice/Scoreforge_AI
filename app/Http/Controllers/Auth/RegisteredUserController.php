@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\SystemSetting;
 use App\Http\Controllers\Controller;
+use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -26,6 +26,7 @@ class RegisteredUserController extends Controller
             403,
             'Public registration is currently disabled.'
         );
+
         return view('auth.register');
     }
 
@@ -41,44 +42,36 @@ class RegisteredUserController extends Controller
             403,
             'Public registration is currently disabled.'
         );
-$validated = $request->validate([
-    'fname' => ['required', 'string', 'max:255'],
-    'lname' => ['required', 'string', 'max:255'],
-    'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
-    'role' => ['required', 'in:teacher,student'],
-    'student_id' => [
-        'required_if:role,student',
-        'nullable',
-        'string',
-        'max:50',
-        'unique:users,student_id',
-    ],
-    'password' => [
-        'required',
-        'confirmed',
-        Rules\Password::min(8)->letters()->numbers(),
-    ],
-]);
 
-$user = User::create([
-    'fname' => $validated['fname'],
-    'lname' => $validated['lname'],
-    'email' => $validated['email'],
-    'role' => $validated['role'],
-    'student_id' => $validated['student_id'] ?? null,
-    'password' => Hash::make($validated['password']),
-]);
+        $validated = $request->validate([
+            'fname' => ['required', 'string', 'max:255'],
+            'lname' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'role' => ['required', 'in:teacher,student'],
+            'student_id' => [
+                'exclude_unless:role,student',
+                'required',
+                'string',
+                'max:50',
+                'unique:users,student_id',
+            ],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::min(8)->letters()->numbers(),
+            ],
+        ]);
 
         $user = User::create([
-            'fname' => $request->fname,
-            'lname' => $request->lname,
-            'email' => $request->email,
-            'role' => $request->role,
-            'password' => Hash::make($request->password),
+            'fname' => $validated['fname'],
+            'lname' => $validated['lname'],
+            'email' => $validated['email'],
+            'role' => $validated['role'],
+            'student_id' => $validated['student_id'] ?? null,
+            'password' => Hash::make($validated['password']),
         ]);
 
         event(new Registered($user));
-
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));

@@ -94,7 +94,11 @@
                                 <p class="truncate text-xs text-slate-500">
                                     {{ $student->email }}
                                 </p>
+                                <p class="truncate text-xs font-semibold text-slate-600">
+                                    Student ID: {{ $student->student_id ?: 'Not provided' }}
+                                </p>
                             </div>
+                            
                         </div>
 
                         <div class="flex flex-wrap items-center gap-4 pl-[3.25rem] sm:pl-0">

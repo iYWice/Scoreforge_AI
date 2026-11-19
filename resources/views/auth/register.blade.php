@@ -67,8 +67,10 @@
             </div>
 
             {{-- STUDENT ID: REQUIRED FOR STUDENTS --}}
-<div>
-    <x-input-label for="student_id" :value="__('Student ID (students only)')" />
+{{-- STUDENT ID --}}
+<div id="student-id-wrapper" class="hidden">
+    <x-input-label for="student_id" :value="__('Student ID')" />
+
     <x-text-input
         id="student_id"
         class="mt-1.5 block w-full rounded-lg border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500"
@@ -78,6 +80,11 @@
         autocomplete="off"
         placeholder="Enter your school student ID"
     />
+
+    <p class="mt-1 text-xs text-gray-500">
+        Required for student accounts.
+    </p>
+
     <x-input-error :messages="$errors->get('student_id')" class="mt-1.5" />
 </div>
 
@@ -133,16 +140,44 @@
                 <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1.5" />
             </div>
 
-            {{-- ACTIONS --}}
-            <div class="flex flex-col sm:flex-row items-center justify-between pt-2 gap-4">
-                <a class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition duration-150 ease-in-out underline underline-offset-4" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
+                        {{-- ACTIONS --}}
+            <div class="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
+                <a
+                    href="{{ route('login') }}"
+                    class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                    Already registered?
                 </a>
 
-                <x-primary-button class="w-full sm:w-auto justify-center px-5 py-2.5 text-sm tracking-wide bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-900 focus:ring-indigo-500 rounded-lg">
-                    {{ __('Register') }}
-                </x-primary-button>
+                <button
+                    type="submit"
+                    class="inline-flex justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    Register
+                </button>
             </div>
+
+            {{-- Show Student ID only when Student is selected --}}
+            <script>
+                (() => {
+                    const roleSelect = document.getElementById('role');
+                    const studentIdWrapper = document.getElementById('student-id-wrapper');
+                    const studentIdInput = document.getElementById('student_id');
+
+                    function updateStudentIdField() {
+                        const isStudent = roleSelect.value === 'student';
+
+                        studentIdWrapper.classList.toggle('hidden', !isStudent);
+                        studentIdInput.required = isStudent;
+                        studentIdInput.disabled = !isStudent;
+
+                        if (!isStudent) {
+                            studentIdInput.value = '';
+                        }
+                    }
+
+                    roleSelect.addEventListener('change', updateStudentIdField);
+                    updateStudentIdField();
+                })();
+            </script>
         </form>
     </div>
 </x-guest-layout>
