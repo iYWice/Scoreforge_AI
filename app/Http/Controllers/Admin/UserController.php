@@ -76,7 +76,6 @@ class UserController extends Controller
         }
 
         $data['password'] = Hash::make($data['password']);
-        $data['name'] = trim($data['fname'].' '.$data['lname']);
 
         $user = User::create($data);
 
