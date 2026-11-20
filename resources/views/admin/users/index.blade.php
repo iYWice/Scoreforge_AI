@@ -61,6 +61,7 @@
             <thead class="bg-slate-50 text-slate-600">
                 <tr>
                     <th class="px-5 py-4">Name</th>
+                    <th class="px-5 py-4">Account ID</th>
                     <th class="px-5 py-4">Email</th>
                     <th class="px-5 py-4">Role</th>
                     <th class="px-5 py-4">Registered</th>
@@ -72,6 +73,9 @@
                 <tr>
                     <td class="px-5 py-4 font-medium text-slate-900">
                         {{ $user->fname }} {{ $user->lname }}
+                    </td>
+                    <td class="px-5 py-4 font-mono text-xs text-slate-600">
+                        {{ $user->role === 'teacher' ? ($user->teacher_id ?? '—') : ($user->student_id ?? '—') }}
                     </td>
                     <td class="px-5 py-4 text-slate-600">{{ $user->email }}</td>
                     <td class="px-5 py-4">
@@ -92,6 +96,7 @@
                                             'lname' => $user->lname,
                                             'email' => $user->email,
                                             'role' => $user->role,
+                                            'account_id' => $user->role === 'teacher' ? $user->teacher_id : $user->student_id,
                                         ]) }}"
                                 class="font-medium text-indigo-600 hover:underline">
                                 Edit
@@ -112,7 +117,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-5 py-10 text-center text-slate-500">
+                    <td colspan="6" class="px-5 py-10 text-center text-slate-500">
                         No accounts found.
                     </td>
                 </tr>
@@ -146,9 +151,14 @@
                     class="w-full rounded-xl border-slate-300">
 
                 <select name="role" required class="w-full rounded-xl border-slate-300">
+                    <option value="admin">Admin</option>
                     <option value="teacher">Teacher</option>
                     <option value="student">Student</option>
                 </select>
+
+                <input name="account_id" maxlength="50"
+                    placeholder="Account ID (required for teacher/student)"
+                    class="w-full rounded-xl border-slate-300">
 
                 <input name="password" type="password" required
                     minlength="8" placeholder="Password"
@@ -193,6 +203,10 @@
                         <option value="teacher">Teacher</option>
                         <option value="student">Student</option>
                     </select>
+
+                    <input name="account_id" x-model="editUser.account_id" required maxlength="50"
+                        placeholder="Teacher or Student Account ID"
+                        class="w-full rounded-xl border-slate-300">
 
                     <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white">
                         Save Changes

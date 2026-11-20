@@ -361,15 +361,15 @@
                         'route' => 'admin.exams.index',
                         'active' => 'admin.exams.*',
                         ],
+                                                                        [
+                        'label' => 'Subjects',
+                        'route' => 'admin.subjects.index',
+                        'active' => 'admin.subjects.*',
+                        ],
                         [
                         'label' => 'Activity Logs',
                         'route' => 'admin.activity-logs.index',
                         'active' => 'admin.activity-logs.*',
-                        ],
-                        [
-                        'label' => 'Settings',
-                        'route' => 'admin.settings.index',
-                        'active' => 'admin.settings.*',
                         ],
                         ];
                         @endphp

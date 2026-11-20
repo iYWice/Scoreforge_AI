@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
@@ -17,10 +18,13 @@ class ActivityLogController extends Controller
                 $query->where(function ($q) use ($search) {
                     $q->where('description', 'like', "%{$search}%")
                         ->orWhere('action', 'like', "%{$search}%")
+                        ->orWhere('id', 'like', "%{$search}%")
                         ->orWhereHas('user', function ($user) use ($search) {
                             $user->where('fname', 'like', "%{$search}%")
                                 ->orWhere('lname', 'like', "%{$search}%")
-                                ->orWhere('email', 'like', "%{$search}%");
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('student_id', 'like', "%{$search}%")
+                                ->orWhere('teacher_id', 'like', "%{$search}%");
                         });
                 });
             })
@@ -46,22 +50,25 @@ class ActivityLogController extends Controller
             'actions'
         ));
     }
+
     public function export(Request $request)
     {
-        app(\App\Services\ActivityLogger::class)->log(
-    'activity_logs.exported',
-    'Administrator exported activity logs.'
-);
+        app(ActivityLogger::class)->log(
+            'activity_logs.exported',
+            'Administrator exported activity logs.'
+        );
+
         return response()->streamDownload(function () use ($request): void {
             $stream = fopen('php://output', 'w');
 
             fputcsv($stream, [
+                'Log ID',
                 'Date and Time',
                 'User',
+                'Account ID',
                 'Email',
                 'Action',
                 'Description',
-                'IP Address',
             ]);
 
             ActivityLog::with('user')
@@ -71,10 +78,13 @@ class ActivityLogController extends Controller
                     $query->where(function ($q) use ($search): void {
                         $q->where('description', 'like', "%{$search}%")
                             ->orWhere('action', 'like', "%{$search}%")
+                            ->orWhere('id', 'like', "%{$search}%")
                             ->orWhereHas('user', function ($user) use ($search): void {
                                 $user->where('fname', 'like', "%{$search}%")
                                     ->orWhere('lname', 'like', "%{$search}%")
-                                    ->orWhere('email', 'like', "%{$search}%");
+                                    ->orWhere('email', 'like', "%{$search}%")
+                                    ->orWhere('student_id', 'like', "%{$search}%")
+                                    ->orWhere('teacher_id', 'like', "%{$search}%");
                             });
                     });
                 })
@@ -90,19 +100,24 @@ class ActivityLogController extends Controller
                 ->orderBy('id')
                 ->chunk(500, function ($logs) use ($stream): void {
                     foreach ($logs as $log) {
+                        $accountId = $log->user?->role === 'teacher'
+                            ? ($log->user?->teacher_id ?? '')
+                            : ($log->user?->student_id ?? '');
+
                         fputcsv($stream, [
+                            $log->id,
                             $log->created_at,
-                            trim(($log->user?->fname ?? '') . ' ' . ($log->user?->lname ?? '')),
+                            trim(($log->user?->fname ?? '').' '.($log->user?->lname ?? '')),
+                            $accountId,
                             $log->user?->email,
                             $log->action,
                             $log->description,
-                            $log->ip_address,
                         ]);
                     }
                 });
 
             fclose($stream);
-        }, 'activity-logs-' . now()->format('Ymd-His') . '.csv', [
+        }, 'activity-logs-'.now()->format('Ymd-His').'.csv', [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }

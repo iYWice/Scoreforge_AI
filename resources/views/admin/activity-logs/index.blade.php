@@ -63,17 +63,22 @@
         <table class="min-w-full text-left text-sm">
             <thead class="bg-slate-50 text-slate-600">
                 <tr>
+                    <th class="px-5 py-4">Log ID</th>
                     <th class="px-5 py-4">Date & Time</th>
                     <th class="px-5 py-4">User</th>
+                    <th class="px-5 py-4">Account ID</th>
                     <th class="px-5 py-4">Action</th>
                     <th class="px-5 py-4">Description</th>
-                    <!-- <th class="px-5 py-4">IP Address</th> -->
                 </tr>
             </thead>
 
             <tbody class="divide-y divide-slate-100">
                 @forelse($logs as $log)
                 <tr>
+                    <td class="px-5 py-4 font-mono text-xs text-slate-600">
+                        #{{ $log->id }}
+                    </td>
+
                     <td class="whitespace-nowrap px-5 py-4 text-slate-500">
                         {{ $log->created_at?->format('M d, Y h:i A') }}
                     </td>
@@ -89,6 +94,14 @@
                         </p>
                     </td>
 
+                    <td class="whitespace-nowrap px-5 py-4 text-slate-500">
+                        {{ $log->user
+                            ? ($log->user->role === 'teacher'
+                                ? ($log->user->teacher_id ?? '—')
+                                : ($log->user->student_id ?? '—'))
+                            : '—' }}
+                    </td>
+
                     <td class="px-5 py-4">
                         <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                             {{ $log->action }}
@@ -98,14 +111,10 @@
                     <td class="max-w-sm px-5 py-4 text-slate-600">
                         {{ $log->description }}
                     </td>
-
-                    <!-- <td class="px-5 py-4 font-mono text-xs text-slate-500">
-                        {{ $log->ip_address ?? '—' }}
-                    </td> -->
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-5 py-12 text-center text-slate-500">
+                    <td colspan="6" class="px-5 py-12 text-center text-slate-500">
                         No activity logs found.
                     </td>
                 </tr>

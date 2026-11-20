@@ -4,16 +4,37 @@
 @section('page-title', 'Examination Management')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-6" x-data="{ createOpen: false, editExam: null }">
 
-    <div>
-        <h1 class="text-2xl font-bold text-slate-900">
-            Examination Management
-        </h1>
-        <p class="mt-1 text-sm text-slate-500">
-            Monitor all examination records and publication statuses.
-        </p>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">
+                Examination Management
+            </h1>
+            <p class="mt-1 text-sm text-slate-500">
+                Monitor all examination records and publication statuses.
+            </p>
+        </div>
+        <!-- <button type="button" @click="createOpen = true"
+            class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white">
+            + Add Examination
+        </button> -->
     </div>
+
+    @if(session('success'))
+        <div class="rounded-xl bg-green-50 p-4 text-sm text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if($errors->any())
+        <div class="rounded-xl bg-red-50 p-4 text-sm text-red-700">
+            <ul class="list-disc pl-5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <form method="GET" action="{{ route('admin.exams.index') }}"
         class="flex flex-wrap gap-3">
@@ -66,7 +87,7 @@
                         {{ $exam->teacher?->lname }}
                     </td>
                     <td class="px-5 py-4">
-                        {{ $exam->schoolClass?->name ?? 'Unassigned' }}
+                        {{ $exam->class?->name ?? 'Unassigned' }}
                     </td>
                     <td class="px-5 py-4">{{ $exam->questions_count }}</td>
                     <td class="px-5 py-4">{{ $exam->attempts_count }}</td>
@@ -76,10 +97,28 @@
                         </span>
                     </td>
                     <td class="px-5 py-4 text-right">
-                        <a href="{{ route('admin.exams.show', $exam) }}"
-                            class="font-semibold text-indigo-600 hover:underline">
-                            View
-                        </a>
+                        <div class="flex justify-end gap-3">
+                            <a href="{{ route('admin.exams.show', $exam) }}"
+                                class="font-semibold text-indigo-600 hover:underline">View</a>
+                            <button type="button"
+                                @click="editExam = {{ Illuminate\Support\Js::from([
+                                    'id' => $exam->id,
+                                    'title' => $exam->title,
+                                    'subject_id' => $exam->subject_id,
+                                    'class_id' => $exam->class_id,
+                                    'created_by' => $exam->created_by,
+                                    'total_items' => $exam->total_items,
+                                    'duration' => $exam->duration,
+                                    'passing_score' => $exam->passing_score,
+                                    'status' => $exam->status,
+                                ]) }}"
+                                class="font-semibold text-slate-700 hover:underline">Edit</button>
+                            <form method="POST" action="{{ route('admin.exams.destroy', $exam) }}" onsubmit="return confirm('Delete this examination?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="font-semibold text-red-600 hover:underline">Delete</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty
@@ -96,4 +135,43 @@
     {{ $exams->links() }}
 
 </div>
+
+<div x-show="createOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
+        <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+            <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Create Examination</h2><button type="button" @click="createOpen = false">✕</button></div>
+            <form method="POST" action="{{ route('admin.exams.store') }}" class="grid gap-4 sm:grid-cols-2">
+                @csrf
+                <input name="title" required maxlength="255" placeholder="Exam title" class="sm:col-span-2 w-full rounded-xl border-slate-300">
+                <select name="subject_id" required class="w-full rounded-xl border-slate-300"><option value="">Subject</option>@foreach($subjects as $subject)<option value="{{ $subject->id }}">{{ $subject->name }}</option>@endforeach</select>
+                <select name="class_id" required class="w-full rounded-xl border-slate-300"><option value="">Class</option>@foreach($classes as $class)<option value="{{ $class->id }}">{{ $class->name }}</option>@endforeach</select>
+                <select name="created_by" required class="sm:col-span-2 w-full rounded-xl border-slate-300"><option value="">Teacher</option>@foreach($teachers as $teacher)<option value="{{ $teacher->id }}">{{ $teacher->fname }} {{ $teacher->lname }}</option>@endforeach</select>
+                <input name="total_items" type="number" min="1" required placeholder="Total items" class="w-full rounded-xl border-slate-300">
+                <input name="duration" type="number" min="1" required value="60" placeholder="Duration (minutes)" class="w-full rounded-xl border-slate-300">
+                <input name="passing_score" type="number" min="0" max="100" required value="75" placeholder="Passing score (%)" class="w-full rounded-xl border-slate-300">
+                <select name="status" required class="w-full rounded-xl border-slate-300"><option value="draft">Draft</option><option value="published">Published</option><option value="closed">Closed</option></select>
+                <button class="sm:col-span-2 w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white">Create Examination</button>
+            </form>
+        </div>
+    </div>
+
+    <div x-show="editExam" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
+        <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+            <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Edit Examination</h2><button type="button" @click="editExam = null">✕</button></div>
+            <template x-if="editExam">
+                <form method="POST" :action="'{{ url('/admin/exams') }}/' + editExam.id" class="grid gap-4 sm:grid-cols-2">
+                    @csrf
+                    @method('PATCH')
+                    <input name="title" x-model="editExam.title" required maxlength="255" class="sm:col-span-2 w-full rounded-xl border-slate-300">
+                    <select name="subject_id" x-model="editExam.subject_id" required class="w-full rounded-xl border-slate-300">@foreach($subjects as $subject)<option value="{{ $subject->id }}">{{ $subject->name }}</option>@endforeach</select>
+                    <select name="class_id" x-model="editExam.class_id" required class="w-full rounded-xl border-slate-300">@foreach($classes as $class)<option value="{{ $class->id }}">{{ $class->name }}</option>@endforeach</select>
+                    <select name="created_by" x-model="editExam.created_by" required class="sm:col-span-2 w-full rounded-xl border-slate-300">@foreach($teachers as $teacher)<option value="{{ $teacher->id }}">{{ $teacher->fname }} {{ $teacher->lname }}</option>@endforeach</select>
+                    <input name="total_items" type="number" min="1" x-model="editExam.total_items" required class="w-full rounded-xl border-slate-300">
+                    <input name="duration" type="number" min="1" x-model="editExam.duration" required class="w-full rounded-xl border-slate-300">
+                    <input name="passing_score" type="number" min="0" max="100" x-model="editExam.passing_score" required class="w-full rounded-xl border-slate-300">
+                    <select name="status" x-model="editExam.status" required class="w-full rounded-xl border-slate-300"><option value="draft">Draft</option><option value="published">Published</option><option value="closed">Closed</option></select>
+                    <button class="sm:col-span-2 w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white">Save Changes</button>
+                </form>
+            </template>
+        </div>
+    </div>
 @endsection
