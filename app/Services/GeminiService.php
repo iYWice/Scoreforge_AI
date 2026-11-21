@@ -228,7 +228,10 @@ IMPORTANT RULES:
 - Questions must be clear and academically appropriate.
 - Avoid duplicate or nearly identical questions.
 - Each question must have one clearly correct answer.
-- Assign a concise topic to every question.
+- Assign each question a concise, specific topic based on the concept it tests.
+- Use the actual concepts or headings from the learning material.
+- Do not use generic labels such as "Topic", "Topic name", or "General".
+- Reuse a topic only when the questions test the same concept.
 - Use 1 point for every generated question.
 - Return plain text only. Do not use Markdown symbols such as #, *, _, or backticks. Use simple headings and paragraphs. Use the actual exam and topic names from the supplied data; do not invent placeholder names such as “Unit Name” or “Test Case ID” unless those are actual supplied topics.
 
@@ -362,12 +365,20 @@ PROMPT;
             if (!is_array($options)) {
                 $options = [];
             }
+$topic = trim((string) ($question['topic'] ?? ''));
 
+if (in_array(mb_strtolower($topic), [
+    'topic',
+    'topic name',
+    'general',
+    'unknown',
+], true)) {
+    $topic = '';
+}
             $questions[] = [
                 'question_type' => $questionType,
 
-                'topic' =>
-                trim($question['topic'] ?? 'General'),
+                'topic' => $topic,
 
                 'question_text' =>
                 trim($question['question_text']),
