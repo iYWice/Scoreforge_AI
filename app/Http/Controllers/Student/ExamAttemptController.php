@@ -265,7 +265,7 @@ class ExamAttemptController extends Controller
         $deadline = $attempt->exam->effectiveDeadline($attempt->started_at);
 
         if (
-            now()->greaterThan($deadline)
+            now()->gte($deadline)
         ) {
             $attempt->update(['status' => 'timed_out']);
 

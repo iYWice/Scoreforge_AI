@@ -2,6 +2,7 @@
 
 use App\Models\ClassSubject;
 use App\Models\Exam;
+use App\Models\ExamAttempt;
 use App\Models\Question;
 use App\Models\SchoolClass;
 use App\Models\Subject;
@@ -219,4 +220,36 @@ it('allows a teacher to update and republish an expired exam', function () {
         ->assertRedirect();
 
     expect($exam->fresh()->status)->toBe('published');
+});
+
+it('marks an overdue ongoing attempt as timed out', function () {
+    $teacher = User::factory()->create(['role' => 'teacher']);
+    $student = User::factory()->create(['role' => 'student']);
+    $class = SchoolClass::create([
+        'name' => 'Grade 7',
+        'created_by' => $teacher->id,
+    ]);
+    $subject = Subject::create(['name' => 'Mathematics']);
+
+    $exam = Exam::create([
+        'title' => 'Timed Out Exam',
+        'exam_code' => 'TIMEOUT1',
+        'subject_id' => $subject->id,
+        'class_id' => $class->id,
+        'total_items' => 1,
+        'created_by' => $teacher->id,
+        'status' => 'published',
+        'duration' => 30,
+        'passing_score' => 1,
+    ]);
+
+    $attempt = ExamAttempt::create([
+        'exam_id' => $exam->id,
+        'student_id' => $student->id,
+        'status' => 'ongoing',
+        'started_at' => now()->subMinutes(31),
+    ]);
+
+    expect($attempt->markTimedOutIfExpired())->toBeTrue()
+        ->and($attempt->fresh()->status)->toBe('timed_out');
 });
