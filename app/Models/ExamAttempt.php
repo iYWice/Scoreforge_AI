@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ActivityLogger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -82,6 +83,16 @@ class ExamAttempt extends Model
             now()->gte($this->exam->effectiveDeadline($this->started_at))
         ) {
             $this->update(['status' => 'timed_out']);
+
+            app(ActivityLogger::class)->log(
+                'exam.timed_out',
+                'Student examination attempt timed out.',
+                $this,
+                [
+                    'exam_id' => $this->exam_id,
+                    'deadline' => $this->exam->effectiveDeadline($this->started_at)->toIso8601String(),
+                ]
+            );
 
             return true;
         }

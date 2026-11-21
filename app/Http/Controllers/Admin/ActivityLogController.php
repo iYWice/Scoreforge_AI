@@ -69,6 +69,7 @@ class ActivityLogController extends Controller
                 'Email',
                 'Action',
                 'Description',
+                'Properties',
             ]);
 
             ActivityLog::with('user')
@@ -112,6 +113,7 @@ class ActivityLogController extends Controller
                             $log->user?->email,
                             $log->action,
                             $log->description,
+                            $log->properties ? json_encode($log->properties) : '',
                         ]);
                     }
                 });

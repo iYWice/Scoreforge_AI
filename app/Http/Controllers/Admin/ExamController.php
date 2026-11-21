@@ -83,7 +83,16 @@ class ExamController extends Controller
         } while (Exam::where('exam_code', $examCode)->exists());
 
         $exam = Exam::create(array_merge($data, ['exam_code' => $examCode]));
-        $logger->log('exam.created', 'Administrator created an examination.', $exam);
+        $logger->log(
+            'exam.created',
+            'Administrator created an examination.',
+            $exam,
+            [
+                'randomize_questions' => (bool) $exam->randomize_questions,
+                'opens_at' => $exam->opens_at?->toIso8601String(),
+                'closes_at' => $exam->closes_at?->toIso8601String(),
+            ]
+        );
 
         return back()->with('success', 'Examination created successfully.');
     }
@@ -107,7 +116,17 @@ class ExamController extends Controller
         abort_unless(User::whereKey($data['created_by'])->where('role', 'teacher')->exists(), 422);
 
         $exam->update($data);
-        $logger->log('exam.updated', 'Administrator updated an examination.', $exam);
+        $logger->log(
+            'exam.updated',
+            'Administrator updated an examination.',
+            $exam,
+            [
+                'randomize_questions' => (bool) $exam->randomize_questions,
+                'opens_at' => $exam->opens_at?->toIso8601String(),
+                'closes_at' => $exam->closes_at?->toIso8601String(),
+                'status' => $exam->status,
+            ]
+        );
 
         return back()->with('success', 'Examination updated successfully.');
     }

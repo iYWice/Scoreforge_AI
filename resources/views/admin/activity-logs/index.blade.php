@@ -69,6 +69,7 @@
                     <th class="px-5 py-4">Account ID</th>
                     <th class="px-5 py-4">Action</th>
                     <th class="px-5 py-4">Description</th>
+                    <th class="px-5 py-4">Details</th>
                 </tr>
             </thead>
 
@@ -111,10 +112,23 @@
                     <td class="max-w-sm px-5 py-4 text-slate-600">
                         {{ $log->description }}
                     </td>
+
+                    <td class="max-w-xs px-5 py-4 text-xs text-slate-500">
+                        @if(!empty($log->properties))
+                            @foreach($log->properties as $key => $value)
+                                <div>
+                                    <span class="font-semibold text-slate-700">{{ str_replace('_', ' ', ucwords($key, '_')) }}:</span>
+                                    {{ is_bool($value) ? ($value ? 'Yes' : 'No') : ($value ?? '—') }}
+                                </div>
+                            @endforeach
+                        @else
+                            —
+                        @endif
+                    </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="px-5 py-12 text-center text-slate-500">
+                    <td colspan="7" class="px-5 py-12 text-center text-slate-500">
                         No activity logs found.
                     </td>
                 </tr>

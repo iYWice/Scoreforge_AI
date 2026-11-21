@@ -172,7 +172,11 @@ class ExamAttemptController extends Controller
             'exam.started',
             'Student started an examination.',
             $attempt,
-            ['exam_id' => $exam->id]
+            [
+                'exam_id' => $exam->id,
+                'randomize_questions' => (bool) $exam->randomize_questions,
+                'question_count' => count($questionIds),
+            ]
         );
 
         return redirect()->route(
@@ -206,6 +210,16 @@ class ExamAttemptController extends Controller
 
             if (now()->gte($endTime)) {
                 $attempt->update(['status' => 'timed_out']);
+
+                app(ActivityLogger::class)->log(
+                    'exam.timed_out',
+                    'Student examination attempt timed out.',
+                    $attempt,
+                    [
+                        'exam_id' => $attempt->exam_id,
+                        'deadline' => $endTime->toIso8601String(),
+                    ]
+                );
 
                 return redirect()
                     ->route('student.dashboard')
@@ -431,7 +445,12 @@ class ExamAttemptController extends Controller
             'exam.submitted',
             'Student submitted an examination.',
             $attempt,
-            ['exam_id' => $attempt->exam_id]
+            [
+                'exam_id' => $attempt->exam_id,
+                'score' => $attempt->score,
+                'total_score' => $attempt->total_score,
+                'randomize_questions' => (bool) $attempt->exam->randomize_questions,
+            ]
         );
 
         return redirect()->route(
@@ -493,6 +512,17 @@ class ExamAttemptController extends Controller
 
         $reviewTopics = $topicStats->filter(fn ($topic) => $topic['percentage'] < 75);
         $strengthTopics = $topicStats->filter(fn ($topic) => $topic['percentage'] >= 75);
+
+        app(ActivityLogger::class)->log(
+            'exam.result_viewed',
+            'Student viewed an examination result.',
+            $attempt,
+            [
+                'exam_id' => $attempt->exam_id,
+                'score' => $attempt->score,
+                'total_score' => $attempt->total_score,
+            ]
+        );
 
         return view(
             'student.exam.result',

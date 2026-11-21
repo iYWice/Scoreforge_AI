@@ -109,7 +109,12 @@ class ExamController extends Controller
         app(ActivityLogger::class)->log(
             'exam.created',
             'Teacher created an examination.',
-            $exam
+            $exam,
+            [
+                'randomize_questions' => (bool) $exam->randomize_questions,
+                'opens_at' => $exam->opens_at?->toIso8601String(),
+                'closes_at' => $exam->closes_at?->toIso8601String(),
+            ]
         );
 
         if ($request->expectsJson()) {
@@ -251,7 +256,13 @@ class ExamController extends Controller
         app(ActivityLogger::class)->log(
             'exam.updated',
             'Teacher updated an examination.',
-            $exam
+            $exam,
+            [
+                'randomize_questions' => (bool) $exam->randomize_questions,
+                'opens_at' => $exam->opens_at?->toIso8601String(),
+                'closes_at' => $exam->closes_at?->toIso8601String(),
+                'status' => $exam->status,
+            ]
         );
 
         return redirect()
