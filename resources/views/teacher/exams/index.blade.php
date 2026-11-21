@@ -570,6 +570,22 @@ $closedCount = $exams->where('status', 'closed')->count();
 
 
 
+                        {{-- Randomized Question Order --}}
+                        <div class="md:col-span-2">
+                            <label class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="randomize_questions"
+                                    value="1"
+                                    checked
+                                    class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                <span>
+                                    <span class="block text-sm font-semibold text-slate-800">Randomize question order</span>
+                                    <span class="mt-0.5 block text-xs text-slate-500">Each student receives the questions in a shuffled order.</span>
+                                </span>
+                            </label>
+                        </div>
+
                         {{-- Schedule --}}
                         <div>
                             <label for="exam_opens_at" class="mb-2 block text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-500">
@@ -1196,9 +1212,8 @@ if (examClassSelect && examSubjectSelect) {
         Array.from(examSubjectSelect.options).forEach(function (option, index) {
             if (index === 0) return;
 
-            const belongs toClass = option.dataset.classId === selectedClassId;
-            option.hidden = !belongsToClass;
-            option.disabled = !belongsToClass;
+            option.hidden = option.dataset.classId !== selectedClassId;
+            option.disabled = option.dataset.classId !== selectedClassId;
         });
 
         examSubjectSelect.disabled = !selectedClassId;
