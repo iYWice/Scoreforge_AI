@@ -568,6 +568,32 @@ $closedCount = $exams->where('status', 'closed')->count();
 
                         </div>
 
+
+
+                        {{-- Schedule --}}
+                        <div>
+                            <label for="exam_opens_at" class="mb-2 block text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-500">
+                                Opens At (Optional)
+                            </label>
+                            <input
+                                id="exam_opens_at"
+                                type="datetime-local"
+                                name="opens_at"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                        </div>
+
+                        <div>
+                            <label for="exam_closes_at" class="mb-2 block text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-500">
+                                Deadline (Optional)
+                            </label>
+                            <input
+                                id="exam_closes_at"
+                                type="datetime-local"
+                                name="closes_at"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                            <p class="mt-1 text-xs text-slate-400">Leave empty to keep the exam open permanently.</p>
+                        </div>
+
                     </div>
 
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Exam extends Model
 {
@@ -24,7 +25,17 @@ class Exam extends Model
         'status',
         'duration',
         'passing_score',
+        'opens_at',
+        'closes_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'opens_at' => 'datetime',
+            'closes_at' => 'datetime',
+        ];
+    }
 
     public function subject()
     {
@@ -89,5 +100,53 @@ class Exam extends Model
             ->whereKey($this->getKey())
             ->availableToStudent($student)
             ->exists();
+    }
+
+    public function isWithinAvailabilityWindow(): bool
+    {
+        if ($this->status !== 'published') {
+            return false;
+        }
+
+        if ($this->opens_at !== null && now()->lt($this->opens_at)) {
+            return false;
+        }
+
+        if ($this->closes_at !== null && now()->gte($this->closes_at)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function availabilityMessage(): string
+    {
+        if ($this->status !== 'published') {
+            return 'This exam is not published.';
+        }
+
+        if ($this->opens_at !== null && now()->lt($this->opens_at)) {
+            return 'This exam opens at '.$this->opens_at->format('F j, Y \\a\\t g:i A').' (Philippine Time).';
+        }
+
+        if ($this->closes_at !== null && now()->gte($this->closes_at)) {
+            return 'This exam deadline passed at '.$this->closes_at->format('F j, Y \\a\\t g:i A').' (Philippine Time).';
+        }
+
+        return 'This exam is open.';
+    }
+
+    public function effectiveDeadline($startedAt): Carbon
+    {
+        $durationDeadline = Carbon::parse($startedAt)
+            ->addMinutes((int) $this->duration);
+
+        if ($this->closes_at === null) {
+            return $durationDeadline;
+        }
+
+        return $durationDeadline->lt($this->closes_at)
+            ? $durationDeadline
+            : $this->closes_at->copy();
     }
 }

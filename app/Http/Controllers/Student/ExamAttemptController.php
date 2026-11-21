@@ -50,6 +50,15 @@ class ExamAttemptController extends Controller
             );
         }
 
+        if (! $exam->isWithinAvailabilityWindow()) {
+            return redirect()
+                ->route('student.dashboard')
+                ->with(
+                    'error',
+                    $exam->availabilityMessage()
+                );
+        }
+
         $this->authorizeExam($exam);
 
         $ongoingAttempt = ExamAttempt::where('exam_id', $exam->id)
@@ -101,6 +110,15 @@ class ExamAttemptController extends Controller
                 ->with(
                     'error',
                     'This exam is no longer available.'
+                );
+        }
+
+        if (! $exam->isWithinAvailabilityWindow()) {
+            return redirect()
+                ->route('student.dashboard')
+                ->with(
+                    'error',
+                    $exam->availabilityMessage()
                 );
         }
 
@@ -163,6 +181,12 @@ class ExamAttemptController extends Controller
     {
         $this->authorizeAttempt($attempt);
 
+        if (! $attempt->exam->isWithinAvailabilityWindow()) {
+            return redirect()
+                ->route('student.dashboard')
+                ->with('error', 'This exam is no longer open.');
+        }
+
         if ($attempt->status === 'completed') {
             return redirect()->route(
                 'student.exam.result',
@@ -170,11 +194,19 @@ class ExamAttemptController extends Controller
             );
         }
 
-        $durationMinutes = (int) $attempt->exam->duration;
+        if ($attempt->status === 'ongoing') {
+            $endTime = $attempt->exam->effectiveDeadline($attempt->started_at);
 
-        $endTime = $attempt->started_at
-            ->copy()
-            ->addMinutes($durationMinutes);
+            if (now()->gte($endTime)) {
+                $attempt->update(['status' => 'timed_out']);
+
+                return redirect()
+                    ->route('student.dashboard')
+                    ->with('error', 'Your exam time has expired.');
+            }
+        }
+
+        $endTime = $attempt->exam->effectiveDeadline($attempt->started_at);
 
         $remainingSeconds = max(
             0,
@@ -201,6 +233,16 @@ class ExamAttemptController extends Controller
     {
         $this->authorizeAttempt($attempt);
 
+        if (! $attempt->exam->isWithinAvailabilityWindow()) {
+            if ($attempt->status === 'ongoing') {
+                $attempt->update(['status' => 'timed_out']);
+            }
+
+            return redirect()
+                ->route('student.dashboard')
+                ->with('error', 'The exam deadline has passed.');
+        }
+
         if ($attempt->status === 'completed') {
             return redirect()
                 ->route(
@@ -217,16 +259,14 @@ class ExamAttemptController extends Controller
             'exam.questions.options'
         );
 
-        // Check exam deadline BEFORE saving anything
-        $deadline = $attempt->started_at
-            ->copy()
-            ->addMinutes($attempt->exam->duration);
+        // Check the effective deadline before saving anything.
+        $deadline = $attempt->exam->effectiveDeadline($attempt->started_at);
 
         if (
-            now()->greaterThan(
-                $deadline->copy()->addSeconds(30)
-            )
+            now()->greaterThan($deadline)
         ) {
+            $attempt->update(['status' => 'timed_out']);
+
             return redirect()
                 ->route('student.dashboard')
                 ->with(

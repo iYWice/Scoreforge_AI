@@ -167,6 +167,36 @@
 
 
     {{-- ====================================================== --}}
+    {{-- EXAM SCHEDULE                                          --}}
+    {{-- ====================================================== --}}
+
+    <section class="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-400">
+            Examination Schedule
+        </p>
+
+        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+            <div>
+                <p class="text-xs text-slate-400">Opens</p>
+                <p class="mt-1 text-sm font-bold text-slate-800">
+                    {{ $exam->opens_at ? $exam->opens_at->format('F j, Y · g:i A') : 'Immediately' }}
+                </p>
+            </div>
+
+            <div>
+                <p class="text-xs text-slate-400">Deadline</p>
+                <p class="mt-1 text-sm font-bold text-slate-800">
+                    {{ $exam->closes_at ? $exam->closes_at->format('F j, Y · g:i A') : 'No deadline — open permanently' }}
+                </p>
+            </div>
+        </div>
+
+        <p class="mt-3 text-[11px] text-slate-400">Times are shown in Philippine Time (Asia/Manila).</p>
+    </section>
+
+
+
+    {{-- ====================================================== --}}
     {{-- MAIN INSTRUCTIONS                                      --}}
     {{-- ====================================================== --}}
 

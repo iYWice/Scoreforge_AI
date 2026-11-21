@@ -209,6 +209,40 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 
+            {{-- Schedule --}}
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div class="space-y-1.5">
+                    <label for="opens_at" class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                        Opens At (Optional)
+                    </label>
+                    <input
+                        type="datetime-local"
+                        id="opens_at"
+                        name="opens_at"
+                        value="{{ old('opens_at', $exam->opens_at?->format('Y-m-d\TH:i')) }}"
+                        class="w-full rounded-xl border border-slate-200 px-4 py-3">
+                    @error('opens_at')
+                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="space-y-1.5">
+                    <label for="closes_at" class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+                        Deadline (Optional)
+                    </label>
+                    <input
+                        type="datetime-local"
+                        id="closes_at"
+                        name="closes_at"
+                        value="{{ old('closes_at', $exam->closes_at?->format('Y-m-d\TH:i')) }}"
+                        class="w-full rounded-xl border border-slate-200 px-4 py-3">
+                    <p class="mt-1 text-xs text-slate-500">Leave empty to keep the exam open permanently.</p>
+                    @error('closes_at')
+                        <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
             {{-- Action Buttons --}}
             <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
                 <a href="{{ route('teacher.exams.index') }}" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">

@@ -71,6 +71,8 @@ class ExamController extends Controller
             ],
             'total_items' => ['required', 'integer', 'min:1'],
             'duration' => ['required', 'integer', 'min:1'],
+            'opens_at' => ['nullable', 'date'],
+            'closes_at' => ['nullable', 'date', 'after:opens_at'],
         ]);
 
         $offeringExists = ClassSubject::where('class_id', $validated['class_id'])
@@ -96,6 +98,8 @@ class ExamController extends Controller
             'duration' => $validated['duration'],
             'passing_score' => $validated['passing_score'],
             'status' => 'draft',
+            'opens_at' => $validated['opens_at'] ?? null,
+            'closes_at' => $validated['closes_at'] ?? null,
         ]);
 
         app(ActivityLogger::class)->log(
@@ -125,11 +129,30 @@ class ExamController extends Controller
             abort(403, 'You are not authorized to view this exam.');
         }
 
-        $exam->load('attempts.student');
+        $exam->load(['attempts.student', 'class.classSubjects.students']);
+
+        $eligibleStudents = collect();
+
+        foreach ($exam->class?->classSubjects ?? collect() as $offering) {
+            if ((int) $offering->subject_id !== (int) $exam->subject_id) {
+                continue;
+            }
+
+            $eligibleStudents = $eligibleStudents
+                ->concat($offering->students)
+                ->unique('id');
+        }
+
+        $attemptedStudentIds = $exam->attempts
+            ->pluck('student_id')
+            ->unique();
+
+        $notTakenStudents = $eligibleStudents
+            ->whereNotIn('id', $attemptedStudentIds);
 
         return view(
             'teacher.exams.show',
-            compact('exam')
+            compact('exam', 'notTakenStudents')
         );
     }
 
@@ -176,6 +199,8 @@ class ExamController extends Controller
             ],
             'total_items' => ['required', 'integer', 'min:1'],
             'duration' => ['required', 'integer', 'min:1'],
+            'opens_at' => ['nullable', 'date'],
+            'closes_at' => ['nullable', 'date', 'after:opens_at'],
         ]);
 
         $validated['passing_score'] = (int) ceil($validated['total_items'] * 0.75);
@@ -250,6 +275,17 @@ class ExamController extends Controller
             return back()->with(
                 'error',
                 'You cannot publish an exam without questions.'
+            );
+        }
+
+        if (
+            $request->status === 'published' &&
+            $exam->closes_at !== null &&
+            now()->gte($exam->closes_at)
+        ) {
+            return back()->with(
+                'error',
+                'You cannot publish an exam after its deadline.'
             );
         }
 

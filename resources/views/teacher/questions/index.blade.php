@@ -584,7 +584,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                             name="question_text"
                             rows="4"
                             required
-                            placeholder="Type the question or prompt..."
+                            placeholder="Type the question..."
                             class="w-full rounded-xl border border-slate-200 bg-slate-50
                                    px-4 py-3 text-sm font-medium text-slate-800 outline-none
                                    transition-all placeholder:text-slate-400

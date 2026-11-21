@@ -120,14 +120,25 @@
                             {{ $exam->title }}
                         </h4>
 
-                        <span
-                            class="rounded-full bg-emerald-50
-                                       px-2 py-1
-                                       text-[9px] font-extrabold
-                                       uppercase tracking-wider
-                                       text-emerald-600">
-                            Published
-                        </span>
+                        @if($exam->opens_at && now()->lt($exam->opens_at))
+                            <span
+                                class="rounded-full bg-amber-50
+                                           px-2 py-1
+                                           text-[9px] font-extrabold
+                                           uppercase tracking-wider
+                                           text-amber-700">
+                                Upcoming
+                            </span>
+                        @else
+                            <span
+                                class="rounded-full bg-emerald-50
+                                           px-2 py-1
+                                           text-[9px] font-extrabold
+                                           uppercase tracking-wider
+                                           text-emerald-600">
+                                Open
+                            </span>
+                        @endif
 
                     </div>
 
@@ -138,6 +149,19 @@
                         </span>
                     </p>
 
+                    <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-medium text-slate-500">
+                        @if($exam->opens_at)
+                            <span>Opens: {{ $exam->opens_at->format('M j, Y · g:i A') }}</span>
+                        @else
+                            <span>Opens: Immediately</span>
+                        @endif
+
+                        @if($exam->closes_at)
+                            <span>Deadline: {{ $exam->closes_at->format('M j, Y · g:i A') }}</span>
+                        @else
+                            <span>No deadline</span>
+                        @endif
+                    </div>
                 </div>
 
 

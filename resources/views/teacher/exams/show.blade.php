@@ -75,6 +75,12 @@ $ongoingCount = $attempts
 ->where('status', 'ongoing')
 ->count();
 
+$timedOutCount = $attempts
+->where('status', 'timed_out')
+->count();
+
+$notTakenCount = $notTakenStudents->count();
+
 
 /*
 * Calculate an average percentage safely.
@@ -948,6 +954,16 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                         </div>
 
+                        <div class="flex items-center justify-between py-3">
+                            <dt class="text-xs font-medium text-slate-500">Timed out</dt>
+                            <dd class="text-xs font-bold text-rose-600">{{ $timedOutCount }}</dd>
+                        </div>
+
+                        <div class="flex items-center justify-between py-3">
+                            <dt class="text-xs font-medium text-slate-500">Not taken</dt>
+                            <dd class="text-xs font-bold text-slate-600">{{ $notTakenCount }}</dd>
+                        </div>
+
                     </dl>
 
                 </div>
@@ -1116,6 +1132,15 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                                 Taking exam
 
+                            </span>
+
+                            @elseif($attempt->status === 'timed_out')
+
+                            <span
+                                class="inline-flex items-center gap-1.5
+                                       text-[10px] font-bold text-rose-600">
+                                <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
+                                Ran out of time
                             </span>
 
                             @elseif($attempt->status === 'completed')
@@ -1301,6 +1326,48 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                         </div>
 
+                        <div
+                            class="h-8 w-px bg-slate-200">
+                        </div>
+
+                        <div class="text-right">
+
+                            <p
+                                class="text-[9px] font-extrabold
+                                   uppercase tracking-wider
+                                   text-slate-400">
+                                Timed Out
+                            </p>
+
+                            <p
+                                class="mt-1 text-lg font-black
+                                   text-slate-950">
+                                {{ $timedOutCount }}
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="h-8 w-px bg-slate-200">
+                        </div>
+
+                        <div class="text-right">
+
+                            <p
+                                class="text-[9px] font-extrabold
+                                   uppercase tracking-wider
+                                   text-slate-400">
+                                Not Taken
+                            </p>
+
+                            <p
+                                class="mt-1 text-lg font-black
+                                   text-slate-950">
+                                {{ $notTakenCount }}
+                            </p>
+
+                        </div>
+
                     </div>
 
                 </div>
@@ -1469,6 +1536,15 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                                             Taking exam
 
+                                        </span>
+
+                                        @elseif($attempt->status === 'timed_out')
+
+                                        <span
+                                            class="inline-flex items-center gap-1.5
+                                                   text-[10px] font-bold text-rose-600">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
+                                            Ran out of time
                                         </span>
 
                                         @elseif($attempt->status === 'completed')
