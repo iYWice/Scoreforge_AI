@@ -448,9 +448,38 @@ class ExamAttemptController extends Controller
             'answers.question.options',
         ]);
 
+        $topicStats = $attempt->exam->questions
+            ->map(function ($question) use ($attempt) {
+                $answer = $attempt->answers->firstWhere('question_id', $question->id);
+
+                return [
+                    'topic' => trim((string) $question->topic),
+                    'correct' => (bool) ($answer?->is_correct ?? false),
+                ];
+            })
+            ->filter(fn ($item) => $item['topic'] !== '')
+            ->groupBy('topic')
+            ->map(function ($items, $topic) {
+                $total = $items->count();
+                $correct = $items->where('correct', true)->count();
+
+                return [
+                    'topic' => $topic,
+                    'correct' => $correct,
+                    'incorrect' => $total - $correct,
+                    'total' => $total,
+                    'percentage' => $total > 0 ? round(($correct / $total) * 100, 1) : 0,
+                ];
+            })
+            ->sortBy('percentage')
+            ->values();
+
+        $reviewTopics = $topicStats->filter(fn ($topic) => $topic['percentage'] < 75);
+        $strengthTopics = $topicStats->filter(fn ($topic) => $topic['percentage'] >= 75);
+
         return view(
             'student.exam.result',
-            compact('attempt')
+            compact('attempt', 'topicStats', 'reviewTopics', 'strengthTopics')
         );
     }
 

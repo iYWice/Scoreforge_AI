@@ -481,6 +481,69 @@
 <section class="border-t border-slate-200 py-8">
     <div class="mb-5">
         <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">
+            Topic Analysis
+        </p>
+        <h2 class="mt-1 text-xl font-extrabold text-slate-950">
+            Strengths and areas for review
+        </h2>
+        <p class="mt-1 text-sm text-slate-500">
+            Topic performance for this examination only.
+        </p>
+    </div>
+
+    <div class="grid gap-4 lg:grid-cols-2">
+        <div class="rounded-xl border border-rose-200 bg-rose-50/40 p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-rose-600">
+                Areas for Review
+            </p>
+
+            <div class="mt-3 divide-y divide-rose-100">
+                @forelse($reviewTopics as $topic)
+                    <div class="flex items-start justify-between gap-4 py-3">
+                        <div>
+                            <p class="text-sm font-bold text-slate-800">{{ $topic['topic'] }}</p>
+                            <p class="mt-1 text-xs text-slate-500">
+                                {{ $topic['incorrect'] }} incorrect out of {{ $topic['total'] }}
+                            </p>
+                        </div>
+                        <span class="text-sm font-black text-rose-600">
+                            {{ number_format($topic['percentage'], 1) }}%
+                        </span>
+                    </div>
+                @empty
+                    <p class="py-3 text-xs text-slate-500">No areas for review in this exam.</p>
+                @endforelse
+            </div>
+        </div>
+
+        <div class="rounded-xl border border-emerald-200 bg-emerald-50/40 p-5">
+            <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-emerald-600">
+                Strong Areas
+            </p>
+
+            <div class="mt-3 divide-y divide-emerald-100">
+                @forelse($strengthTopics as $topic)
+                    <div class="flex items-start justify-between gap-4 py-3">
+                        <div>
+                            <p class="text-sm font-bold text-slate-800">{{ $topic['topic'] }}</p>
+                            <p class="mt-1 text-xs text-slate-500">
+                                {{ $topic['correct'] }} correct out of {{ $topic['total'] }}
+                            </p>
+                        </div>
+                        <span class="text-sm font-black text-emerald-600">
+                            {{ number_format($topic['percentage'], 1) }}%
+                        </span>
+                    </div>
+                @empty
+                    <p class="py-3 text-xs text-slate-500">No strong topic areas in this exam.</p>
+                @endforelse
+            </div>
+        </div>
+    </div>
+</section>
+<section class="border-t border-slate-200 py-8">
+    <div class="mb-5">
+        <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">
             Exam Content
         </p>
         <h2 class="mt-1 text-xl font-extrabold text-slate-950">
@@ -588,6 +651,7 @@
         @endforelse
     </div>
 </section>
+
 
 
     {{-- ====================================================== --}}
