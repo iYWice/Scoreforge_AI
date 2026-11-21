@@ -21,6 +21,8 @@ class ExamController extends Controller
 
     public function index()
     {
+        Exam::closeExpiredForTeacher(auth()->user());
+
         $exams = Exam::where('created_by', auth()->id())
             ->withCount('questions')
             ->get();
@@ -129,6 +131,7 @@ class ExamController extends Controller
             abort(403, 'You are not authorized to view this exam.');
         }
 
+        $exam->closeIfExpired();
         $exam->load(['attempts.student', 'class.classSubjects.students']);
 
         $eligibleStudents = collect();
@@ -145,6 +148,7 @@ class ExamController extends Controller
 
         $attemptedStudentIds = $exam->attempts
             ->pluck('student_id')
+            ->filter()
             ->unique();
 
         $notTakenStudents = $eligibleStudents

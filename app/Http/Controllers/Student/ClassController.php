@@ -21,7 +21,11 @@ class ClassController extends Controller
             ])
             ->withCount([
                 'exams as published_exams_count' => function ($query) {
-                    $query->where('status', 'published');
+                    $query->where('status', 'published')
+                        ->where(function ($availability) {
+                            $availability->whereNull('closes_at')
+                                ->orWhere('closes_at', '>', now());
+                        });
                 },
             ])
             ->latest('class_enrollments.created_at')
@@ -127,6 +131,10 @@ class ClassController extends Controller
             },
             'exams' => function ($query) use ($student) {
                 $query->where('status', 'published')
+                    ->where(function ($availability) {
+                        $availability->whereNull('closes_at')
+                            ->orWhere('closes_at', '>', now());
+                    })
                     ->availableToStudent($student)
                     ->latest();
             },

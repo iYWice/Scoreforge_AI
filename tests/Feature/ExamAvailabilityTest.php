@@ -98,5 +98,70 @@ it('renders the teacher exam response page', function () {
     $this->actingAs($teacher)
         ->get(route('teacher.exams.show', $exam))
         ->assertSuccessful()
-        ->assertViewHas('notTakenStudents');
+        ->assertViewHas('notTakenStudents', function ($notTakenStudents) use ($student) {
+            return $notTakenStudents->contains('id', $student->id);
+        });
+});
+
+it('hides expired published exams from the student class page', function () {
+    $teacher = User::factory()->create(['role' => 'teacher']);
+    $student = User::factory()->create(['role' => 'student']);
+    $class = SchoolClass::create([
+        'name' => 'Grade 7',
+        'created_by' => $teacher->id,
+    ]);
+    $subject = Subject::create(['name' => 'Mathematics']);
+    $offering = ClassSubject::create([
+        'class_id' => $class->id,
+        'subject_id' => $subject->id,
+        'teacher_id' => $teacher->id,
+        'edp_code' => '789012',
+        'schedule' => 'Mon | 09:00-10:00',
+    ]);
+
+    $class->students()->attach($student->id);
+    $offering->students()->attach($student->id, ['assigned_by' => $teacher->id]);
+
+    $exam = Exam::create([
+        'title' => 'Expired Mathematics Exam',
+        'exam_code' => 'EXPIRED1',
+        'subject_id' => $subject->id,
+        'class_id' => $class->id,
+        'total_items' => 1,
+        'created_by' => $teacher->id,
+        'status' => 'published',
+        'duration' => 60,
+        'passing_score' => 1,
+        'closes_at' => now()->subMinute(),
+    ]);
+
+    $this->actingAs($student)
+        ->get(route('student.classes.show', $class))
+        ->assertSuccessful()
+        ->assertDontSee($exam->title);
+});
+
+it('closes a published exam when its deadline is reached', function () {
+    $teacher = User::factory()->create(['role' => 'teacher']);
+    $class = SchoolClass::create([
+        'name' => 'Grade 7',
+        'created_by' => $teacher->id,
+    ]);
+    $subject = Subject::create(['name' => 'Mathematics']);
+
+    $exam = Exam::create([
+        'title' => 'Deadline Mathematics Exam',
+        'exam_code' => 'DEADLINE1',
+        'subject_id' => $subject->id,
+        'class_id' => $class->id,
+        'total_items' => 1,
+        'created_by' => $teacher->id,
+        'status' => 'published',
+        'duration' => 60,
+        'passing_score' => 1,
+        'closes_at' => now()->subMinute(),
+    ]);
+
+    expect($exam->closeIfExpired())->toBeTrue()
+        ->and($exam->fresh()->status)->toBe('closed');
 });

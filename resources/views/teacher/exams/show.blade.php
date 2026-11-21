@@ -1107,6 +1107,21 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                                 </p>
 
+                                <p
+                                    class="mt-0.5 text-[10px]
+                                               font-medium text-slate-400">
+                                    @if($attempt->submitted_at)
+                                        Finished {{ \Carbon\Carbon::parse($attempt->submitted_at)->format('M d, Y • h:i A') }}
+                                        @if($exam->closes_at && $attempt->submitted_at->lte($exam->closes_at))
+                                            <span class="block text-emerald-600">Within open hours</span>
+                                        @elseif($exam->closes_at)
+                                            <span class="block text-rose-600">After deadline</span>
+                                        @endif
+                                    @else
+                                        Finish time unavailable
+                                    @endif
+                                </p>
+
                             </div>
 
                         </div>

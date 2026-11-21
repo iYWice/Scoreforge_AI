@@ -206,6 +206,8 @@ class ExamAttemptController extends Controller
             }
         }
 
+        $attempt->markTimedOutIfExpired();
+
         $endTime = $attempt->exam->effectiveDeadline($attempt->started_at);
 
         $remainingSeconds = max(

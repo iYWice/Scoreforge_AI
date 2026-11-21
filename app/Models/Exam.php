@@ -149,4 +149,29 @@ class Exam extends Model
             ? $durationDeadline
             : $this->closes_at->copy();
     }
+
+    public function closeIfExpired(): bool
+    {
+        if (
+            $this->status === 'published' &&
+            $this->closes_at !== null &&
+            now()->gte($this->closes_at)
+        ) {
+            $this->update(['status' => 'closed']);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function closeExpiredForTeacher(User $teacher): void
+    {
+        static::query()
+            ->where('created_by', $teacher->getKey())
+            ->where('status', 'published')
+            ->whereNotNull('closes_at')
+            ->where('closes_at', '<=', now())
+            ->update(['status' => 'closed']);
+    }
 }

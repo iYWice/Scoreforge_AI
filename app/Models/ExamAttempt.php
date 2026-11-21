@@ -2,17 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Answer;
-use App\Models\Exam;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-
 class ExamAttempt extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'student_id',
         'exam_id',
@@ -21,13 +18,13 @@ class ExamAttempt extends Model
         'started_at',
         'submitted_at',
         'total_score',
-            'retake_allowed',
+        'retake_allowed',
     ];
 
     protected $casts = [
         'started_at' => 'datetime',
         'submitted_at' => 'datetime',
-            'retake_allowed' => 'boolean',
+        'retake_allowed' => 'boolean',
     ];
 
     public function student()
@@ -44,10 +41,11 @@ class ExamAttempt extends Model
     {
         return $this->hasMany(Answer::class, 'attempt_id');
     }
+
     public function startExam(Request $request)
     {
         $request->validate([
-            'exam_code' => 'required'
+            'exam_code' => 'required',
         ]);
 
         $exam = Exam::where(
@@ -57,7 +55,7 @@ class ExamAttempt extends Model
             ->where('status', 'published')
             ->first();
 
-        if (!$exam) {
+        if (! $exam) {
 
             return back()->with(
                 'error',
@@ -72,5 +70,20 @@ class ExamAttempt extends Model
                 'remainingSeconds'
             )
         );
+    }
+
+    public function markTimedOutIfExpired(): bool
+    {
+        if (
+            $this->status === 'ongoing' &&
+            $this->started_at !== null &&
+            now()->gte($this->exam->effectiveDeadline($this->started_at))
+        ) {
+            $this->update(['status' => 'timed_out']);
+
+            return true;
+        }
+
+        return false;
     }
 }
