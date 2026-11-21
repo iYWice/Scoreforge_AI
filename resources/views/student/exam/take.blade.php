@@ -5,7 +5,7 @@
 @section('content')
 
 @php
-    $questions = $attempt->exam->questions;
+    $questions = $attempt->orderedQuestions();
     $totalQuestions = $questions->count();
 @endphp
 

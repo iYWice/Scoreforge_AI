@@ -75,6 +75,7 @@ class ExamController extends Controller
             'duration' => ['required', 'integer', 'min:1'],
             'opens_at' => ['nullable', 'date'],
             'closes_at' => ['nullable', 'date', 'after:opens_at'],
+            'randomize_questions' => ['nullable', 'boolean'],
         ]);
 
         $offeringExists = ClassSubject::where('class_id', $validated['class_id'])
@@ -102,6 +103,7 @@ class ExamController extends Controller
             'status' => 'draft',
             'opens_at' => $validated['opens_at'] ?? null,
             'closes_at' => $validated['closes_at'] ?? null,
+            'randomize_questions' => $request->boolean('randomize_questions'),
         ]);
 
         app(ActivityLogger::class)->log(
@@ -208,6 +210,8 @@ class ExamController extends Controller
             'opens_at' => ['nullable', 'date'],
             'closes_at' => ['nullable', 'date', 'after:opens_at'],
         ]);
+
+        $validated['randomize_questions'] = $request->boolean('randomize_questions');
 
         $exam->closeIfExpired();
 

@@ -7,6 +7,10 @@
 
 @php
 
+    $topicStats = $topicStats ?? collect();
+    $reviewTopics = $reviewTopics ?? collect();
+    $strengthTopics = $strengthTopics ?? collect();
+
     $score = (float) ($attempt->score ?? 0);
     $totalScore = (float) ($attempt->total_score ?? 0);
 
@@ -478,7 +482,7 @@
     $answersByQuestion = $attempt->answers->keyBy('question_id');
 @endphp
 
-<section class="border-t border-slate-200 py-8">
+<!-- <section class="border-t border-slate-200 py-8">
     <div class="mb-5">
         <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">
             Topic Analysis
@@ -540,7 +544,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 <section class="border-t border-slate-200 py-8">
     <div class="mb-5">
         <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">

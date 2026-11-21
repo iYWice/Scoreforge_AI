@@ -253,3 +253,29 @@ it('marks an overdue ongoing attempt as timed out', function () {
     expect($attempt->markTimedOutIfExpired())->toBeTrue()
         ->and($attempt->fresh()->status)->toBe('timed_out');
 });
+
+it('defaults to randomized questions and preserves an attempt question order', function () {
+    $exam = new Exam([
+        'title' => 'Question Order Exam',
+        'status' => 'published',
+    ]);
+
+    expect($exam->randomize_questions)->toBeTrue();
+
+    $questions = collect([
+        new Question(['question_text' => 'One']),
+        new Question(['question_text' => 'Two']),
+        new Question(['question_text' => 'Three']),
+    ]);
+    $questions->each(function ($question, $index) {
+        $question->id = $index + 1;
+    });
+
+    $exam->setRelation('questions', $questions);
+
+    $attempt = new ExamAttempt(['question_order' => [3, 1, 2]]);
+    $attempt->setRelation('exam', $exam);
+
+    expect($attempt->orderedQuestions()->pluck('id')->all())
+        ->toBe([3, 1, 2]);
+});

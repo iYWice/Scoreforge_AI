@@ -789,6 +789,17 @@ $closedCount = $exams->where('status', 'closed')->count();
                                     {{ $exam->exam_code }}
                                 </span>
 
+                                <span
+                                    class="inline-flex items-center gap-1.5 rounded-full
+                                           px-2.5 py-1 text-[9px] font-bold
+                                           {{ $exam->randomize_questions
+                                               ? 'bg-violet-50 text-violet-700'
+                                               : 'bg-slate-100 text-slate-500' }}">
+                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
+                                    </svg>
+                                    {{ $exam->randomize_questions ? 'Randomized' : 'Fixed order' }}
+                                </span>
                             </div>
 
 
@@ -1185,7 +1196,7 @@ if (examClassSelect && examSubjectSelect) {
         Array.from(examSubjectSelect.options).forEach(function (option, index) {
             if (index === 0) return;
 
-            const belongsToClass = option.dataset.classId === selectedClassId;
+            const belongs toClass = option.dataset.classId === selectedClassId;
             option.hidden = !belongsToClass;
             option.disabled = !belongsToClass;
         });

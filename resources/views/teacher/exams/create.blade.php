@@ -155,6 +155,20 @@
     </div>
 </div>
 
+            {{-- RANDOMIZED QUESTION ORDER --}}
+            <label class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+                <input
+                    type="checkbox"
+                    name="randomize_questions"
+                    value="1"
+                    @checked(old('randomize_questions', '1') == '1')
+                    class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                <span>
+                    <span class="block text-sm font-semibold text-slate-800">Randomize question order</span>
+                    <span class="mt-0.5 block text-xs text-slate-500">Each student receives the questions in a shuffled order.</span>
+                </span>
+            </label>
+
             {{-- ACTION BUTTON --}}
             <div class="pt-3">
                 <button

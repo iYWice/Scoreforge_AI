@@ -71,7 +71,10 @@ class ExamController extends Controller
             'duration' => ['required', 'integer', 'min:1'],
             'passing_score' => ['required', 'integer', 'min:0', 'max:100'],
             'status' => ['required', 'in:draft,published,closed'],
+            'randomize_questions' => ['nullable', 'boolean'],
         ]);
+
+        $data['randomize_questions'] = $request->boolean('randomize_questions');
 
         abort_unless(User::whereKey($data['created_by'])->where('role', 'teacher')->exists(), 422);
 
@@ -96,7 +99,10 @@ class ExamController extends Controller
             'duration' => ['required', 'integer', 'min:1'],
             'passing_score' => ['required', 'integer', 'min:0', 'max:100'],
             'status' => ['required', 'in:draft,published,closed'],
+            'randomize_questions' => ['nullable', 'boolean'],
         ]);
+
+        $data['randomize_questions'] = $request->boolean('randomize_questions');
 
         abort_unless(User::whereKey($data['created_by'])->where('role', 'teacher')->exists(), 422);
 

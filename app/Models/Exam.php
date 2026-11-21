@@ -27,6 +27,11 @@ class Exam extends Model
         'passing_score',
         'opens_at',
         'closes_at',
+        'randomize_questions',
+    ];
+
+    protected $attributes = [
+        'randomize_questions' => true,
     ];
 
     protected function casts(): array
@@ -34,6 +39,7 @@ class Exam extends Model
         return [
             'opens_at' => 'datetime',
             'closes_at' => 'datetime',
+            'randomize_questions' => 'boolean',
         ];
     }
 

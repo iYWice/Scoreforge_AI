@@ -153,12 +153,19 @@ class ExamAttemptController extends Controller
             $latestCompletedAttempt->update(['retake_allowed' => false]);
         }
 
+        $questionIds = $exam->questions()->pluck('id')->all();
+
+        if ($exam->randomize_questions) {
+            shuffle($questionIds);
+        }
+
         // Create attempt only when none exists
         $attempt = ExamAttempt::create([
             'exam_id' => $exam->id,
             'student_id' => auth()->id(),
             'started_at' => now(),
             'status' => 'ongoing',
+            'question_order' => $questionIds,
         ]);
 
         app(ActivityLogger::class)->log(
@@ -218,9 +225,19 @@ class ExamAttemptController extends Controller
             )
         );
 
-        $attempt->load(
-            'exam.questions.options'
-        );
+        $attempt->load('exam.questions.options');
+
+        if (! is_array($attempt->question_order) || $attempt->question_order === []) {
+            $questionIds = $attempt->exam->questions->pluck('id')->all();
+
+            if ($attempt->exam->randomize_questions) {
+                shuffle($questionIds);
+            }
+
+            $attempt->update(['question_order' => $questionIds]);
+        }
+
+        $attempt->load('exam.questions.options');
 
         return view(
             'student.exam.take',

@@ -19,12 +19,14 @@ class ExamAttempt extends Model
         'submitted_at',
         'total_score',
         'retake_allowed',
+        'question_order',
     ];
 
     protected $casts = [
         'started_at' => 'datetime',
         'submitted_at' => 'datetime',
         'retake_allowed' => 'boolean',
+        'question_order' => 'array',
     ];
 
     public function student()
@@ -85,5 +87,23 @@ class ExamAttempt extends Model
         }
 
         return false;
+    }
+
+    public function orderedQuestions()
+    {
+        $questions = $this->exam->questions;
+        $order = $this->question_order ?? [];
+
+        if ($order === []) {
+            return $questions;
+        }
+
+        $byId = $questions->keyBy('id');
+
+        $ordered = collect($order)
+            ->map(fn ($id) => $byId->get((int) $id))
+            ->filter();
+
+        return $ordered->concat($questions->whereNotIn('id', $ordered->pluck('id')));
     }
 }
