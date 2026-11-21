@@ -158,7 +158,7 @@
                         </p>
                     </div>
 
-                    <div
+                    <!-- <div
                         class="flex items-center justify-between
                                        border-t border-slate-100 pt-4">
                         <span class="text-xs font-semibold text-slate-400">
@@ -168,7 +168,7 @@
                         <span class="text-sm font-extrabold text-slate-900">
                             {{ $class->published_exams_count }}
                         </span>
-                    </div>
+                    </div> -->
 
                 </div>
 
