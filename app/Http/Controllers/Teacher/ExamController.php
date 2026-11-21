@@ -169,6 +169,8 @@ class ExamController extends Controller
             abort(403, 'You are not authorized to edit this exam.');
         }
 
+        $exam->closeIfExpired();
+
         $classes = SchoolClass::where('created_by', auth()->id())
             ->with([
                 'classSubjects' => function ($query) {
@@ -207,9 +209,40 @@ class ExamController extends Controller
             'closes_at' => ['nullable', 'date', 'after:opens_at'],
         ]);
 
+        $exam->closeIfExpired();
+
         $validated['passing_score'] = (int) ceil($validated['total_items'] * 0.75);
 
         $exam->update($validated);
+
+        $newOpening = $validated['opens_at'] ?? null;
+        $newDeadline = $validated['closes_at'] ?? null;
+
+        if (
+            $request->boolean('publish_after_save') &&
+            $exam->questions()->count() === 0
+        ) {
+            return back()
+                ->withInput()
+                ->with('error', 'You cannot publish an exam without questions.');
+        }
+
+        if (
+            $request->boolean('publish_after_save') &&
+            $newDeadline !== null &&
+            now()->gte($newDeadline)
+        ) {
+            return back()
+                ->withInput()
+                ->with('error', 'The new deadline must be in the future.');
+        }
+
+        if (
+            $request->boolean('publish_after_save') &&
+            ($newOpening === null || now()->gte($newOpening))
+        ) {
+            $exam->update(['status' => 'published']);
+        }
 
         app(ActivityLogger::class)->log(
             'exam.updated',
@@ -279,17 +312,6 @@ class ExamController extends Controller
             return back()->with(
                 'error',
                 'You cannot publish an exam without questions.'
-            );
-        }
-
-        if (
-            $request->status === 'published' &&
-            $exam->closes_at !== null &&
-            now()->gte($exam->closes_at)
-        ) {
-            return back()->with(
-                'error',
-                'You cannot publish an exam after its deadline.'
             );
         }
 

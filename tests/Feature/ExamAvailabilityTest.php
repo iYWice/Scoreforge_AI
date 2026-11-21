@@ -2,6 +2,7 @@
 
 use App\Models\ClassSubject;
 use App\Models\Exam;
+use App\Models\Question;
 use App\Models\SchoolClass;
 use App\Models\Subject;
 use App\Models\User;
@@ -164,4 +165,58 @@ it('closes a published exam when its deadline is reached', function () {
 
     expect($exam->closeIfExpired())->toBeTrue()
         ->and($exam->fresh()->status)->toBe('closed');
+});
+
+it('allows a teacher to update and republish an expired exam', function () {
+    $teacher = User::factory()->create(['role' => 'teacher']);
+    $class = SchoolClass::create([
+        'name' => 'Grade 7',
+        'created_by' => $teacher->id,
+    ]);
+    $subject = Subject::create(['name' => 'Mathematics']);
+
+    $exam = Exam::create([
+        'title' => 'Expired Exam',
+        'exam_code' => 'REOPEN1',
+        'subject_id' => $subject->id,
+        'class_id' => $class->id,
+        'total_items' => 1,
+        'created_by' => $teacher->id,
+        'status' => 'closed',
+        'duration' => 60,
+        'passing_score' => 1,
+        'opens_at' => now()->subDay(),
+        'closes_at' => now()->subHour(),
+    ]);
+
+    Question::create([
+        'exam_id' => $exam->id,
+        'question_type' => 'identification',
+        'question_text' => 'What is 2 + 2?',
+        'correct_answer' => '4',
+        'points' => 1,
+    ]);
+
+    $newDeadline = now()->addDay();
+
+    $this->actingAs($teacher)
+        ->put(route('teacher.exams.update', $exam), [
+            'title' => $exam->title,
+            'subject_id' => $subject->id,
+            'class_id' => $class->id,
+            'total_items' => 1,
+            'duration' => 60,
+            'opens_at' => now()->subHour()->format('Y-m-d\TH:i'),
+            'closes_at' => $newDeadline->format('Y-m-d\TH:i'),
+        ])
+        ->assertRedirect();
+
+    expect($exam->fresh()->closes_at->format('Y-m-d H:i'))
+        ->toBe($newDeadline->format('Y-m-d H:i'));
+
+    $this->actingAs($teacher)
+        ->patch(route('teacher.exams.status', $exam), ['status' => 'published'])
+        ->assertRedirect();
+
+    expect($exam->fresh()->status)->toBe('published');
 });

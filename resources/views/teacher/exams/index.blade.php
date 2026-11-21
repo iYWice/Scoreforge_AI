@@ -1030,13 +1030,7 @@ $closedCount = $exams->where('status', 'closed')->count();
 
                                     <a
                                         href="{{ route('teacher.exams.edit', $exam->id) }}"
-                                        class="flex items-center
-                                                   rounded-lg px-3 py-2.5
-                                                   text-xs font-semibold
-                                                   text-slate-600
-                                                   transition-all
-                                                   hover:bg-slate-100
-                                                   hover:text-slate-950">
+                                        class="flex items-center rounded-lg px-3 py-2.5 text-xs font-semibold text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-950">
                                         Edit examination
                                     </a>
 

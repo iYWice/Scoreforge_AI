@@ -838,17 +838,8 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                         <a
                             href="{{ route('teacher.exams.edit', $exam->id) }}"
-                            class="rounded-lg border
-                               border-slate-700
-                               px-3 py-2
-                               text-[10px] font-bold
-                               text-slate-300
-                               transition-all
-                               hover:-translate-y-0.5
-                               hover:border-indigo-500
-                               hover:text-white
-                               active:scale-95">
-                            Edit
+                            class="rounded-lg border border-slate-700 px-3 py-2 text-[10px] font-bold text-slate-300 transition-all hover:-translate-y-0.5 hover:border-indigo-500 hover:text-white">
+                            Edit configuration
                         </a>
 
                     </div>
