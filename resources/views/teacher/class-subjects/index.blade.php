@@ -116,17 +116,6 @@
                     @enderror
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Description</label>
-                    <textarea name="description" rows="3" placeholder="Subject description..."
-                        class="w-full px-3.5 py-2.5 text-sm bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all resize-none"></textarea>
-                    @error('description', 'subjectCreation')
-                    <p class="text-rose-400 text-xs mt-1.5">
-                        {{ $message }}
-                    </p>
-                    @enderror
-                </div>
-
                 <button type="submit" :disabled="loading"
                     class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-semibold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
                     <svg x-show="loading" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" x-cloak>
@@ -204,9 +193,6 @@
                     <h3 class="font-semibold text-white text-sm">
                         {{ $subject->name }}
                     </h3>
-                    <p class="text-xs text-slate-400">
-                        {{ $subject->description ?: 'No description added.' }}
-                    </p>
                 </div>
 
                 <form method="POST" action="{{ route('teacher.subjects.destroy', $subject->id) }}" onsubmit="return confirm('Delete this subject?')">

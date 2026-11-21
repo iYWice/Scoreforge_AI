@@ -17,8 +17,7 @@ class SubjectController extends Controller
             ->withCount(['exams', 'classSubjects'])
             ->when($request->filled('search'), function ($query) use ($request): void {
                 $search = $request->string('search')->toString();
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%");
             })
             ->latest()
             ->paginate(10)
@@ -31,7 +30,6 @@ class SubjectController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:subjects,name'],
-            'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $subject = Subject::create($data);
@@ -44,7 +42,6 @@ class SubjectController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:subjects,name,'.$subject->id],
-            'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $subject->update($data);

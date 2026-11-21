@@ -53,13 +53,11 @@ class ClassSubjectController extends Controller
             'subjectCreation',
             [
                 'name' => 'required|string|max:255',
-                'description' => 'nullable|string|max:1000',
             ]
         );
 
         Subject::create([
             'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
         ]);
 
         return redirect()
@@ -188,32 +186,32 @@ class ClassSubjectController extends Controller
     }
 
     public function teacherSubjects()
-{
-    $offerings = ClassSubject::query()
-        ->where('teacher_id', auth()->id())
-        ->with(['subject', 'schoolClass.students', 'students'])
-        ->withCount('students')
-        ->latest()
-        ->get();
+    {
+        $offerings = ClassSubject::query()
+            ->where('teacher_id', auth()->id())
+            ->with(['subject', 'schoolClass.students', 'students'])
+            ->withCount('students')
+            ->latest()
+            ->get();
 
-    $classes = SchoolClass::query()
-        ->where('created_by', auth()->id())
-        ->with('students')
-        ->orderBy('name')
-        ->get();
+        $classes = SchoolClass::query()
+            ->where('created_by', auth()->id())
+            ->with('students')
+            ->orderBy('name')
+            ->get();
 
-    $students = User::query()
-        ->where('role', 'student')
-        ->orderBy('lname')
-        ->orderBy('fname')
-        ->get(['id', 'fname', 'lname', 'email']);
+        $students = User::query()
+            ->where('role', 'student')
+            ->orderBy('lname')
+            ->orderBy('fname')
+            ->get(['id', 'fname', 'lname', 'email']);
 
-    return view('teacher.subjects.index', compact(
-        'offerings',
-        'classes',
-        'students'
-    ));
-}
+        return view('teacher.subjects.index', compact(
+            'offerings',
+            'classes',
+            'students'
+        ));
+    }
 
     public function storeIndependentSubject(Request $request)
     {

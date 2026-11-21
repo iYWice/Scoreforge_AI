@@ -19,7 +19,6 @@ it('allows an admin to create and update subjects', function () {
     $this->actingAs($admin)
         ->post(route('admin.subjects.store'), [
             'name' => 'Mathematics',
-            'description' => 'Numbers and problem solving',
         ])
         ->assertSessionHasNoErrors();
 
@@ -28,7 +27,6 @@ it('allows an admin to create and update subjects', function () {
     $this->actingAs($admin)
         ->patch(route('admin.subjects.update', $subject), [
             'name' => 'Advanced Mathematics',
-            'description' => 'Advanced problem solving',
         ])
         ->assertSessionHasNoErrors();
 

@@ -870,7 +870,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                     <option
                                         value="draft"
                                         {{ $exam->status === 'draft' ? 'selected' : '' }}>
-                                        Draft
+                                        Disabled
                                     </option>
 
                                     <option

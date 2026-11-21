@@ -147,7 +147,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                      uppercase tracking-[0.16em] text-amber-700">
 
                         <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
-                        Draft
+                        Disabled
 
                     </span>
 

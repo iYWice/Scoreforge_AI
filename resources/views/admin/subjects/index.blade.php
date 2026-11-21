@@ -35,7 +35,6 @@
             <thead class="bg-slate-50 text-slate-600">
                 <tr>
                     <th class="px-5 py-4">Subject</th>
-                    <th class="px-5 py-4">Description</th>
                     <th class="px-5 py-4">Classes</th>
                     <th class="px-5 py-4">Exams</th>
                     <th class="px-5 py-4 text-right">Actions</th>
@@ -45,12 +44,11 @@
                 @forelse($subjects as $subject)
                 <tr>
                     <td class="px-5 py-4 font-semibold text-slate-900">{{ $subject->name }}</td>
-                    <td class="max-w-md px-5 py-4 text-slate-600">{{ $subject->description ?: '—' }}</td>
                     <td class="px-5 py-4">{{ $subject->class_subjects_count }}</td>
                     <td class="px-5 py-4">{{ $subject->exams_count }}</td>
                     <td class="px-5 py-4">
                         <div class="flex justify-end gap-3">
-                            <button type="button" @click="editSubject = {{ Illuminate\Support\Js::from(['id' => $subject->id, 'name' => $subject->name, 'description' => $subject->description]) }}"
+                            <button type="button" @click="editSubject = {{ Illuminate\Support\Js::from(['id' => $subject->id, 'name' => $subject->name]) }}"
                                 class="font-medium text-indigo-600 hover:underline">Edit</button>
                             <form method="POST" action="{{ route('admin.subjects.destroy', $subject) }}" onsubmit="return confirm('Delete this subject?')">
                                 @csrf
@@ -61,7 +59,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="px-5 py-10 text-center text-slate-500">No subjects found.</td></tr>
+                <tr><td colspan="4" class="px-5 py-10 text-center text-slate-500">No subjects found.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -75,7 +73,6 @@
             <form method="POST" action="{{ route('admin.subjects.store') }}" class="space-y-4">
                 @csrf
                 <input name="name" required maxlength="255" placeholder="Subject name" class="w-full rounded-xl border-slate-300">
-                <textarea name="description" maxlength="1000" placeholder="Description (optional)" class="w-full rounded-xl border-slate-300"></textarea>
                 <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white">Create Subject</button>
             </form>
         </div>
@@ -89,7 +86,6 @@
                     @csrf
                     @method('PATCH')
                     <input name="name" x-model="editSubject.name" required maxlength="255" class="w-full rounded-xl border-slate-300">
-                    <textarea name="description" x-model="editSubject.description" maxlength="1000" class="w-full rounded-xl border-slate-300"></textarea>
                     <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white">Save Changes</button>
                 </form>
             </template>
