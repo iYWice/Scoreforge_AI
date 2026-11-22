@@ -49,7 +49,7 @@ class RegisteredUserController extends Controller
             'lname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'role' => ['required', 'in:teacher,student'],
-            'account_id' => ['required', 'string', 'max:50'],
+            'account_id' => ['required', 'string', 'digits_between:1,50'],
             'password' => [
                 'required',
                 'confirmed',

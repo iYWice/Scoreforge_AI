@@ -1191,11 +1191,14 @@
                                     <div class="flex gap-2">
                                         <input
                                             id="account_id"
-                                            type="text"
+                                            type="number"
                                             name="account_id"
                                             value="{{ old('account_id') }}"
                                             autocomplete="off"
+                                            inputmode="numeric"
+                                            pattern="[0-9]*"
                                             maxlength="50"
+                                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                             placeholder="Enter your account ID"
                                             class="min-w-0 flex-1 rounded-xl
                                                    border border-slate-200

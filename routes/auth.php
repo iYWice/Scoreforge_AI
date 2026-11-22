@@ -48,6 +48,10 @@ Route::middleware('guest')->group(function () {
             return response()->json(['available' => false, 'message' => 'Select your account role first.']);
         }
 
+        if (! preg_match('/^[0-9]+$/', $value)) {
+            return response()->json(['available' => false, 'message' => 'Account ID must contain numbers only.']);
+        }
+
         $column = $role === 'student' ? 'student_id' : 'teacher_id';
         $taken = User::where($column, $value)->exists();
 

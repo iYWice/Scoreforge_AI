@@ -86,7 +86,10 @@
     <x-text-input
         id="student_id"
         class="mt-1.5 block w-full rounded-lg border-gray-300 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500"
-        type="text"
+        type="number"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
         name="student_id"
         :value="old('student_id')"
         autocomplete="off"
