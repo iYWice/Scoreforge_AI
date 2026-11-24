@@ -154,8 +154,6 @@ class UserController extends Controller
             array_diff_assoc($data, $user->only(array_keys($data)))
         );
 
-        $data['name'] = trim($data['fname'].' '.$data['lname']);
-
         $user->update($data);
 
         app(ActivityLogger::class)->log(
