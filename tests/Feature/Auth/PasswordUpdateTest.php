@@ -11,15 +11,15 @@ test('password can be updated', function () {
         ->from('/profile')
         ->put('/password', [
             'current_password' => 'password',
-            'password' => 'new-password',
-            'password_confirmation' => 'new-password',
+            'password' => 'new-password1',
+            'password_confirmation' => 'new-password1',
         ]);
 
     $response
         ->assertSessionHasNoErrors()
         ->assertRedirect('/profile');
 
-    $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
+    $this->assertTrue(Hash::check('new-password1', $user->refresh()->password));
 });
 
 test('correct password must be provided to update password', function () {
@@ -30,11 +30,22 @@ test('correct password must be provided to update password', function () {
         ->from('/profile')
         ->put('/password', [
             'current_password' => 'wrong-password',
-            'password' => 'new-password',
-            'password_confirmation' => 'new-password',
+            'password' => 'new-password1',
+            'password_confirmation' => 'new-password1',
         ]);
 
     $response
         ->assertSessionHasErrorsIn('updatePassword', 'current_password')
         ->assertRedirect('/profile');
+});
+
+test('profile page contains the password update form', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get('/profile')
+        ->assertOk()
+        ->assertSee('Update password')
+        ->assertSee('Current password')
+        ->assertSee('New password');
 });
