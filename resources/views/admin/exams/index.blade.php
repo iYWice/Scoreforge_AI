@@ -100,7 +100,7 @@
                         <div class="flex flex-wrap justify-end gap-2">
                             <a href="{{ route('admin.exams.show', $exam) }}"
                                 class="font-semibold text-indigo-600 hover:underline aiq-button aiq-button-secondary">View</a>
-                            <button type="button"
+                            <!-- <button type="button"
                                 @click="editExam = {{ Illuminate\Support\Js::from([
                                     'id' => $exam->id,
                                     'title' => $exam->title,
@@ -112,7 +112,7 @@
                                     'passing_score' => $exam->passing_score,
                                     'status' => $exam->status,
                                 ]) }}"
-                                class="font-semibold text-slate-700 hover:underline aiq-button aiq-button-secondary">Edit</button>
+                                class="font-semibold text-slate-700 hover:underline aiq-button aiq-button-secondary">Edit</button> -->
                             <form method="POST" action="{{ route('admin.exams.destroy', $exam) }}" onsubmit="return confirm('Delete this examination?')">
                                 @csrf
                                 @method('DELETE')
