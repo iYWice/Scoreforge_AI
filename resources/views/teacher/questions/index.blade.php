@@ -11,7 +11,7 @@
         class="hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white
                px-3.5 py-2.5 text-xs font-bold text-slate-600 transition-all duration-200
                hover:-translate-y-0.5 hover:border-slate-300 hover:text-slate-950 hover:shadow-sm
-               active:translate-y-0 active:scale-95">
+               active:translate-y-0 active:scale-95 aiq-button aiq-button-secondary">
         ← Overview
     </a>
 
@@ -21,7 +21,7 @@
         class="group inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5
                text-xs font-bold text-white transition-all duration-200
                hover:-translate-y-0.5 hover:bg-indigo-600 hover:shadow-lg hover:shadow-indigo-200
-               active:translate-y-0 active:scale-95">
+               active:translate-y-0 active:scale-95 aiq-button aiq-button-primary">
 
         <svg
             class="h-4 w-4 transition-transform duration-300 group-hover:rotate-90"
@@ -47,7 +47,7 @@
            rounded-xl bg-indigo-600
            px-4 py-2.5 text-sm
            font-semibold text-white
-           transition hover:bg-indigo-700">
+           transition hover:bg-indigo-700 aiq-button aiq-button-primary">
         ✦ AI Question Builder
     </a>
 
@@ -56,6 +56,9 @@
 
 
 @section('content')
+<style>
+    #aiq-page-content .question-builder-close { box-sizing:border-box; width:36px !important; min-width:36px !important; height:36px !important; min-height:36px !important; flex:0 0 36px !important; padding:0 !important; }
+</style>
 
 @php
 $mcqCount = collect($questions)->where('question_type', 'mcq')->count();
@@ -82,9 +85,9 @@ $examStatus = strtolower($exam->status ?? 'draft');
             }, 1500);
         }
     }"
-    class="space-y-8">
+    class="space-y-8 aiq-question-bank">
     @if($savedQuestionSets->isNotEmpty())
-    <section class="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5 sm:p-6">
+    <section class="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5 sm:p-6 aiq-panel">
         <div class="mb-4">
             <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-indigo-500">
                 Saved question bank
@@ -97,7 +100,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
         <div class="grid gap-3 md:grid-cols-2">
             @foreach($savedQuestionSets as $questionSet)
-            <article class="flex items-center justify-between gap-4 rounded-xl border border-indigo-100 bg-white p-4">
+            <article class="flex items-center justify-between gap-4 rounded-xl border border-indigo-100 bg-white p-4 aiq-panel-interactive">
                 <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-slate-900">
                         {{ $questionSet->source_name }}
@@ -109,7 +112,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                 <a
                     href="{{ route('teacher.ai-questions.review', [$exam, $questionSet]) }}"
-                    class="shrink-0 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700">
+                    class="shrink-0 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700 aiq-button aiq-button-primary">
                     Choose
                 </a>
             </article>
@@ -347,7 +350,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     <section
         id="questionBuilder"
         class="{{ $errors->any() ? '' : 'hidden' }} overflow-hidden border border-indigo-100 bg-white
-               shadow-xl shadow-slate-200/40">
+               shadow-xl shadow-slate-200/40 aiq-panel">
 
 
         <div class="grid lg:grid-cols-[260px_minmax(0,1fr)]">
@@ -452,7 +455,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                         onclick="closeQuestionBuilder()"
                         class="flex h-9 w-9 items-center justify-center rounded-full
                                text-slate-400 transition-all hover:rotate-90
-                               hover:bg-rose-50 hover:text-rose-600 active:scale-75">
+                               hover:bg-rose-50 hover:text-rose-600 active:scale-75 aiq-button aiq-button-danger question-builder-close">
                         ×
                     </button>
 
@@ -488,7 +491,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                 class="question-type-button rounded-xl border border-slate-200 bg-slate-50
                                        px-4 py-3 text-left transition-all duration-200
                                        hover:-translate-y-0.5 hover:border-indigo-300
-                                       active:translate-y-0 active:scale-95">
+                                       active:translate-y-0 active:scale-95 aiq-option">
 
                                 <span class="block text-xs font-extrabold text-slate-800">
                                     Multiple Choice
@@ -508,7 +511,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                 class="question-type-button rounded-xl border border-slate-200 bg-slate-50
                                        px-4 py-3 text-left transition-all duration-200
                                        hover:-translate-y-0.5 hover:border-indigo-300
-                                       active:translate-y-0 active:scale-95">
+                                       active:translate-y-0 active:scale-95 aiq-option">
 
                                 <span class="block text-xs font-extrabold text-slate-800">
                                     True / False
@@ -528,7 +531,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                 class="question-type-button rounded-xl border border-slate-200 bg-slate-50
                                        px-4 py-3 text-left transition-all duration-200
                                        hover:-translate-y-0.5 hover:border-indigo-300
-                                       active:translate-y-0 active:scale-95">
+                                       active:translate-y-0 active:scale-95 aiq-option">
 
                                 <span class="block text-xs font-extrabold text-slate-800">
                                     Identification
@@ -547,7 +550,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                         <select
                             name="question_type"
                             id="questionType"
-                            class="hidden">
+                            class="hidden aiq-field">
 
                             <option value="mcq" {{ old('question_type') === 'mcq' ? 'selected' : '' }}>
                                 Multiple Choice
@@ -589,7 +592,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                    px-4 py-3 text-sm font-medium text-slate-800 outline-none
                                    transition-all placeholder:text-slate-400
                                    focus:border-indigo-500 focus:bg-white
-                                   focus:ring-4 focus:ring-indigo-100">{{ old('question_text') }}</textarea>
+                                   focus:ring-4 focus:ring-indigo-100 aiq-field">{{ old('question_text') }}</textarea>
 
                     </div>
 
@@ -618,7 +621,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                        px-4 py-3 text-sm font-medium text-slate-800 outline-none
                                        transition-all placeholder:text-slate-400
                                        focus:border-indigo-500 focus:bg-white
-                                       focus:ring-4 focus:ring-indigo-100">
+                                       focus:ring-4 focus:ring-indigo-100 aiq-field">
 
                         </div>
 
@@ -644,7 +647,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                 class="w-full rounded-xl border border-slate-200 bg-slate-50
                                        px-4 py-3 text-sm font-bold text-slate-800 outline-none
                                        transition-all focus:border-indigo-500 focus:bg-white
-                                       focus:ring-4 focus:ring-indigo-100">
+                                       focus:ring-4 focus:ring-indigo-100 aiq-field">
 
                         </div>
 
@@ -698,7 +701,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                                    px-4 py-3 text-sm font-medium text-slate-800 outline-none
                                                    transition-all placeholder:text-slate-400
                                                    focus:border-indigo-500 focus:bg-white
-                                                   focus:ring-4 focus:ring-indigo-100">
+                                                   focus:ring-4 focus:ring-indigo-100 aiq-field">
 
                                 </div>
 
@@ -723,7 +726,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                     class="w-full rounded-xl border border-slate-200 bg-slate-50
                                            px-4 py-3 text-sm font-semibold text-slate-700 outline-none
                                            transition-all focus:border-indigo-500 focus:bg-white
-                                           focus:ring-4 focus:ring-indigo-100">
+                                           focus:ring-4 focus:ring-indigo-100 aiq-field">
 
                                     <option value="0" {{ old('correct_option') == '0' ? 'selected' : '' }}>
                                         Choice A
@@ -779,7 +782,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                             name="correct_answer"
                                             value="True"
                                             {{ old('correct_answer') === 'True' ? 'checked' : '' }}
-                                            class="h-4 w-4 text-indigo-600">
+                                            class="h-4 w-4 text-indigo-600 aiq-check">
 
                                         <span class="text-sm font-extrabold text-slate-800">
                                             True
@@ -803,7 +806,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                             name="correct_answer"
                                             value="False"
                                             {{ old('correct_answer') === 'False' ? 'checked' : '' }}
-                                            class="h-4 w-4 text-indigo-600">
+                                            class="h-4 w-4 text-indigo-600 aiq-check">
 
                                         <span class="text-sm font-extrabold text-slate-800">
                                             False
@@ -846,7 +849,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                        px-4 py-3 text-sm font-medium text-slate-800 outline-none
                                        transition-all placeholder:text-slate-400
                                        focus:border-indigo-500 focus:bg-white
-                                       focus:ring-4 focus:ring-indigo-100">
+                                       focus:ring-4 focus:ring-indigo-100 aiq-field">
 
                         </div>
 
@@ -947,7 +950,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     class="w-full rounded-xl border border-slate-200 bg-white
                            py-2.5 pl-10 pr-4 text-sm font-medium text-slate-700
                            outline-none transition-all placeholder:text-slate-400
-                           focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100/60">
+                           focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100/60 aiq-field">
 
             </div>
 
@@ -1064,7 +1067,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
     <section>
 
-        <div class="border-t border-slate-200">
+        <div class="border-t border-slate-200 aiq-panel">
 
             @forelse($questions as $question)
 
@@ -1093,7 +1096,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     "
                 x-transition.opacity.duration.200ms
                 class="group relative border-b border-slate-200 transition-all duration-300
-                           hover:bg-white">
+                           hover:bg-white hover:z-20 focus-within:z-20 aiq-panel-interactive">
 
 
                 <div
@@ -1312,7 +1315,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                            transition-all duration-200
                                            hover:-translate-y-0.5 hover:border-amber-300
                                            hover:text-amber-700 hover:shadow-sm
-                                           active:translate-y-0 active:scale-95">
+                                           active:translate-y-0 active:scale-95 aiq-button aiq-button-secondary">
 
                                 Edit Question
 
@@ -1336,7 +1339,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                     class="rounded-xl px-3.5 py-2 text-[10px] font-bold
                                                text-rose-600 transition-all
                                                hover:bg-rose-50 hover:text-rose-700
-                                               active:scale-95">
+                                               active:scale-95 aiq-button aiq-button-danger">
                                     Delete
                                 </button>
 
@@ -1374,7 +1377,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     class="mt-6 rounded-xl bg-indigo-600 px-5 py-2.5
                                text-xs font-bold text-white transition-all
                                hover:-translate-y-0.5 hover:bg-indigo-700
-                               hover:shadow-lg active:scale-95">
+                               hover:shadow-lg active:scale-95 aiq-button aiq-button-primary">
                     Add First Question
                 </button>
 

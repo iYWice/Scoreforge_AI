@@ -90,3 +90,67 @@ test('teacher can update a subject roster only with students from its selected c
         'student_id' => $otherStudent->id,
     ]);
 });
+
+test('teacher can edit their subject offering', function () {
+    $teacher = User::factory()->create(['role' => 'teacher']);
+    $class = createTeacherClass($teacher, 'Class A');
+    $subject = Subject::create(['name' => 'Mathematics']);
+    $offering = ClassSubject::create([
+        'class_id' => $class->id,
+        'subject_id' => $subject->id,
+        'teacher_id' => $teacher->id,
+        'edp_code' => '654321',
+        'schedule' => 'Mon | 09:00-10:00',
+    ]);
+
+    $response = $this->actingAs($teacher)->patch(
+        route('teacher.subjects.update', $offering),
+        [
+            'subject_name' => 'Advanced Mathematics',
+            'edp_code' => '123456',
+            'class_id' => $class->id,
+            'schedule_days' => ['Mon', 'Wed'],
+            'start_time' => '10:00',
+            'end_time' => '11:30',
+            'room' => 'Room 205',
+        ]
+    );
+
+    $response
+        ->assertRedirect(route('teacher.subjects.index'))
+        ->assertSessionHas('success', 'Subject updated successfully.');
+
+    $offering->refresh();
+
+    expect($offering->edp_code)->toBe('123456')
+        ->and($offering->schedule)->toBe('Mon, Wed | 10:00-11:30 | Room 205')
+        ->and($offering->subject->name)->toBe('Advanced Mathematics');
+});
+
+test('teacher can edit their class name', function () {
+    $teacher = User::factory()->create(['role' => 'teacher']);
+    $class = createTeacherClass($teacher, 'Class A');
+
+    $response = $this->actingAs($teacher)->patch(
+        route('teacher.classes.update', $class),
+        ['name' => 'BSIT 3A']
+    );
+
+    $response
+        ->assertRedirect()
+        ->assertSessionHas('success', 'Class updated successfully.');
+
+    expect($class->refresh()->name)->toBe('BSIT 3A');
+});
+
+test('teacher cannot edit another teachers class', function () {
+    $owner = User::factory()->create(['role' => 'teacher']);
+    $otherTeacher = User::factory()->create(['role' => 'teacher']);
+    $class = createTeacherClass($owner, 'Class A');
+
+    $this->actingAs($otherTeacher)
+        ->patch(route('teacher.classes.update', $class), ['name' => 'Changed'])
+        ->assertForbidden();
+
+    expect($class->refresh()->name)->toBe('Class A');
+});

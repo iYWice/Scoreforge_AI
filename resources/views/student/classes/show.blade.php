@@ -5,13 +5,13 @@
 
 @section('content')
 
-<div class="space-y-8">
+<div class="space-y-8 aiq-class-details">
 
     <a
         href="{{ route('student.classes.index') }}"
         class="inline-flex items-center gap-2
                text-xs font-bold text-slate-400
-               transition hover:text-indigo-600">
+               transition hover:text-indigo-600 aiq-button aiq-button-secondary">
         ← My Classes
     </a>
 
@@ -20,7 +20,7 @@
     <section
         class="flex flex-col gap-6
                border-b border-slate-200 pb-7
-               lg:flex-row lg:items-end lg:justify-between">
+               lg:flex-row lg:items-end lg:justify-between aiq-panel aiq-panel-interactive p-5 sm:p-6">
 
         <div>
             <p class="text-[10px] font-extrabold uppercase
@@ -49,8 +49,8 @@
                 Class Code
             </p>
 
-            <p class="mt-1 font-mono text-lg font-black
-                      tracking-[0.18em] text-slate-800">
+            <p class="mt-1 inline-flex rounded-xl bg-indigo-50 px-3 py-2 font-mono text-lg font-black
+                      tracking-[0.18em] text-indigo-800 aiq-badge">
                 {{ $class->class_code }}
             </p>
         </div>
@@ -65,7 +65,7 @@
 
     <div class="mt-5 grid gap-4 md:grid-cols-2">
         @forelse($class->classSubjects as $offering)
-            <article class="rounded-xl border border-slate-200 bg-white p-5">
+            <article class="rounded-xl border border-slate-200 bg-white p-5 aiq-panel aiq-panel-interactive">
                 <h4 class="font-bold text-slate-900">
                     {{ $offering->subject->name }}
                 </h4>
@@ -77,7 +77,7 @@
                 </p>
             </article>
         @empty
-            <p class="text-sm text-slate-500">
+            <p class="rounded-xl border border-dashed border-slate-300 bg-white p-5 text-sm text-slate-500 aiq-panel">
                 Your teacher has not assigned you to a subject yet.
             </p>
         @endforelse
@@ -102,19 +102,18 @@
         </div>
 
 
-        <div class="mt-6 border-t border-slate-200">
+        <div class="mt-6 grid gap-4">
 
             @forelse($class->exams as $exam)
 
             <div
-                class="flex flex-col gap-4
-                           border-b border-slate-200 py-5
+                class="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 aiq-panel aiq-panel-interactive
                            sm:flex-row sm:items-center
                            sm:justify-between">
 
                 <div>
 
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-wrap items-center gap-3">
 
                         <h4 class="text-sm font-bold text-slate-900">
                             {{ $exam->title }}
@@ -126,7 +125,7 @@
                                            px-2 py-1
                                            text-[9px] font-extrabold
                                            uppercase tracking-wider
-                                           text-amber-700">
+                                           text-amber-700 aiq-badge">
                                 Upcoming
                             </span>
                         @else
@@ -135,7 +134,7 @@
                                            px-2 py-1
                                            text-[9px] font-extrabold
                                            uppercase tracking-wider
-                                           text-emerald-600">
+                                           text-emerald-600 aiq-badge">
                                 Open
                             </span>
                         @endif
@@ -182,7 +181,7 @@
                                    text-xs font-bold text-white
                                    transition-all
                                    hover:bg-indigo-600
-                                   active:scale-95">
+                                   active:scale-95 aiq-button aiq-button-primary">
                         Open Exam →
                     </button>
                 </form>
@@ -191,7 +190,7 @@
 
             @empty
 
-            <div class="py-14 text-center">
+            <div class="py-14 text-center aiq-panel">
 
                 <p class="text-sm font-bold text-slate-700">
                     No published examinations

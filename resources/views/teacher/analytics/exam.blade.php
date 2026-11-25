@@ -8,7 +8,7 @@
 
     <a
         href="{{ route('teacher.analytics.index') }}"
-        class="hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200
+        class="aiq-button aiq-button-secondary hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200
                bg-white px-3.5 py-2.5 text-xs font-bold text-slate-600
                transition-all duration-200 hover:-translate-y-0.5
                hover:border-slate-300 hover:text-slate-950 hover:shadow-sm
@@ -18,7 +18,7 @@
 
     <a
         href="{{ route('teacher.exams.show', $exam->id) }}"
-        class="inline-flex items-center gap-2 rounded-xl bg-slate-950
+        class="aiq-button aiq-button-primary inline-flex items-center gap-2 rounded-xl bg-slate-950
                px-4 py-2.5 text-xs font-bold text-white
                transition-all duration-200 hover:-translate-y-0.5
                hover:bg-indigo-600 hover:shadow-lg
@@ -27,11 +27,58 @@
     </a>
 
 </div>
+
+@push('scripts')
+<script>
+(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll('.aiq-exam-page [data-aiq-tilt], .exam-metric-grid > div').forEach(card => {
+        card.setAttribute('data-aiq-tilt', '');
+        card.addEventListener('pointermove', event => {
+            if (event.pointerType === 'touch') return;
+            const r = card.getBoundingClientRect();
+            card.style.setProperty('--tilt-x', `${(0.5 - (event.clientY-r.top)/r.height)*4}deg`);
+            card.style.setProperty('--tilt-y', `${((event.clientX-r.left)/r.width-0.5)*6}deg`);
+        });
+        card.addEventListener('pointerleave', () => { card.style.setProperty('--tilt-x','0deg'); card.style.setProperty('--tilt-y','0deg'); });
+    });
+})();
+</script>
+@endpush
+
 @endsection
 
 
 @section('content')
 
+<style>
+    .aiq-exam-page { --aiq-purple:#7047df; --aiq-ink:#292437; --aiq-pink:#f4a8e9; --aiq-yellow:#ffe16a; color:var(--aiq-ink); }
+    .exam-hero { position:relative; overflow:hidden; border:1.5px solid #33253f !important; border-radius:15px; padding:22px; background:linear-gradient(120deg,#ffe16a,#fff1b5 55%,#f2eaff); box-shadow:5px 6px 0 #33253f; }
+    .exam-hero h1 { color:#292437 !important; }
+    .exam-workspace-nav { border-color:#d9d0e4 !important; }
+    .exam-workspace-nav a, .exam-workspace-nav div { transition:color .18s, transform .18s; }
+    .exam-workspace-nav a:hover { color:#7047df !important; transform:translateY(-2px); }
+    .exam-workspace-nav span { background:#ffe16a !important; }
+    .aiq-exam-page [data-aiq-tilt] { --tilt-x:0deg; --tilt-y:0deg; transform:perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style:preserve-3d; transition:transform .16s ease,box-shadow .2s; }
+    .exam-metric-grid > div { min-height:120px; padding:14px; border:1.5px solid #382d43 !important; border-radius:10px; background:#fff; box-shadow:0 4px 0 #382d43; }
+    .exam-metric-grid > div:nth-child(2) { background:#fff2bd; }
+    .exam-metric-grid > div:nth-child(3) { background:#f9e4f6; }
+    .exam-metric-grid > div:nth-child(4) { background:#e7f3e5; }
+    .exam-metric-grid > div:hover { transform:perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-4px); box-shadow:0 8px 0 #382d43; }
+    .exam-panel { border:1.5px solid #382d43 !important; border-radius:13px; background:#fffdf8 !important; box-shadow:0 4px 0 #382d43; }
+    .exam-outcome { border:1.5px solid #30243e; border-radius:13px; background:linear-gradient(145deg,#7047df,#5230b5) !important; box-shadow:5px 6px 0 #30243e; }
+    .exam-outcome h2 { color:#fff !important; }
+    .exam-outcome .text-indigo-400 { color:#ffe16a !important; }
+    .exam-outcome .text-slate-500,.exam-outcome .text-slate-400 { color:#e1d8ff !important; }
+    .exam-outcome .border-slate-800 { border-color:#ffffff45 !important; }
+    .aiq-exam-page .border.border-slate-200.bg-white { border-color:#382d43 !important; border-radius:12px; box-shadow:0 4px 0 #382d43; }
+    .aiq-exam-page table thead { background:#f2eaff !important; color:#5937bd !important; }
+    .aiq-exam-page table tbody tr { transition:background .18s; }
+    .aiq-exam-page table tbody tr:hover { background:#fff8dd; }
+    .aiq-exam-page input:not([type="checkbox"]),.aiq-exam-page select { border-radius:8px; }
+    @media(max-width:640px){.exam-hero{padding:16px}.exam-metric-grid > div{min-height:108px;padding:10px}}
+    @media(prefers-reduced-motion:reduce){.aiq-exam-page *,.aiq-exam-page *::before,.aiq-exam-page *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
 @php
 
 $average = (float) ($analytics['average_score'] ?? 0);
@@ -71,14 +118,14 @@ $examStatus = strtolower($exam->status ?? 'draft');
         difficulty: 'all',
         search: ''
     }"
-    class="space-y-8">
+    class="aiq-exam-page space-y-8">
 
 
     {{-- ====================================================== --}}
     {{-- EXAM IDENTITY                                          --}}
     {{-- ====================================================== --}}
 
-    <section class="border-b border-slate-200 pb-7">
+    <section class="exam-hero border-b border-slate-200 pb-7">
 
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 
@@ -185,7 +232,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- EXAM WORKSPACE NAV                                     --}}
     {{-- ====================================================== --}}
 
-    <nav class="flex items-center gap-1 overflow-x-auto
+    <nav class="exam-workspace-nav flex items-center gap-1 overflow-x-auto
                 border-b border-slate-200">
 
         <a
@@ -377,7 +424,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
             </p>
 
 
-            <div class="mt-5 grid grid-cols-2 gap-x-6 gap-y-7
+            <div class="exam-metric-grid mt-5 grid grid-cols-2 gap-x-6 gap-y-7
                         border-y border-slate-200 py-7
                         lg:grid-cols-4">
 
@@ -492,8 +539,8 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
 
             {{-- Performance --}}
-            <div class="border border-slate-200 bg-white
-                        p-6 lg:col-span-7">
+            <div class="exam-panel border border-slate-200 bg-white
+                        p-6 lg:col-span-7 aiq-panel aiq-panel-interactive" data-aiq-tilt>
 
                 <div>
 
@@ -589,8 +636,8 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
 
             {{-- Outcome --}}
-            <div class="bg-slate-950 p-6 text-white
-                        lg:col-span-5">
+            <div class="exam-outcome bg-slate-950 p-6 text-white
+                        lg:col-span-5" data-aiq-tilt>
 
                 <p class="text-[10px] font-extrabold uppercase
                           tracking-[0.2em] text-indigo-400">
@@ -695,7 +742,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
             </div>
 
 
-            <div class="grid grid-cols-1 gap-px
+            <div class="signal-grid grid grid-cols-1 gap-px
                         overflow-hidden border border-slate-200
                         bg-slate-200 md:grid-cols-3">
 
@@ -706,7 +753,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     @click="section = 'topics'"
                     class="group bg-white p-5 text-left
                            transition-all hover:bg-rose-50/50
-                           active:scale-[0.99]">
+                           active:scale-[0.99] aiq-panel aiq-panel-interactive">
 
                     <p class="text-[9px] font-extrabold uppercase
                               tracking-[0.16em] text-rose-500">
@@ -745,7 +792,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     @click="section = 'topics'"
                     class="group bg-white p-5 text-left
                            transition-all hover:bg-emerald-50/50
-                           active:scale-[0.99]">
+                           active:scale-[0.99] aiq-panel aiq-panel-interactive">
 
                     <p class="text-[9px] font-extrabold uppercase
                               tracking-[0.16em] text-emerald-600">
@@ -784,7 +831,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     @click="difficulty = 'Difficult'; section = 'items'"
                     class="group bg-white p-5 text-left
                            transition-all hover:bg-amber-50/50
-                           active:scale-[0.99]">
+                           active:scale-[0.99] aiq-panel aiq-panel-interactive">
 
                     <p class="text-[9px] font-extrabold uppercase
                               tracking-[0.16em] text-amber-600">
@@ -1006,7 +1053,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                outline-none transition-all
                                placeholder:text-slate-400
                                focus:border-indigo-400
-                               focus:ring-4 focus:ring-indigo-100/60">
+                               focus:ring-4 focus:ring-indigo-100/60 aiq-field">
 
                 </div>
 

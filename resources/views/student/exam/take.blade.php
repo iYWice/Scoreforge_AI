@@ -13,7 +13,7 @@
 <div
     x-data="examWorkspace({{ $totalQuestions }})"
     x-init="init()"
-    class="mx-auto max-w-6xl">
+    class="mx-auto max-w-6xl aiq-exam-workspace">
 
     <form
         id="examForm"
@@ -30,7 +30,7 @@
 
         <header
             class="sticky top-16 z-30 border-b border-slate-200
-                   bg-white/95 backdrop-blur-xl">
+                   bg-white/95 backdrop-blur-xl aiq-panel px-4 sm:px-6">
 
             <div class="py-4">
 
@@ -173,7 +173,7 @@
                         x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0 translate-x-3"
                         x-transition:enter-end="opacity-100 translate-x-0"
-                        class="min-h-[470px]">
+                        class="min-h-[470px] aiq-panel aiq-panel-interactive p-5 sm:p-7">
 
 
                         {{-- Question metadata --}}
@@ -298,7 +298,7 @@
                                                    peer-checked:ring-2
                                                    peer-checked:ring-indigo-100
                                                    active:translate-y-0
-                                                   active:scale-[0.995]">
+                                                   active:scale-[0.995] aiq-panel-interactive">
 
 
                                             <span
@@ -384,7 +384,7 @@
                                                peer-checked:bg-indigo-50
                                                peer-checked:ring-2
                                                peer-checked:ring-indigo-100
-                                               active:scale-[0.99]">
+                                               active:scale-[0.99] aiq-panel-interactive">
 
                                         <span
                                             class="block text-lg font-black
@@ -426,7 +426,7 @@
                                                peer-checked:bg-indigo-50
                                                peer-checked:ring-2
                                                peer-checked:ring-indigo-100
-                                               active:scale-[0.99]">
+                                               active:scale-[0.99] aiq-panel-interactive">
 
                                         <span
                                             class="block text-lg font-black
@@ -484,7 +484,7 @@
                                            placeholder:text-slate-300
                                            focus:border-indigo-500
                                            focus:ring-4
-                                           focus:ring-indigo-100/60">
+                                           focus:ring-indigo-100/60 aiq-field">
 
 
                                 <p class="mt-2 text-[10px]
@@ -517,7 +517,7 @@
                                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 active:scale-95'"
                                 class="inline-flex items-center gap-2
                                        rounded-xl px-4 py-2.5
-                                       text-xs font-bold transition-all">
+                                       text-xs font-bold transition-all aiq-button aiq-button-secondary">
 
                                 ← Previous
 
@@ -538,7 +538,7 @@
                                            hover:bg-indigo-600
                                            hover:shadow-lg
                                            active:translate-y-0
-                                           active:scale-95">
+                                           active:scale-95 aiq-button aiq-button-primary">
 
                                     Next
 
@@ -564,7 +564,7 @@
                                            hover:shadow-lg
                                            hover:shadow-indigo-500/20
                                            active:translate-y-0
-                                           active:scale-95">
+                                           active:scale-95 aiq-button aiq-button-primary">
 
                                     Review & Submit
 
@@ -711,7 +711,7 @@
                                    transition-all
                                    hover:border-indigo-300
                                    hover:text-indigo-700
-                                   active:scale-95">
+                                   active:scale-95 aiq-button aiq-button-primary">
 
                             Review & Submit
 
@@ -736,7 +736,7 @@
             <div
                 class="sticky bottom-3 z-20 mb-4
                        border border-slate-200 bg-white/95
-                       p-3 shadow-xl backdrop-blur-xl lg:hidden">
+                       p-3 shadow-xl backdrop-blur-xl lg:hidden aiq-action-bar">
 
                 <div class="flex items-center gap-3">
 
@@ -763,7 +763,7 @@
                         class="rounded-xl bg-slate-950
                                px-4 py-2.5 text-[10px]
                                font-bold text-white
-                               transition-all active:scale-95">
+                               transition-all active:scale-95 aiq-button aiq-button-secondary">
 
                         Questions
 
@@ -776,7 +776,7 @@
                         class="rounded-xl bg-indigo-600
                                px-4 py-2.5 text-[10px]
                                font-bold text-white
-                               transition-all active:scale-95">
+                               transition-all active:scale-95 aiq-button aiq-button-primary">
 
                         Submit
 
@@ -809,7 +809,7 @@
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="translate-y-full"
                 x-transition:enter-end="translate-y-0"
-                class="w-full max-w-lg bg-white p-5">
+                class="w-full max-w-lg bg-white p-5 aiq-panel">
 
 
                 <div class="flex items-center justify-between">
@@ -935,7 +935,7 @@
                 x-transition:enter-start="opacity-0 scale-95"
                 x-transition:enter-end="opacity-100 scale-100"
                 class="w-full max-w-md bg-white p-6
-                       shadow-2xl">
+                       shadow-2xl aiq-panel">
 
 
                 <div
@@ -1006,20 +1006,20 @@
 
 
 
-                <div class="mt-6 flex items-center
-                            justify-end gap-3">
+                <div class="mt-6 flex flex-col-reverse items-stretch justify-end gap-3
+                            sm:flex-row sm:items-center">
 
 
                     <button
                         type="button"
                         @click="submitModal = false"
                         :disabled="submitting"
-                        class="rounded-xl px-4 py-2.5
-                               text-xs font-bold text-slate-500
+                        class="w-full rounded-xl px-4 py-2.5
+                               text-xs font-bold text-slate-500 sm:w-auto
                                transition-all
                                hover:bg-slate-100
                                hover:text-slate-800
-                               active:scale-95">
+                               active:scale-95 aiq-button aiq-button-secondary">
 
                         Continue Exam
 
@@ -1031,15 +1031,15 @@
                         type="button"
                         @click="confirmSubmit()"
                         :disabled="submitting"
-                        class="inline-flex items-center gap-2
-                               rounded-xl bg-indigo-600
+                        class="inline-flex w-full items-center justify-center gap-2
+                               rounded-xl bg-indigo-600 sm:w-auto
                                px-5 py-2.5 text-xs
                                font-bold text-white
                                transition-all
                                hover:bg-indigo-500
                                active:scale-95
                                disabled:cursor-not-allowed
-                               disabled:opacity-60">
+                               disabled:opacity-60 aiq-button aiq-button-primary">
 
 
                         <svg

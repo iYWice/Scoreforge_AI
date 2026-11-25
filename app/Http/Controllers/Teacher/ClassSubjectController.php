@@ -343,4 +343,59 @@ class ClassSubjectController extends Controller
 
         return back()->with('success', 'Subject class and student list updated.');
     }
+
+    public function updateTeacherSubject(Request $request, ClassSubject $classSubject)
+    {
+        abort_unless(
+            (int) $classSubject->teacher_id === (int) auth()->id(),
+            403
+        );
+
+        $request->merge([
+            'edp_code' => strtoupper(trim((string) $request->input('edp_code'))),
+        ]);
+
+        $validated = $request->validate([
+            'subject_name' => ['required', 'string', 'max:255'],
+            'edp_code' => [
+                'required',
+                'digits:6',
+                Rule::unique('class_subjects', 'edp_code')->ignore($classSubject->id),
+            ],
+            'class_id' => [
+                'required',
+                Rule::exists('classes', 'id')
+                    ->where('created_by', auth()->id()),
+            ],
+            'schedule_days' => ['required', 'array', 'min:1'],
+            'schedule_days.*' => ['required', 'string', 'in:Mon,Tue,Wed,Thu,Fri,Sat,Sun'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+            'room' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $schedule = implode(', ', $validated['schedule_days'])
+            .' | '.$validated['start_time'].'-'.$validated['end_time'];
+
+        if (! empty($validated['room'])) {
+            $schedule .= ' | '.$validated['room'];
+        }
+
+        DB::transaction(function () use ($validated, $classSubject, $schedule) {
+            $subject = Subject::firstOrCreate([
+                'name' => trim($validated['subject_name']),
+            ]);
+
+            $classSubject->update([
+                'class_id' => $validated['class_id'],
+                'subject_id' => $subject->id,
+                'edp_code' => $validated['edp_code'],
+                'schedule' => $schedule,
+            ]);
+        });
+
+        return redirect()
+            ->route('teacher.subjects.index')
+            ->with('success', 'Subject updated successfully.');
+    }
 }

@@ -13,7 +13,7 @@ AI-Q Insight
 
 <a
     href="{{ route('teacher.analytics.exam', $exam) }}"
-    class="inline-flex items-center gap-2 rounded-xl
+    class="aiq-button aiq-button-secondary inline-flex items-center gap-2 rounded-xl
                border border-slate-200 bg-white
                px-4 py-2.5 text-xs font-bold
                text-slate-600 transition-all
@@ -47,7 +47,7 @@ AI-Q Insight
                hover:-translate-y-0.5
                hover:bg-indigo-500
                active:scale-95
-               disabled:opacity-60">
+               disabled:opacity-60 aiq-button aiq-button-primary">
 
         <span
             x-text="regenerating
@@ -65,7 +65,24 @@ AI-Q Insight
 
 @section('content')
 
-<div class="mx-auto max-w-6xl space-y-8">
+<style>
+    .aiq-insight-page { --aiq-purple:#7047df; --aiq-ink:#292437; --aiq-pink:#f4a8e9; --aiq-yellow:#ffe16a; color:var(--aiq-ink); }
+    .insight-hero { border:1.5px solid #33253f !important; border-radius:14px; padding:22px; background:linear-gradient(120deg,#ffe16a,#fff1b5 55%,#f2eaff); box-shadow:5px 6px 0 #33253f; }
+    .insight-hero h1 { color:#292437 !important; }
+    .insight-hero .bg-indigo-600 { border:1px solid #33253f; background:#7047df !important; box-shadow:2px 3px 0 #33253f; }
+    .insight-signal { overflow:hidden; border:1.5px solid #30243e !important; border-radius:14px !important; background:linear-gradient(145deg,#7047df,#5230b5) !important; box-shadow:6px 7px 0 #30243e; }
+    .insight-signal h2 { color:#fff !important; }
+    .insight-signal .text-indigo-300 { color:#ffe16a !important; }
+    .insight-signal .text-slate-400,.insight-signal .text-slate-200 { color:#e4dbff !important; }
+    .insight-findings { border:1.5px solid #382d43; border-radius:12px; padding:18px; background:#fffdf8; box-shadow:0 4px 0 #382d43; }
+    .insight-findings .bg-indigo-50 { border:1px solid #382d4330; background:#f4a8e9 !important; color:#35263f !important; }
+    .insight-evidence { border:1.5px solid #33253f; border-radius:11px; padding:15px; background:#fff; box-shadow:0 4px 0 #33253f; }
+    .aiq-insight-page button[type="submit"] { border:1px solid #30243e; border-radius:9px; background:#7047df !important; box-shadow:0 4px 0 #30243e; }
+    .aiq-insight-page button[type="submit"]:hover { background:#5936c0 !important; transform:translateY(-2px); box-shadow:0 6px 0 #30243e; }
+    @media(max-width:640px){.insight-hero{padding:16px}}
+    @media(prefers-reduced-motion:reduce){.aiq-insight-page *,.aiq-insight-page *::before,.aiq-insight-page *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+<div class="aiq-insight-page mx-auto max-w-6xl space-y-8">
 
 
     {{-- ====================================================== --}}
@@ -73,7 +90,7 @@ AI-Q Insight
     {{-- ====================================================== --}}
 
     <section
-        class="border-b border-slate-200 pb-7">
+        class="insight-hero border-b border-slate-200 pb-7">
 
         <div
             class="flex flex-col gap-5
@@ -196,7 +213,7 @@ AI-Q Insight
     {{-- ====================================================== --}}
 
     <section
-        class="overflow-hidden rounded-xl
+        class="insight-signal overflow-hidden rounded-xl
                bg-slate-950 text-white">
 
         <div
@@ -268,7 +285,7 @@ AI-Q Insight
 
 
         {{-- Findings --}}
-        <section>
+        <section class="insight-findings aiq-panel">
 
             <div
                 class="flex items-center
@@ -355,7 +372,7 @@ AI-Q Insight
 
 
         {{-- Actions --}}
-        <section>
+        <section class="insight-findings aiq-panel">
 
             <div
                 class="border-b border-slate-200
@@ -438,8 +455,8 @@ AI-Q Insight
     {{-- ====================================================== --}}
 
     <section
-        class="border-t border-slate-200
-               pt-6">
+        class="insight-evidence border-t border-slate-200
+               pt-6 aiq-panel">
 
         <div
             class="flex flex-col gap-4
@@ -485,7 +502,7 @@ AI-Q Insight
                        bg-indigo-50 px-3 py-1.5
                        text-[9px] font-extrabold
                        uppercase tracking-[0.12em]
-                       text-indigo-600">
+                       text-indigo-600 aiq-badge">
 
                 <span
                     class="h-1.5 w-1.5

@@ -4,12 +4,8 @@
 @section('page-title', 'Activity Logs')
 
 @section('content')
-<div class="space-y-6">
-    <a
-        href="{{ route('admin.activity-logs.export', request()->query()) }}"
-        class="rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white">
-        Export CSV
-    </a>
+<div class="space-y-6 aiq-activity-logs">
+    <header class="flex flex-wrap items-center justify-between gap-4 aiq-panel aiq-panel-interactive p-5 sm:p-6">
     <div>
         <h1 class="text-2xl font-bold text-slate-900">
             System Activity Logs
@@ -18,17 +14,23 @@
             Review important activities performed inside AI-Q.
         </p>
     </div>
+    <a
+        href="{{ route('admin.activity-logs.export', request()->query()) }}"
+        class="rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white aiq-button aiq-button-primary">
+        Export CSV
+    </a>
+    </header>
 
     <form method="GET" action="{{ route('admin.activity-logs.index') }}"
-        class="rounded-xl border border-slate-200 bg-white p-4">
+        class="rounded-xl border border-slate-200 bg-white p-4 aiq-panel">
 
-        <div class="grid gap-3 md:grid-cols-5">
+        <div class="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-5">
             <input type="search" name="search"
                 value="{{ request('search') }}"
                 placeholder="Search activity or user..."
-                class="rounded-xl border-slate-300 text-sm md:col-span-2">
+                class="w-full min-w-0 rounded-xl border-slate-300 text-sm sm:col-span-2 lg:col-span-2 aiq-field">
 
-            <select name="action" class="rounded-xl border-slate-300 text-sm">
+            <select name="action" class="w-full rounded-xl border-slate-300 text-sm aiq-field">
                 <option value="">All Actions</option>
                 @foreach($actions as $action)
                 <option value="{{ $action }}"
@@ -40,26 +42,26 @@
 
             <input type="date" name="date_from"
                 value="{{ request('date_from') }}"
-                class="rounded-xl border-slate-300 text-sm">
+                class="w-full rounded-xl border-slate-300 text-sm aiq-field">
 
             <input type="date" name="date_to"
                 value="{{ request('date_to') }}"
-                class="rounded-xl border-slate-300 text-sm">
+                class="w-full rounded-xl border-slate-300 text-sm aiq-field">
         </div>
 
-        <div class="mt-3 flex gap-3">
-            <button class="rounded-xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white">
+        <div class="mt-3 flex flex-wrap gap-3">
+            <button class="rounded-xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white aiq-button aiq-button-primary">
                 Apply Filters
             </button>
 
             <a href="{{ route('admin.activity-logs.index') }}"
-                class="rounded-xl border border-slate-200 px-5 py-2 text-sm font-medium text-slate-600">
+                class="rounded-xl border border-slate-200 px-5 py-2 text-sm font-medium text-slate-600 aiq-button aiq-button-secondary">
                 Clear
             </a>
         </div>
     </form>
 
-    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white aiq-panel">
         <table class="min-w-full text-left text-sm">
             <thead class="bg-slate-50 text-slate-600">
                 <tr>
@@ -104,7 +106,7 @@
                     </td>
 
                     <td class="px-5 py-4">
-                        <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
+                        <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 aiq-badge">
                             {{ $log->action }}
                         </span>
                     </td>
@@ -128,7 +130,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-5 py-12 text-center text-slate-500">
+                    <td colspan="7" class="px-5 py-12 text-center text-slate-500 aiq-panel">
                         No activity logs found.
                     </td>
                 </tr>

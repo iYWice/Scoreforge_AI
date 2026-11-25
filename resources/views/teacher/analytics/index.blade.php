@@ -5,6 +5,34 @@
 
 @section('content')
 
+<style>
+    .aiq-analytics-page { --aiq-purple:#7047df; --aiq-ink:#292437; --aiq-pink:#f4a8e9; --aiq-yellow:#ffe16a; color:var(--aiq-ink); }
+    .analytics-hero { border:1.5px solid #33253f !important; border-radius:14px; padding:22px; background:linear-gradient(120deg,#ffe16a,#fff1b5 55%,#f2eaff); box-shadow:5px 6px 0 #33253f; }
+    .analytics-hero h1 { color:#292437 !important; }
+    .analytics-tabs { border-color:#ddd4e8 !important; }
+    .analytics-tabs button,.analytics-tabs a { transition:transform .18s,color .18s; }
+    .analytics-tabs button:hover,.analytics-tabs a:hover { transform:translateY(-2px); color:#7047df !important; }
+    .analytics-tabs [x-show] { background:#ffe16a !important; }
+    .analytics-tabs .rounded-full { background:#f1eaff !important; color:#5937bd; }
+    .aiq-analytics-page .border.border-slate-200.bg-white { border:1.5px solid #382d43 !important; border-radius:12px; background:#fffdf8 !important; box-shadow:0 4px 0 #382d43; transition:transform .2s,box-shadow .2s; }
+    .aiq-analytics-page .border.border-slate-200.bg-white:hover { transform:translateY(-3px); box-shadow:0 7px 0 #382d43; }
+    .aiq-analytics-page [data-aiq-tilt] { --tilt-x:0deg; --tilt-y:0deg; transform:perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transform-style:preserve-3d; transition:transform .16s ease,box-shadow .2s; }
+    .analytics-metric-grid > div { --tilt-x:0deg; --tilt-y:0deg; min-height:112px; padding:14px; border:1.5px solid #382d43; border-radius:10px; background:#fff; box-shadow:0 4px 0 #382d43; }
+    .analytics-metric-grid > div:nth-child(2) { background:#fff2bd; }
+    .analytics-metric-grid > div:nth-child(3) { background:#f9e4f6; }
+    .analytics-metric-grid > div:nth-child(4) { background:#e7f3e5; }
+    .analytics-metric-grid > div:hover { transform:perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-4px); box-shadow:0 8px 0 #382d43; }
+    .aiq-analytics-page [class~="bg-slate-950"] { border:1.5px solid #30243e; border-radius:13px; background:linear-gradient(145deg,#7047df,#5230b5) !important; box-shadow:5px 6px 0 #30243e; }
+    .aiq-analytics-page [class~="bg-slate-950"] h2,.aiq-analytics-page [class~="bg-slate-950"] h3 { color:#fff !important; }
+    .aiq-analytics-page [class~="bg-slate-950"] .text-indigo-400 { color:#ffe16a !important; }
+    .aiq-analytics-page [class~="bg-slate-950"] .text-slate-500,.aiq-analytics-page [class~="bg-slate-950"] .text-slate-400 { color:#e1d8ff !important; }
+    .aiq-analytics-page table thead { background:#f2eaff !important; color:#5937bd !important; }
+    .aiq-analytics-page table tbody tr { transition:background .18s; }
+    .aiq-analytics-page table tbody tr:hover { background:#fff8dd; }
+    .aiq-analytics-page input { border-radius:9px; }
+    @media(max-width:640px){.analytics-hero{padding:16px}.analytics-metric-grid > div{min-height:98px;padding:10px}}
+    @media(prefers-reduced-motion:reduce){.aiq-analytics-page *,.aiq-analytics-page *::before,.aiq-analytics-page *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
 @php
 $totalStudents = collect($studentRankings)->count();
 
@@ -21,14 +49,14 @@ $safePassRate = max(0, min(100, (float) $passRate));
         section: 'performance',
         studentSearch: ''
     }"
-    class="space-y-8">
+    class="aiq-analytics-page space-y-8">
 
 
     {{-- ====================================================== --}}
     {{-- HEADER                                                 --}}
     {{-- ====================================================== --}}
 
-    <section class="border-b border-slate-200 pb-8">
+    <section class="analytics-hero border-b border-slate-200 pb-8">
 
 
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -97,7 +125,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
     {{-- ANALYTICS NAVIGATION                                   --}}
     {{-- ====================================================== --}}
 
-    <nav class="flex items-center gap-1 overflow-x-auto border-b border-slate-200">
+    <nav class="analytics-tabs flex items-center gap-1 overflow-x-auto border-b border-slate-200">
 
         <button
             type="button"
@@ -106,7 +134,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
                 ? 'text-indigo-700'
                 : 'text-slate-500 hover:text-slate-950'"
             class="relative shrink-0 px-4 py-4 text-xs font-bold
-                   transition-all active:scale-95">
+                   transition-all active:scale-95 aiq-button aiq-button-secondary">
 
             Performance
 
@@ -125,7 +153,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
                 ? 'text-indigo-700'
                 : 'text-slate-500 hover:text-slate-950'"
             class="relative shrink-0 px-4 py-4 text-xs font-bold
-                   transition-all active:scale-95">
+                   transition-all active:scale-95 aiq-button aiq-button-secondary">
 
             Students
 
@@ -150,7 +178,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
             class="group relative shrink-0 px-4 py-4
                        text-xs font-bold text-slate-500
                        transition-all hover:text-indigo-600
-                       active:scale-95">
+                       active:scale-95 aiq-button aiq-button-secondary">
 
             Predictions
 
@@ -163,7 +191,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
         </a>
         <a
             href="{{ route('teacher.analytics.export') }}"
-            class="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+            class="aiq-button aiq-button-primary rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
             Export CSV
         </a>
 
@@ -210,7 +238,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
 
 
             <div
-                class="grid grid-cols-2 gap-x-6 gap-y-7
+                class="analytics-metric-grid grid grid-cols-2 gap-x-6 gap-y-7
                        border-y border-slate-200 py-7
                        lg:grid-cols-4">
 
@@ -325,7 +353,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
             {{-- Average performance --}}
             <div
                 class="border border-slate-200 bg-white
-                       p-6 lg:col-span-7">
+                       p-6 lg:col-span-7 aiq-panel aiq-panel-interactive">
 
                 <div class="flex items-start justify-between">
 
@@ -600,7 +628,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
                     @click="section = 'students'"
                     class="group text-xs font-bold
                            text-indigo-600 transition-all
-                           hover:text-indigo-700 active:scale-95">
+                           hover:text-indigo-700 active:scale-95 aiq-button aiq-button-secondary">
 
                     View students
 
@@ -619,7 +647,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
 
 
                 {{-- Improving --}}
-                <div class="border-t-2 border-emerald-500 bg-white">
+                <div class="border-t-2 border-emerald-500 bg-white aiq-panel aiq-panel-interactive">
 
                     <div
                         class="flex items-center justify-between
@@ -711,7 +739,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
 
 
                 {{-- Declining --}}
-                <div class="border-t-2 border-rose-500 bg-white">
+                <div class="border-t-2 border-rose-500 bg-white aiq-panel aiq-panel-interactive">
 
                     <div
                         class="flex items-center justify-between
@@ -881,7 +909,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
                                placeholder:text-slate-400
                                focus:border-indigo-400
                                focus:ring-4
-                               focus:ring-indigo-100/60">
+                               focus:ring-indigo-100/60 aiq-field">
 
                 </div>
 
@@ -890,7 +918,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
 
 
             {{-- Rankings --}}
-            <div class="overflow-hidden border border-slate-200 bg-white">
+            <div class="analytics-table overflow-hidden border border-slate-200 bg-white aiq-panel">
 
                 <div class="overflow-x-auto">
 
@@ -1132,5 +1160,23 @@ $safePassRate = max(0, min(100, (float) $passRate));
     </div>
 
 </div>
+
+
+@push('scripts')
+<script>
+(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll('.analytics-metric-grid > div').forEach(card => {
+        card.addEventListener('pointermove', event => {
+            if (event.pointerType === 'touch') return;
+            const r = card.getBoundingClientRect();
+            card.style.setProperty('--tilt-x', `${(0.5-(event.clientY-r.top)/r.height)*4}deg`);
+            card.style.setProperty('--tilt-y', `${((event.clientX-r.left)/r.width-0.5)*6}deg`);
+        });
+        card.addEventListener('pointerleave', () => { card.style.setProperty('--tilt-x','0deg'); card.style.setProperty('--tilt-y','0deg'); });
+    });
+})();
+</script>
+@endpush
 
 @endsection

@@ -4,9 +4,9 @@
 @section('page-title', 'Class Management')
 
 @section('content')
-<div class="space-y-6" x-data="{ createOpen: false, editClass: null }">
+<div class="space-y-6 aiq-class-management" x-data="{ createOpen: false, editClass: null }">
 
-    <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-4 aiq-panel aiq-panel-interactive p-5 sm:p-6">
         <div>
             <h1 class="text-2xl font-bold text-slate-900">
                 Class Management
@@ -22,12 +22,12 @@
     </div>
 
     @if(session('success'))
-        <div class="rounded-xl bg-green-50 p-4 text-sm text-green-700">
+        <div class="rounded-xl bg-green-50 p-4 text-sm text-green-700 aiq-alert aiq-alert-success">
             {{ session('success') }}
         </div>
     @endif
     @if($errors->any())
-        <div class="rounded-xl bg-red-50 p-4 text-sm text-red-700">
+        <div class="rounded-xl bg-red-50 p-4 text-sm text-red-700 aiq-alert aiq-alert-error">
             <ul class="list-disc pl-5">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -37,18 +37,18 @@
     @endif
 
     <form method="GET" action="{{ route('admin.classes.index') }}"
-        class="flex gap-3">
+        class="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center aiq-panel p-4">
         <input type="search" name="search"
             value="{{ request('search') }}"
             placeholder="Search class, code, subject or teacher..."
-            class="w-full rounded-xl border-slate-300 text-sm">
+            class="w-full min-w-0 rounded-xl border-slate-300 text-sm aiq-field">
 
-        <button class="rounded-xl bg-slate-900 px-5 py-2 text-sm font-medium text-white">
+        <button class="rounded-xl bg-slate-900 px-5 py-2 text-sm font-medium text-white aiq-button aiq-button-secondary">
             Search
         </button>
     </form>
 
-    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white aiq-panel">
         <table class="min-w-full text-left text-sm">
             <thead class="bg-slate-50 text-slate-600">
                 <tr>
@@ -80,9 +80,9 @@
                     <td class="px-5 py-4">{{ $class->students_count }}</td>
                     <td class="px-5 py-4">{{ $class->exams_count }}</td>
                     <td class="px-5 py-4 text-right">
-                        <div class="flex justify-end gap-3">
+                        <div class="flex flex-wrap justify-end gap-2">
                             <a href="{{ route('admin.classes.show', $class) }}"
-                                class="font-semibold text-indigo-600 hover:underline">View</a>
+                                class="font-semibold text-indigo-600 hover:underline aiq-button aiq-button-secondary">View</a>
                             <button type="button"
                                 @click="editClass = {{ Illuminate\Support\Js::from([
                                     'id' => $class->id,
@@ -90,18 +90,18 @@
                                     'subject_id' => $class->subject_id,
                                     'created_by' => $class->created_by,
                                 ]) }}"
-                                class="font-semibold text-slate-700 hover:underline">Edit</button>
+                                class="font-semibold text-slate-700 hover:underline aiq-button aiq-button-secondary">Edit</button>
                             <form method="POST" action="{{ route('admin.classes.destroy', $class) }}" onsubmit="return confirm('Delete this class?')">
                                 @csrf
                                 @method('DELETE')
-                                <button class="font-semibold text-red-600 hover:underline">Delete</button>
+                                <button class="font-semibold text-red-600 hover:underline aiq-button aiq-button-danger">Delete</button>
                             </form>
                         </div>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-5 py-10 text-center text-slate-500">
+                    <td colspan="7" class="px-5 py-10 text-center text-slate-500 aiq-panel">
                         No classes found.
                     </td>
                 </tr>
@@ -112,41 +112,41 @@
 
     {{ $classes->links() }}
 
-    <div x-show="createOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
-        <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
-            <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Create Class</h2><button type="button" @click="createOpen = false">✕</button></div>
+    <div x-show="createOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/50 p-4">
+        <div class="my-auto w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl aiq-panel">
+            <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Create Class</h2><button type="button" @click="createOpen = false" class="aiq-button aiq-button-secondary" style="width:40px;min-width:40px;height:40px;min-height:40px;padding:0">✕</button></div>
             <form method="POST" action="{{ route('admin.classes.store') }}" class="space-y-4">
                 @csrf
-                <input name="name" required maxlength="255" placeholder="Class name" class="w-full rounded-xl border-slate-300">
-                <select name="subject_id" class="w-full rounded-xl border-slate-300">
+                <input name="name" required maxlength="255" placeholder="Class name" class="w-full rounded-xl border-slate-300 aiq-field">
+                <select name="subject_id" class="w-full rounded-xl border-slate-300 aiq-field">
                     <option value="">No subject</option>
                     @foreach($subjects as $subject)<option value="{{ $subject->id }}">{{ $subject->name }}</option>@endforeach
                 </select>
-                <select name="created_by" required class="w-full rounded-xl border-slate-300">
+                <select name="created_by" required class="w-full rounded-xl border-slate-300 aiq-field">
                     <option value="">Select teacher</option>
                     @foreach($teachers as $teacher)<option value="{{ $teacher->id }}">{{ $teacher->fname }} {{ $teacher->lname }}</option>@endforeach
                 </select>
-                <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white">Create Class</button>
+                <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white aiq-button aiq-button-primary">Create Class</button>
             </form>
         </div>
     </div>
 
-    <div x-show="editClass" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
-        <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
-            <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Edit Class</h2><button type="button" @click="editClass = null">✕</button></div>
+    <div x-show="editClass" x-cloak class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/50 p-4">
+        <div class="my-auto w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl aiq-panel">
+            <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Edit Class</h2><button type="button" @click="editClass = null" class="aiq-button aiq-button-secondary" style="width:40px;min-width:40px;height:40px;min-height:40px;padding:0">✕</button></div>
             <template x-if="editClass">
                 <form method="POST" :action="'{{ url('/admin/classes') }}/' + editClass.id" class="space-y-4">
                     @csrf
                     @method('PATCH')
-                    <input name="name" x-model="editClass.name" required maxlength="255" class="w-full rounded-xl border-slate-300">
-                    <select name="subject_id" x-model="editClass.subject_id" class="w-full rounded-xl border-slate-300">
+                    <input name="name" x-model="editClass.name" required maxlength="255" class="w-full rounded-xl border-slate-300 aiq-field">
+                    <select name="subject_id" x-model="editClass.subject_id" class="w-full rounded-xl border-slate-300 aiq-field">
                         <option value="">No subject</option>
                         @foreach($subjects as $subject)<option value="{{ $subject->id }}">{{ $subject->name }}</option>@endforeach
                     </select>
-                    <select name="created_by" x-model="editClass.created_by" required class="w-full rounded-xl border-slate-300">
+                    <select name="created_by" x-model="editClass.created_by" required class="w-full rounded-xl border-slate-300 aiq-field">
                         @foreach($teachers as $teacher)<option value="{{ $teacher->id }}">{{ $teacher->fname }} {{ $teacher->lname }}</option>@endforeach
                     </select>
-                    <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white">Save Changes</button>
+                    <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white aiq-button aiq-button-primary">Save Changes</button>
                 </form>
             </template>
         </div>

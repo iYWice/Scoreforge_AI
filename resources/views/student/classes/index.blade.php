@@ -6,13 +6,13 @@
 @section('content')
 
 <div
-    class="space-y-8"
+    class="space-y-8 aiq-student-classes"
     x-data="{ joinOpen: {{ $errors->has('class_code') ? 'true' : 'false' }} }">
 
     {{-- Introduction --}}
     <section
         class="flex flex-col gap-5
-               sm:flex-row sm:items-end sm:justify-between">
+               sm:flex-row sm:items-end sm:justify-between aiq-panel aiq-panel-interactive p-5 sm:p-6">
         <div>
             <p class="text-[10px] font-extrabold uppercase
                       tracking-[0.2em] text-indigo-600">
@@ -39,7 +39,7 @@
                    transition-all duration-200
                    hover:-translate-y-0.5
                    hover:bg-indigo-600
-                   active:scale-95">
+                   active:scale-95 aiq-button aiq-button-primary">
             + Join Class
         </button>
     </section>
@@ -49,7 +49,7 @@
     @if(session('info'))
     <div class="border border-blue-200
                     bg-blue-50 px-4 py-3
-                    text-sm font-semibold text-blue-700">
+                    text-sm font-semibold text-blue-700 aiq-alert aiq-alert-info">
         {{ session('info') }}
     </div>
     @endif
@@ -62,7 +62,7 @@
 
         <div
             class="border border-dashed border-slate-300
-                       bg-white px-6 py-16 text-center">
+                       bg-white px-6 py-16 text-center aiq-panel">
             <div
                 class="mx-auto flex h-12 w-12
                            items-center justify-center
@@ -87,7 +87,7 @@
                 class="mt-5 rounded-xl bg-indigo-600
                            px-4 py-2.5 text-xs font-bold
                            text-white transition
-                           hover:bg-indigo-700">
+                           hover:bg-indigo-700 aiq-button aiq-button-primary">
                 Join a Class
             </button>
         </div>
@@ -106,7 +106,7 @@
                                hover:-translate-y-1
                                hover:border-indigo-200
                                hover:shadow-xl
-                               hover:shadow-slate-200/60">
+                               hover:shadow-slate-200/60 aiq-panel aiq-panel-interactive">
 
                 <div class="flex items-start justify-between gap-4">
 
@@ -117,7 +117,7 @@
 
     <div class="mt-2 flex flex-wrap gap-2">
         @forelse ($class->classSubjects as $offering)
-            <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+            <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 aiq-badge">
                 {{ $offering->subject->name }} · {{ $offering->edp_code }}
             </span>
         @empty
@@ -197,7 +197,7 @@
             @click.outside="joinOpen = false"
             class="w-full max-w-md
                    rounded-2xl bg-white p-6
-                   shadow-2xl">
+                   shadow-2xl aiq-panel">
 
             <div class="flex items-start justify-between">
 
@@ -221,7 +221,8 @@
                     type="button"
                     @click="joinOpen = false"
                     class="text-xl text-slate-400
-                           transition hover:text-slate-700">
+                           transition hover:text-slate-700 aiq-button aiq-button-secondary join-modal-close"
+                    style="width:40px;min-width:40px;height:40px;min-height:40px;padding:0">
                     ×
                 </button>
 
@@ -256,7 +257,7 @@
                            font-mono text-lg font-bold
                            uppercase tracking-[0.18em]
                            focus:border-indigo-500
-                           focus:ring-indigo-500">
+                           focus:ring-indigo-500 aiq-field">
 
                 @error('class_code')
                 <p class="mt-2 text-xs font-semibold text-red-600">
@@ -274,7 +275,7 @@
                         class="rounded-xl border border-slate-300
                                px-4 py-2.5
                                text-xs font-bold text-slate-600
-                               transition hover:bg-slate-50">
+                               transition hover:bg-slate-50 aiq-button aiq-button-secondary">
                         Cancel
                     </button>
 
@@ -283,7 +284,7 @@
                         class="rounded-xl bg-indigo-600
                                px-4 py-2.5
                                text-xs font-bold text-white
-                               transition hover:bg-indigo-700">
+                               transition hover:bg-indigo-700 aiq-button aiq-button-primary">
                         Join Class
                     </button>
                 </div>

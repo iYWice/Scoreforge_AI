@@ -4,13 +4,13 @@
 @section('eyebrow', 'Student Review')
 
 @section('content')
-<div class="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
+<div class="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:px-8 aiq-student-performance">
 
     {{-- Student header --}}
-    <header class="rounded-2xl border border-slate-200 bg-white p-6">
+    <header class="rounded-2xl border border-slate-200 bg-white p-6 aiq-panel aiq-panel-interactive">
         <a
             href="{{ route('teacher.analytics.index') }}"
-            class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+            class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 aiq-button aiq-button-secondary">
             ← Back to analytics
         </a>
 
@@ -29,7 +29,7 @@
                 </p>
             </div>
 
-            <div class="rounded-xl bg-slate-50 px-4 py-3 sm:text-right">
+            <div class="rounded-xl bg-slate-50 px-4 py-3 sm:text-right aiq-panel">
                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
                     Completed exams
                 </p>
@@ -42,19 +42,19 @@
 
     {{-- Status messages --}}
     @if(session('success'))
-        <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 aiq-alert aiq-alert-success">
             {{ session('success') }}
         </div>
     @endif
 
     @if($errors->any())
-        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 aiq-alert aiq-alert-error">
             {{ $errors->first() }}
         </div>
     @endif
 
     {{-- Overall analysis --}}
-    <section class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+    <section class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 aiq-panel aiq-panel-interactive">
         <div>
             <h2 class="text-lg font-bold text-slate-900">
                 Overall performance analysis
@@ -83,7 +83,7 @@
                 required
                 maxlength="10000"
                 placeholder="Generate an AI draft or write your overall feedback here."
-                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"></textarea>
+                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 aiq-field"></textarea>
 
             <p data-ai-status class="text-sm text-slate-500" aria-live="polite"></p>
 
@@ -91,13 +91,13 @@
                 <button
                     type="button"
                     data-generate-ai
-                    class="inline-flex justify-center rounded-lg border border-indigo-200 px-4 py-2.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
+                    class="inline-flex justify-center rounded-lg border border-indigo-200 px-4 py-2.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-50 aiq-button aiq-button-secondary">
                     Generate AI Draft
                 </button>
 
                 <button
                     type="submit"
-                    class="inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700">
+                    class="inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 aiq-button aiq-button-success">
                     Send to Student
                 </button>
             </div>
@@ -133,7 +133,7 @@
                     );
                 @endphp
 
-                <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white aiq-panel aiq-panel-interactive">
                     {{-- Exam summary --}}
                     <div class="flex flex-col gap-5 p-5 sm:flex-row sm:items-start sm:justify-between sm:p-6">
                         <div class="min-w-0">
@@ -152,7 +152,7 @@
                         </div>
 
                         <div class="flex flex-wrap items-center gap-4 sm:justify-end">
-                            <div class="rounded-xl bg-slate-50 px-4 py-3">
+                            <div class="rounded-xl bg-slate-50 px-4 py-3 aiq-panel">
                                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
                                     Score
                                 </p>
@@ -166,7 +166,7 @@
 
                             <a
                                 href="{{ route('teacher.students.attempt-result', $attempt) }}"
-                                class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                                class="text-sm font-semibold text-indigo-600 hover:text-indigo-800 aiq-button aiq-button-secondary">
                                 View student result →
                             </a>
                         </div>
@@ -188,7 +188,7 @@
 
                                     <button
                                         type="submit"
-                                        class="text-sm font-semibold text-amber-700 hover:text-amber-900">
+                                        class="text-sm font-semibold text-amber-700 hover:text-amber-900 aiq-button aiq-button-secondary">
                                         Reset / Allow Retry
                                     </button>
                                 </form>
@@ -198,7 +198,7 @@
 
                     {{-- Strengths and areas for review --}}
                     <div class="grid gap-4 border-t border-slate-100 p-5 sm:p-6 md:grid-cols-2">
-                        <section class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4">
+                        <section class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 aiq-panel-interactive">
                             <h4 class="text-sm font-bold text-emerald-800">Strengths</h4>
 
                             @forelse($strengthTopics as $topic)
@@ -218,7 +218,7 @@
                             @endforelse
                         </section>
 
-                        <section class="rounded-xl border border-amber-100 bg-amber-50/50 p-4">
+                        <section class="rounded-xl border border-amber-100 bg-amber-50/50 p-4 aiq-panel-interactive">
                             <h4 class="text-sm font-bold text-amber-800">
                                 Areas for review
                             </h4>
@@ -272,7 +272,7 @@
                                 required
                                 maxlength="10000"
                                 placeholder="Generate an AI draft or write feedback for this exam here."
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"></textarea>
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 aiq-field"></textarea>
 
                             <p data-ai-status class="text-sm text-slate-500" aria-live="polite"></p>
 
@@ -280,13 +280,13 @@
                                 <button
                                     type="button"
                                     data-generate-ai
-                                    class="inline-flex justify-center rounded-lg border border-indigo-200 px-4 py-2.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
+                                    class="inline-flex justify-center rounded-lg border border-indigo-200 px-4 py-2.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-50 aiq-button aiq-button-secondary">
                                     Generate AI Draft
                                 </button>
 
                                 <button
                                     type="submit"
-                                    class="inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700">
+                                    class="inline-flex justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 aiq-button aiq-button-success">
                                     Send to Student
                                 </button>
                             </div>
@@ -294,7 +294,7 @@
                     </div>
                 </article>
             @empty
-                <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center">
+                <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center aiq-panel">
                     <p class="text-sm font-medium text-slate-700">
                         No completed exams from your classes yet.
                     </p>
@@ -316,7 +316,7 @@
 
         <div class="space-y-4">
             @forelse($analyses as $analysis)
-                <article class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                <article class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 aiq-panel aiq-panel-interactive">
                     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                         <strong class="text-sm text-slate-900">
                             {{ $analysis->scope === 'overall'
@@ -326,7 +326,7 @@
 
                         <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $analysis->sent_at
                             ? 'bg-emerald-50 text-emerald-700'
-                            : 'bg-amber-50 text-amber-700' }}">
+                            : 'bg-amber-50 text-amber-700' }}>
                             {{ $analysis->sent_at ? 'Sent to student' : 'Private draft' }}
                         </span>
                     </div>
@@ -344,11 +344,11 @@
                                 rows="5"
                                 required
                                 maxlength="10000"
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100">{{ $analysis->content }}</textarea>
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 aiq-field">{{ $analysis->content }}</textarea>
 
                             <button
                                 type="submit"
-                                class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                                class="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 aiq-button aiq-button-secondary">
                                 Save Changes
                             </button>
                         </form>
@@ -361,7 +361,7 @@
 
                             <button
                                 type="submit"
-                                class="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700">
+                                class="rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 aiq-button aiq-button-success">
                                 Send to Student
                             </button>
                         </form>
@@ -376,7 +376,7 @@
                     @endif
                 </article>
             @empty
-                <p class="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-500">
+                <p class="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-500 aiq-panel">
                     No analyses created yet.
                 </p>
             @endforelse

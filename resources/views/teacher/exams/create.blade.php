@@ -3,13 +3,31 @@
 @section('title', 'Create Exam')
 
 @section('content')
-<div class="mx-auto max-w-4xl space-y-6">
-    <div>
+
+<style>
+    .aiq-exam-create { --aiq-purple:#7047df; --aiq-ink:#292437; --aiq-pink:#f4a8e9; --aiq-yellow:#ffe16a; color:var(--aiq-ink); }
+    .exam-create-hero { position:relative; overflow:hidden; isolation:isolate; padding:20px; border:1.5px solid #33253f; border-radius:14px; background:linear-gradient(120deg,#ffe16a,#fff1b5 56%,#f2eaff); box-shadow:5px 6px 0 #33253f; }
+    .exam-create-hero h1 { color:#292437 !important; letter-spacing:-.05em; }
+    .exam-create-card { border:1.5px solid #33253f !important; border-radius:14px !important; background:#fffdf8 !important; box-shadow:6px 7px 0 #33253f,0 18px 45px #33253f14 !important; }
+    .exam-create-card input:not([type="checkbox"]),.exam-create-card select { border:1px solid #ded5e7 !important; border-radius:9px !important; background:#fff !important; color:#292437 !important; }
+    .exam-create-card input:focus,.exam-create-card select:focus { border-color:#9d81ed !important; box-shadow:0 0 0 4px #7047df1c !important; outline:none; }
+    .exam-create-card label { color:#554b60 !important; }
+    .exam-create-card input[type="checkbox"] { accent-color:#7047df; }
+    .exam-create-card .bg-indigo-50 { border:1px solid #33253f; background:#f4a8e9 !important; color:#382d43 !important; box-shadow:2px 3px 0 #33253f; }
+    .exam-create-card button[type="submit"] { border:1px solid #30243e; border-radius:9px !important; background:#7047df !important; box-shadow:0 5px 0 #30243e; }
+    .exam-create-card button[type="submit"]:hover { background:#5936c0 !important; transform:translateY(-2px); box-shadow:0 7px 0 #30243e; }
+    .aiq-exam-create .text-rose-600 { color:#9a3568 !important; }
+    @media(max-width:640px){.exam-create-hero{padding:16px}.exam-create-card{padding:20px}}
+    @media(prefers-reduced-motion:reduce){.aiq-exam-create *,.aiq-exam-create *::before,.aiq-exam-create *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+
+<div class="aiq-exam-create mx-auto max-w-4xl space-y-6">
+    <div class="exam-create-hero">
         <h1 class="text-2xl font-extrabold tracking-tight text-slate-950">Create New Exam</h1>
         <p class="mt-1 text-sm text-slate-500">Set up the exam parameters and select its class and subject.</p>
     </div>
 
-    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+    <div class="exam-create-card rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 aiq-panel aiq-panel-interactive">
         {{-- EXAM TITLE --}}
         <div class="mb-8 text-center">
             <div class="inline-flex items-center justify-center w-12 h-12 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl mb-3 border border-indigo-100 dark:border-indigo-800/50 shadow-sm">
@@ -33,7 +51,7 @@
                     value="{{ old('title') }}"
                     required
                     placeholder="e.g., Midterm Examination"
-                    class="w-full rounded-xl border border-slate-300 bg-slate-50/50 px-4 py-2.5 text-slate-900 outline-none transition focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/30">
+                    class="w-full rounded-xl border border-slate-300 bg-slate-50/50 px-4 py-2.5 text-slate-900 outline-none transition focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/30 aiq-field">
                 @error('title')
                     <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
                 @enderror
@@ -55,7 +73,7 @@
                         id="class_id"
                         name="class_id"
                         required
-                        class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+                        class="w-full rounded-xl border border-slate-300 px-4 py-2.5 aiq-field">
                         <option value="">Select Class</option>
                         @foreach ($classes as $class)
                             <option value="{{ $class->id }}" @selected($selectedClassId == $class->id)>
@@ -78,7 +96,7 @@
                         id="subject_id"
                         name="subject_id"
                         required
-                        class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+                        class="w-full rounded-xl border border-slate-300 px-4 py-2.5 aiq-field">
                         <option value="">Select a class first</option>
 
                         @foreach ($classes as $class)
@@ -113,7 +131,7 @@
             min="1"
             value="{{ old('total_items', 1) }}"
             required
-            class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 aiq-field">
         @error('total_items')
             <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
         @enderror
@@ -131,7 +149,7 @@
             min="1"
             value="{{ old('duration') }}"
             required
-            class="w-full rounded-xl border border-slate-300 px-4 py-2.5">
+            class="w-full rounded-xl border border-slate-300 px-4 py-2.5 aiq-field">
         @error('duration')
             <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
         @enderror
@@ -148,7 +166,7 @@
             name="passing_score"
             value="{{ old('passing_score', 1) }}"
             readonly
-            class="w-full rounded-xl border border-slate-300 bg-slate-100 px-4 py-2.5">
+            class="w-full rounded-xl border border-slate-300 bg-slate-100 px-4 py-2.5 aiq-field">
         <p class="mt-1 text-xs text-slate-500">
             Automatically calculated from total items.
         </p>
@@ -156,13 +174,13 @@
 </div>
 
             {{-- RANDOMIZED QUESTION ORDER --}}
-            <label class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+            <label class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer aiq-option">
                 <input
                     type="checkbox"
                     name="randomize_questions"
                     value="1"
                     @checked(old('randomize_questions', '1') == '1')
-                    class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                    class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 aiq-check">
                 <span>
                     <span class="block text-sm font-semibold text-slate-800">Randomize question order</span>
                     <span class="mt-0.5 block text-xs text-slate-500">Each student receives the questions in a shuffled order.</span>
@@ -173,7 +191,7 @@
             <div class="pt-3">
                 <button
                     type="submit"
-                    class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.02] active:scale-95 cursor-pointer text-center text-sm tracking-wide flex items-center justify-center gap-2 group">
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-indigo-500/20 hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.02] active:scale-95 cursor-pointer text-center text-sm tracking-wide flex items-center justify-center gap-2 group aiq-button aiq-button-primary">
                     <span>Create Exam</span>
                     <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200 ease-out" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

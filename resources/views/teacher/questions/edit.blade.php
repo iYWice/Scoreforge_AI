@@ -4,22 +4,22 @@
 
 @section('content')
 
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-4xl mx-auto space-y-6 aiq-question-edit">
 
     {{-- Back Link & Header --}}
     <div class="flex items-center justify-between">
-        <a href="{{ route('teacher.exams.questions', ['exam' => $question->exam->id]) }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
+        <a href="{{ route('teacher.exams.questions', ['exam' => $question->exam->id]) }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors aiq-button aiq-button-secondary">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
             Back to Question Builder
         </a>
-        <span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+        <span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider aiq-badge">
             {{ strtoupper(str_replace('_', ' ', $question->question_type)) }}
         </span>
     </div>
     @if($errors->any())
-    <div class="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl p-4">
+    <div class="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl p-4 aiq-alert aiq-alert-error">
 
         <div class="flex items-start gap-3">
 
@@ -57,7 +57,7 @@
 
     {{-- Alert Banner --}}
     @if(session('success'))
-    <div class="bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 transition-colors">
+    <div class="bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 transition-colors aiq-alert aiq-alert-success">
         <div class="flex items-center gap-3">
             <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -68,7 +68,7 @@
     @endif
 
     {{-- Main Edit Form Card --}}
-    <div class="bg-white dark:bg-slate-900 shadow-xl shadow-slate-900/5 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 transition-colors">
+    <div class="bg-white dark:bg-slate-900 shadow-xl shadow-slate-900/5 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 transition-colors aiq-panel aiq-panel-interactive">
 
         <div class="mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
             <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
@@ -93,7 +93,7 @@
                     name="question_text"
                     rows="3"
                     required
-                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all placeholder:text-slate-400">{{ old('question_text', $question->question_text) }}</textarea>
+                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all placeholder:text-slate-400 aiq-field">{{ old('question_text', $question->question_text) }}</textarea>
             </div>
             {{-- Topic --}}
             <div>
@@ -107,7 +107,7 @@
                     value="{{ old('topic', $question->topic) }}"
                     placeholder="Example: SQL Joins, Normalization, Arrays"
                     class="w-full rounded-xl border-slate-300 dark:border-slate-700
-               dark:bg-slate-900 dark:text-white">
+               dark:bg-slate-900 dark:text-white aiq-field">
 
                 @error('topic')
                 <p class="mt-1 text-sm text-red-500">
@@ -131,19 +131,19 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <span class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Choice A</span>
-                        <input type="text" name="choice_a" value="{{ old('choice_a', $choices[0] ?? '') }}" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
+                        <input type="text" name="choice_a" value="{{ old('choice_a', $choices[0] ?? '') }}" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
                     </div>
                     <div>
                         <span class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Choice B</span>
-                        <input type="text" name="choice_b" value="{{ old('choice_b', $choices[1] ?? '') }}" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
+                        <input type="text" name="choice_b" value="{{ old('choice_b', $choices[1] ?? '') }}" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
                     </div>
                     <div>
                         <span class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Choice C</span>
-                        <input type="text" name="choice_c" value="{{ old('choice_c', $choices[2] ?? '') }}" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
+                        <input type="text" name="choice_c" value="{{ old('choice_c', $choices[2] ?? '') }}" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
                     </div>
                     <div>
                         <span class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Choice D</span>
-                        <input type="text" name="choice_d" value="{{ old('choice_d', $choices[3] ?? '') }}" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
+                        <input type="text" name="choice_d" value="{{ old('choice_d', $choices[3] ?? '') }}" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
                     </div>
                 </div>
             </div>
@@ -156,22 +156,22 @@
                     Correct Answer Key
                 </label>
                 <div class="grid grid-cols-2 gap-3 max-w-xs">
-                    <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all">
+                    <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all aiq-option">
                         <input
                             type="radio"
                             name="correct_answer"
                             value="True"
                             {{ old('correct_answer', $question->correct_answer) == 'True' ? 'checked' : '' }}
-                            class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800">
+                            class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 aiq-check">
                         <span class="ml-2 text-xs font-bold text-slate-700 dark:text-slate-300">True</span>
                     </label>
-                    <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all">
+                    <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all aiq-option">
                         <input
                             type="radio"
                             name="correct_answer"
                             value="False"
                             {{ old('correct_answer', $question->correct_answer) == 'False' ? 'checked' : '' }}
-                            class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800">
+                            class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 aiq-check">
                         <span class="ml-2 text-xs font-bold text-slate-700 dark:text-slate-300">False</span>
                     </label>
                 </div>
@@ -187,7 +187,7 @@
                     name="correct_answer"
                     value="{{ old('correct_answer', $question->correct_answer) }}"
                     required
-                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
+                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
             </div>
             @endif
 
@@ -203,14 +203,14 @@
                     min="1"
                     value="{{ old('points', $question->points) }}"
                     required
-                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
+                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
             </div>
 
             {{-- Form Actions --}}
             <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                     type="submit"
-                    class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs px-6 py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:scale-[1.01] active:scale-95 cursor-pointer">
+                    class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs px-6 py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:scale-[1.01] active:scale-95 cursor-pointer aiq-button aiq-button-primary">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>

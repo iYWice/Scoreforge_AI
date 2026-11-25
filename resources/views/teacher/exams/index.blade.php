@@ -7,7 +7,7 @@
 <button
     type="button"
     onclick="openCreateExam()"
-    class="group inline-flex items-center gap-2
+    class="aiq-button aiq-button-primary group inline-flex items-center gap-2
            rounded-xl bg-slate-950 px-4 py-2.5
            text-xs font-bold text-white
            transition-all duration-200
@@ -35,6 +35,41 @@
 
 @section('content')
 
+<style>
+    .aiq-exams-index { --aiq-purple:#7047df; --aiq-ink:#292437; --aiq-pink:#f4a8e9; --aiq-yellow:#ffe16a; color:var(--aiq-ink); }
+    .exam-index-hero { position:relative; overflow:hidden; isolation:isolate; padding:22px; border:1.5px solid #33253f; border-radius:14px; background:linear-gradient(120deg,#ffe16a,#fff1b5 55%,#f2eaff); box-shadow:5px 6px 0 #33253f; }
+    .exam-index-hero h2 { color:#292437 !important; }
+    .exam-index-hero p { color:#62576b !important; }
+    .exam-index-search { border:1px solid #d9cfe7 !important; border-radius:9px !important; background:#fffdf8 !important; }
+    .exam-index-search:focus { border-color:#9d81ed !important; box-shadow:0 0 0 4px #7047df1c !important; }
+    .exam-status-tabs { border-color:#ded5e7 !important; }
+    .exam-status-tabs button { transition:transform .18s,color .18s; }
+    .exam-status-tabs button:hover { transform:translateY(-2px); color:#7047df !important; }
+    .exam-status-tabs [x-show] { background:#ffe16a !important; }
+    .exam-status-tabs .rounded-full { background:#f4a8e9 !important; color:#382d43 !important; }
+    #createExamPanel { border:1.5px solid #33253f !important; border-radius:14px; background:#fffdf8 !important; box-shadow:7px 8px 0 #33253f,0 20px 45px #33253f18 !important; }
+    #createExamPanel > div > div:first-child { background:linear-gradient(145deg,#7047df,#5230b5) !important; }
+    #createExamPanel .text-indigo-400 { color:#ffe16a !important; }
+    #createExamPanel input,#createExamPanel select { border-radius:8px; }
+    #createExamPanel input:focus,#createExamPanel select:focus { border-color:#9d81ed; box-shadow:0 0 0 4px #7047df1c; }
+    #createExamPanel button[type="submit"] { border:1px solid #30243e; border-radius:9px; background:#7047df !important; box-shadow:0 4px 0 #30243e; }
+    #createExamPanel button[type="submit"]:hover { background:#5936c0 !important; transform:translateY(-2px); box-shadow:0 6px 0 #30243e; }
+    .exam-index-list { overflow:hidden; border:1.5px solid #382d43; border-radius:12px; background:#fffdf8; box-shadow:0 4px 0 #382d43; }
+    .exam-index-row { border-color:#e8e0eb !important; transition:transform .18s,background .18s,box-shadow .18s; }
+    .exam-index-row:hover { transform:translateY(-2px); background:#fff8df !important; box-shadow:0 4px 12px #382d4312; }
+    .exam-index-row h3 { color:#292437 !important; }
+    .exam-index-row.menu-open { z-index:60 !important; }
+    .exam-index-list:has(.exam-index-row.menu-open) { overflow:visible; }
+    #aiq-page-content .exam-row-controls { display:flex; flex:0 1 auto; flex-wrap:wrap; align-items:center; gap:8px; min-width:0; }
+    #aiq-page-content .exam-row-controls form { flex:0 0 auto; }
+    #aiq-page-content .exam-row-controls > a { white-space:nowrap; }
+    #aiq-page-content .exam-row-status { width:auto !important; min-width:108px; max-width:122px; flex:0 0 auto; }
+    #aiq-page-content .exam-row-more-button { box-sizing:border-box; width:40px !important; min-width:40px !important; height:40px !important; min-height:40px !important; flex:0 0 40px !important; padding:0 !important; }
+    .exam-index-empty { border:1.5px dashed #7047df; border-radius:12px; background:#fffdf8; }
+    .aiq-exams-index input:not([type="checkbox"]),.aiq-exams-index select { border-radius:8px; }
+    @media(max-width:640px){.exam-index-hero{padding:16px}}
+    @media(prefers-reduced-motion:reduce){.aiq-exams-index *,.aiq-exams-index *::before,.aiq-exams-index *::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
 @php
 $publishedCount = $exams->where('status', 'published')->count();
 $draftCount = $exams->where('status', 'draft')->count();
@@ -47,14 +82,14 @@ $closedCount = $exams->where('status', 'closed')->count();
         filter: 'all',
         search: ''
     }"
-    class="space-y-8">
+    class="aiq-exams-index space-y-8">
 
 
     {{-- ====================================================== --}}
     {{-- WORKSPACE INTRO                                        --}}
     {{-- ====================================================== --}}
 
-    <section>
+    <section class="exam-index-hero">
 
         <div class="flex flex-col gap-5
                     lg:flex-row lg:items-end lg:justify-between">
@@ -99,13 +134,13 @@ $closedCount = $exams->where('status', 'closed')->count();
                     x-model="search"
                     type="text"
                     placeholder="Search examinations..."
-                    class="w-full rounded-xl border border-slate-200
+                    class="exam-index-search w-full rounded-xl border border-slate-200
                            bg-white py-2.5 pl-10 pr-4
                            text-sm font-medium text-slate-700
                            outline-none transition-all
                            placeholder:text-slate-400
                            focus:border-indigo-400
-                           focus:ring-4 focus:ring-indigo-100/60">
+                           focus:ring-4 focus:ring-indigo-100/60 aiq-field">
 
             </div>
 
@@ -119,7 +154,7 @@ $closedCount = $exams->where('status', 'closed')->count();
     {{-- STATUS FILTERS                                         --}}
     {{-- ====================================================== --}}
 
-    <section class="border-y border-slate-200">
+    <section class="exam-status-tabs border-y border-slate-200">
 
         <div class="flex items-center gap-1 overflow-x-auto">
 
@@ -246,7 +281,7 @@ $closedCount = $exams->where('status', 'closed')->count();
 
     <section
         id="createExamPanel"
-        class="hidden overflow-hidden
+        class="hidden overflow-hidden aiq-panel-interactive
                border border-indigo-100
                bg-white shadow-xl shadow-slate-200/40">
 
@@ -368,7 +403,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                hover:rotate-90
                                hover:bg-rose-50
                                hover:text-rose-600
-                               active:scale-75">
+                               active:scale-75 aiq-button aiq-button-danger">
                         ×
                     </button>
 
@@ -379,7 +414,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                     id="examErrors"
                     class="mb-6 hidden border border-rose-200
                            bg-rose-50 px-4 py-3
-                           text-sm font-medium text-rose-700">
+                           text-sm font-medium text-rose-700 aiq-alert aiq-alert-error">
                 </div>
 
 
@@ -421,7 +456,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                        focus:border-indigo-500
                                        focus:bg-white
                                        focus:ring-4
-                                       focus:ring-indigo-100">
+                                       focus:ring-indigo-100 aiq-field">
 
                         </div>
 
@@ -437,7 +472,7 @@ $closedCount = $exams->where('status', 'closed')->count();
         id="exam_class_id"
         name="class_id"
         required
-        class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+        class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 aiq-field">
         <option value="">Select class</option>
 
         @foreach ($classes as $class)
@@ -459,7 +494,7 @@ $closedCount = $exams->where('status', 'closed')->count();
         name="subject_id"
         required
         disabled
-        class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-60">
+        class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-60 aiq-field">
         <option value="">Select a class first</option>
 
         @foreach ($classes as $class)
@@ -500,7 +535,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                        focus:border-indigo-500
                                        focus:bg-white
                                        focus:ring-4
-                                       focus:ring-indigo-100">
+                                       focus:ring-indigo-100 aiq-field">
 
                         </div>
 
@@ -534,7 +569,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                        focus:border-indigo-500
                                        focus:bg-white
                                        focus:ring-4
-                                       focus:ring-indigo-100">
+                                       focus:ring-indigo-100 aiq-field">
 
                         </div>
 
@@ -564,7 +599,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                        focus:border-indigo-500
                                        focus:bg-white
                                        focus:ring-4
-                                       focus:ring-indigo-100">
+                                       focus:ring-indigo-100 aiq-field">
 
                         </div>
 
@@ -572,13 +607,13 @@ $closedCount = $exams->where('status', 'closed')->count();
 
                         {{-- Randomized Question Order --}}
                         <div class="md:col-span-2">
-                            <label class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer">
+                            <label class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 cursor-pointer aiq-option">
                                 <input
                                     type="checkbox"
                                     name="randomize_questions"
                                     value="1"
                                     checked
-                                    class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                                    class="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 aiq-check">
                                 <span>
                                     <span class="block text-sm font-semibold text-slate-800">Randomize question order</span>
                                     <span class="mt-0.5 block text-xs text-slate-500">Each student receives the questions in a shuffled order.</span>
@@ -595,7 +630,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                 id="exam_opens_at"
                                 type="datetime-local"
                                 name="opens_at"
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 aiq-field">
                         </div>
 
                         <div>
@@ -606,7 +641,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                 id="exam_closes_at"
                                 type="datetime-local"
                                 name="closes_at"
-                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 aiq-field">
                             <p class="mt-1 text-xs text-slate-400">Leave empty to keep the exam open permanently.</p>
                         </div>
 
@@ -625,7 +660,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                    transition-all
                                    hover:bg-slate-100
                                    hover:text-slate-800
-                                   active:scale-95">
+                                   active:scale-95 aiq-button aiq-button-secondary">
                             Cancel
                         </button>
 
@@ -644,7 +679,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                    active:translate-y-0
                                    active:scale-95
                                    disabled:cursor-not-allowed
-                                   disabled:opacity-60">
+                                   disabled:opacity-60 aiq-button aiq-button-primary">
 
                             <span
                                 class="transition-transform
@@ -691,7 +726,7 @@ $closedCount = $exams->where('status', 'closed')->count();
         </div>
 
 
-        <div class="border-t border-slate-200">
+        <div class="exam-index-list border-t border-slate-200 aiq-panel">
 
             @forelse($exams as $exam)
 
@@ -707,10 +742,10 @@ $closedCount = $exams->where('status', 'closed')->count();
                         )
                     "
                 x-transition.opacity.duration.200ms
-                class="group relative border-b
+                class="exam-index-row group relative border-b
                            border-slate-200 bg-transparent
                            transition-all duration-300
-                           hover:bg-white">
+                           hover:bg-white hover:z-30 focus-within:z-30 aiq-panel-interactive">
 
                 <div
                     class="absolute bottom-0 left-0 top-0
@@ -892,7 +927,7 @@ $closedCount = $exams->where('status', 'closed')->count();
 
 
                         {{-- Controls --}}
-                        <div class="flex flex-wrap items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2 exam-row-controls">
 
 
                             {{-- Status --}}
@@ -918,7 +953,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                                hover:text-indigo-600
                                                focus:border-indigo-500
                                                focus:ring-4
-                                               focus:ring-indigo-100">
+                                               focus:ring-indigo-100 aiq-field exam-row-status">
 
                                     <option
                                         value="draft"
@@ -960,7 +995,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                            hover:text-indigo-600
                                            hover:shadow-md
                                            active:translate-y-0
-                                           active:scale-95">
+                                           active:scale-95 aiq-button aiq-button-secondary">
 
                                 Questions
 
@@ -988,7 +1023,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                            hover:shadow-lg
                                            hover:shadow-indigo-100
                                            active:translate-y-0
-                                           active:scale-95">
+                                           active:scale-95 aiq-button aiq-button-primary">
 
                                 Analyze
 
@@ -1005,6 +1040,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                             {{-- More menu --}}
                             <div
                                 x-data="{ open: false }"
+                                x-effect="$el.closest('.exam-index-row')?.classList.toggle('menu-open', open)"
                                 class="relative">
 
                                 <button
@@ -1020,7 +1056,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                                hover:border-slate-300
                                                hover:bg-slate-50
                                                hover:text-slate-900
-                                               active:scale-90">
+                                               active:scale-90 aiq-button aiq-button-secondary exam-row-more-button">
                                     •••
                                 </button>
 
@@ -1038,8 +1074,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                                mt-2 w-48 overflow-hidden
                                                rounded-xl border
                                                border-slate-200
-                                               bg-white p-1.5
-                                               shadow-xl">
+                                               bg-white p-1.5 aiq-panel">
 
 
                                     <a
@@ -1085,7 +1120,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                                        font-semibold
                                                        text-rose-600
                                                        transition-all
-                                                       hover:bg-rose-50">
+                                                       hover:bg-rose-50 aiq-button aiq-button-danger">
                                             Delete examination
                                         </button>
 
@@ -1105,7 +1140,7 @@ $closedCount = $exams->where('status', 'closed')->count();
 
             @empty
 
-            <div class="py-20 text-center">
+            <div class="exam-index-empty py-20 text-center">
 
                 <div
                     class="mx-auto flex h-14 w-14
@@ -1137,7 +1172,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                hover:-translate-y-0.5
                                hover:bg-indigo-700
                                hover:shadow-lg
-                               active:scale-95">
+                               active:scale-95 aiq-button aiq-button-primary">
                     Create Examination
                 </button>
 

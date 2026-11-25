@@ -4,9 +4,9 @@
 @section('eyebrow', 'Account Settings')
 
 @section('content')
-<div class="mx-auto max-w-3xl space-y-6">
+<div class="mx-auto max-w-3xl space-y-6 aiq-profile-settings">
 
-    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 aiq-panel aiq-panel-interactive">
         <div class="mb-6">
             <h2 class="text-lg font-bold text-slate-900">Profile information</h2>
             <p class="mt-1 text-sm text-slate-500">
@@ -15,7 +15,7 @@
         </div>
 
         @if (session('status') === 'profile-updated')
-        <div class="mb-5 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+        <div class="mb-5 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700 aiq-alert aiq-alert-success">
             Profile saved.
         </div>
         @endif
@@ -37,7 +37,7 @@
                         required
                         maxlength="255"
                         autocomplete="given-name"
-                        class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
+                        class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 aiq-field">
                     @error('fname')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -55,7 +55,7 @@
                         required
                         maxlength="255"
                         autocomplete="family-name"
-                        class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
+                        class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 aiq-field">
                     @error('lname')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -74,7 +74,7 @@
                     required
                     maxlength="255"
                     autocomplete="email"
-                    class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
+                    class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500 aiq-field">
                 @error('email')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -82,19 +82,19 @@
 
             <div>
                 <span class="mb-1 block text-sm font-semibold text-slate-700">Account role</span>
-                <p class="text-sm capitalize text-slate-600">{{ $user->role }}</p>
+                <p class="mt-1 w-fit text-sm capitalize text-slate-600 aiq-badge">{{ $user->role }}</p>
                 <p class="mt-1 text-xs text-slate-500">Your role can’t be changed from this page.</p>
             </div>
 
             <button
                 type="submit"
-                class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">
+                class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 aiq-button aiq-button-primary">
                 Save profile
             </button>
         </form>
     </section>
 
-    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 aiq-panel aiq-panel-interactive">
         @include('profile.partials.update-password-form')
     </section>
 

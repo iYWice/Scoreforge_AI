@@ -4,8 +4,8 @@
 @section('eyebrow', 'Examination History')
 
 @section('content')
-<div class="space-y-6">
-    <div class="flex flex-wrap items-end justify-between gap-4">
+<div class="space-y-6 aiq-exam-history">
+    <div class="flex flex-wrap items-end justify-between gap-4 aiq-panel aiq-panel-interactive p-5 sm:p-6">
         <div>
             <h1 class="text-2xl font-extrabold text-slate-950">
                 Your exam history
@@ -17,12 +17,12 @@
 
         <a
             href="{{ route('student.dashboard') }}"
-            class="text-sm font-bold text-indigo-600 hover:text-indigo-800">
+            class="text-sm font-bold text-indigo-600 hover:text-indigo-800 aiq-button aiq-button-secondary">
             ← Back to dashboard
         </a>
     </div>
 
-    <div class="border-t border-slate-200">
+    <div class="grid gap-3">
         @forelse($attempts as $attempt)
             @php
                 $passingScore = $attempt->exam?->passing_score ?? 0;
@@ -32,7 +32,7 @@
                     : 0;
             @endphp
 
-            <article class="grid gap-4 border-b border-slate-200 py-5
+            <article class="grid gap-4 border-b border-slate-200 py-5 aiq-panel aiq-panel-interactive p-4
                             sm:grid-cols-[minmax(0,1fr)_auto_auto]
                             sm:items-center">
                 <div>
@@ -59,12 +59,12 @@
 
                 <a
                     href="{{ route('student.exam.result', $attempt) }}"
-                    class="text-sm font-bold text-indigo-600 hover:text-indigo-800">
+                    class="text-sm font-bold text-indigo-600 hover:text-indigo-800 aiq-button aiq-button-secondary">
                     View result →
                 </a>
             </article>
         @empty
-            <div class="py-12 text-center">
+            <div class="py-12 text-center aiq-panel">
                 <p class="font-bold text-slate-700">No completed exams yet.</p>
                 <p class="mt-1 text-sm text-slate-500">
                     Completed exams will appear here.

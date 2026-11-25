@@ -9,7 +9,7 @@
 
     <a
         href="{{ route('teacher.exams.index') }}"
-        class="inline-flex items-center gap-2
+        class="aiq-button aiq-button-secondary inline-flex items-center gap-2
                rounded-xl border border-slate-200
                bg-white px-3.5 py-2.5
                text-xs font-bold text-slate-600
@@ -32,7 +32,7 @@
 
     <a
         href="{{ route('teacher.exams.questions', $exam->id) }}"
-        class="group inline-flex items-center gap-2
+        class="aiq-button aiq-button-primary group inline-flex items-center gap-2
                rounded-xl bg-slate-950
                px-4 py-2.5
                text-xs font-bold text-white
@@ -131,7 +131,7 @@ if (($attempt->total_score ?? 0) <= 0) {
             }, 1800);
         }
     }"
-        class="space-y-8">
+        class="aiq-exam-workspace space-y-8">
 
 
         {{-- ====================================================== --}}
@@ -286,7 +286,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                        hover:shadow-lg
                        hover:shadow-slate-200/60
                        active:translate-y-0
-                       active:scale-[0.98]">
+                       active:scale-[0.98] aiq-panel-interactive">
 
                     <div>
 
@@ -384,7 +384,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                    px-4 py-4
                    text-xs font-bold
                    transition-all
-                   active:scale-95">
+                   active:scale-95 aiq-button aiq-button-secondary">
 
                 Overview
 
@@ -408,7 +408,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                    text-slate-500
                    transition-all
                    hover:text-indigo-600
-                   active:scale-95">
+                   active:scale-95 aiq-button aiq-button-secondary">
 
                 Questions
 
@@ -435,7 +435,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                    px-4 py-4
                    text-xs font-bold
                    transition-all
-                   active:scale-95">
+                   active:scale-95 aiq-button aiq-button-secondary">
 
                 Responses
 
@@ -467,7 +467,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                    text-slate-500
                    transition-all
                    hover:text-indigo-600
-                   active:scale-95">
+                   active:scale-95 aiq-button aiq-button-secondary">
 
                 Analysis
 
@@ -509,7 +509,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                     class="group border-r
                        border-slate-200 pr-5
                        transition-all
-                       active:scale-[0.97]">
+                       active:scale-[0.97] aiq-panel-interactive">
 
                     <p
                         class="text-[9px] font-extrabold
@@ -601,7 +601,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                     class="group border-r
                        border-slate-200 pr-5
                        transition-all
-                       active:scale-[0.97]">
+                       active:scale-[0.97] aiq-panel-interactive">
 
                     <p
                         class="text-[9px] font-extrabold
@@ -693,7 +693,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                        hover:shadow-slate-200/60
                        active:translate-y-0
                        active:scale-[0.99]
-                       lg:col-span-7">
+                       lg:col-span-7 aiq-panel aiq-panel-interactive">
 
 
                     <div class="flex items-start
@@ -838,7 +838,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                         <a
                             href="{{ route('teacher.exams.edit', $exam->id) }}"
-                            class="rounded-lg border border-slate-700 px-3 py-2 text-[10px] font-bold text-slate-300 transition-all hover:-translate-y-0.5 hover:border-indigo-500 hover:text-white">
+                            class="rounded-lg border border-slate-700 px-3 py-2 text-[10px] font-bold text-slate-300 transition-all hover:-translate-y-0.5 hover:border-indigo-500 hover:text-white aiq-button aiq-button-secondary">
                             Edit configuration
                         </a>
 
@@ -996,7 +996,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                                text-indigo-600
                                transition-all
                                hover:text-indigo-700
-                               active:scale-95">
+                               active:scale-95 aiq-button aiq-button-secondary">
 
                         View all
 
@@ -1384,7 +1384,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                 <div
                     class="overflow-hidden border
-                           border-slate-200 bg-white">
+                           border-slate-200 bg-white aiq-panel">
 
 
                     <div class="overflow-x-auto">

@@ -4,11 +4,11 @@
 
 @section('content')
 
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-4xl mx-auto space-y-6 aiq-question-create">
 
     {{-- Navigation Header --}}
     <div class="flex items-center justify-between">
-        <a href="{{ route('teacher.exams.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
+        <a href="{{ route('teacher.exams.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors aiq-button aiq-button-secondary">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
@@ -19,7 +19,7 @@
 
     {{-- Error Banner --}}
     @if($errors->any())
-    <div class="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl p-4 transition-colors">
+    <div class="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl p-4 transition-colors aiq-alert aiq-alert-error">
         <div class="flex items-start gap-3">
             <svg class="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -37,7 +37,7 @@
     @endif
 
     {{-- Question Builder Form Card --}}
-    <div class="bg-white dark:bg-slate-900 shadow-xl shadow-slate-900/5 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 transition-colors">
+    <div class="bg-white dark:bg-slate-900 shadow-xl shadow-slate-900/5 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 transition-colors aiq-panel aiq-panel-interactive">
 
         <div class="mb-6 pb-6 border-b border-slate-100 dark:border-slate-800 flex items-start justify-between gap-4">
             <div>
@@ -48,7 +48,7 @@
                     Exam Target: <span class="text-indigo-600 dark:text-indigo-400 font-semibold">{{ $exam->title }}</span>
                 </p>
             </div>
-            <span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-semibold shrink-0">
+            <span class="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-semibold shrink-0 aiq-badge">
                 Draft Mode
             </span>
         </div>
@@ -65,7 +65,7 @@
                     <select
                         id="questionType"
                         name="question_type"
-                        class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all appearance-none cursor-pointer">
+                        class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all appearance-none cursor-pointer aiq-field">
                         <option value="mcq" {{ old('question_type') == 'mcq' ? 'selected' : '' }}>Multiple Choice</option>
                         <option value="tf" {{ old('question_type') == 'tf' ? 'selected' : '' }}>True / False</option>
                         <option value="identification" {{ old('question_type') == 'identification' ? 'selected' : '' }}>Identification</option>
@@ -89,7 +89,7 @@
                     rows="3"
                     required
                     placeholder="Enter the main question statement or problem here..."
-                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all placeholder:text-slate-400">{{ old('question_text') }}</textarea>
+                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all placeholder:text-slate-400 aiq-field">{{ old('question_text') }}</textarea>
             </div>
             {{-- Topic --}}
             <div>
@@ -103,7 +103,7 @@
                     value="{{ old('topic') }}"
                     placeholder="Example: SQL Joins, Normalization, Arrays"
                     class="w-full rounded-xl border-slate-300 dark:border-slate-700
-               dark:bg-slate-900 dark:text-white">
+               dark:bg-slate-900 dark:text-white aiq-field">
 
                 @error('topic')
                 <p class="mt-1 text-sm text-red-500">
@@ -119,30 +119,30 @@
                 </label>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" name="choice_a" value="{{ old('choice_a') }}" placeholder="Choice A" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
-                    <input type="text" name="choice_b" value="{{ old('choice_b') }}" placeholder="Choice B" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
-                    <input type="text" name="choice_c" value="{{ old('choice_c') }}" placeholder="Choice C" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
-                    <input type="text" name="choice_d" value="{{ old('choice_d') }}" placeholder="Choice D" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
+                    <input type="text" name="choice_a" value="{{ old('choice_a') }}" placeholder="Choice A" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
+                    <input type="text" name="choice_b" value="{{ old('choice_b') }}" placeholder="Choice B" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
+                    <input type="text" name="choice_c" value="{{ old('choice_c') }}" placeholder="Choice C" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
+                    <input type="text" name="choice_d" value="{{ old('choice_d') }}" placeholder="Choice D" class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
                 </div>
 
                 <div class="pt-2">
                     <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">Select Radio Choice corresponding to the correct answer:</span>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <label class="mcq-radio-card flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all">
+                        <label class="mcq-radio-card flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all aiq-option">
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Option A</span>
-                            <input type="radio" name="correct_answer" id="radioA" value="" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800">
+                            <input type="radio" name="correct_answer" id="radioA" value="" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 aiq-check">
                         </label>
-                        <label class="mcq-radio-card flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all">
+                        <label class="mcq-radio-card flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all aiq-option">
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Option B</span>
-                            <input type="radio" name="correct_answer" id="radioB" value="" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800">
+                            <input type="radio" name="correct_answer" id="radioB" value="" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 aiq-check">
                         </label>
-                        <label class="mcq-radio-card flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all">
+                        <label class="mcq-radio-card flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all aiq-option">
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Option C</span>
-                            <input type="radio" name="correct_answer" id="radioC" value="" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800">
+                            <input type="radio" name="correct_answer" id="radioC" value="" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 aiq-check">
                         </label>
-                        <label class="mcq-radio-card flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all">
+                        <label class="mcq-radio-card flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all aiq-option">
                             <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Option D</span>
-                            <input type="radio" name="correct_answer" id="radioD" value="" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800">
+                            <input type="radio" name="correct_answer" id="radioD" value="" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 aiq-check">
                         </label>
                     </div>
                 </div>
@@ -154,12 +154,12 @@
                     Correct True/False Statement Key
                 </label>
                 <div class="grid grid-cols-2 gap-3 max-w-xs">
-                    <label class="tf-radio-card flex items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all">
-                        <input type="radio" name="correct_answer" value="True" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800">
+                    <label class="tf-radio-card flex items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all aiq-option">
+                        <input type="radio" name="correct_answer" value="True" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 aiq-check">
                         <span class="ml-2 text-xs font-bold text-slate-700 dark:text-slate-300">True</span>
                     </label>
-                    <label class="tf-radio-card flex items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all">
-                        <input type="radio" name="correct_answer" value="False" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800">
+                    <label class="tf-radio-card flex items-center justify-center p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 cursor-pointer hover:border-indigo-500 transition-all aiq-option">
+                        <input type="radio" name="correct_answer" value="False" class="w-4 h-4 text-indigo-600 border-slate-300 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 aiq-check">
                         <span class="ml-2 text-xs font-bold text-slate-700 dark:text-slate-300">False</span>
                     </label>
                 </div>
@@ -175,7 +175,7 @@
                     id="id_correct_answer"
                     name="correct_answer"
                     placeholder="Enter expected text answer string..."
-                    class="id-input w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all placeholder:text-slate-400">
+                    class="id-input w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all placeholder:text-slate-400 aiq-field">
             </div>
 
             {{-- Points Assignment --}}
@@ -190,14 +190,14 @@
                     value="{{ old('points', 1) }}"
                     min="1"
                     required
-                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all">
+                    class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-xs font-medium text-slate-800 dark:text-slate-100 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 focus:outline-none transition-all aiq-field">
             </div>
 
             {{-- Submission Action --}}
             <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                     type="submit"
-                    class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs px-6 py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:scale-[1.01] active:scale-95 cursor-pointer">
+                    class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs px-6 py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:scale-[1.01] active:scale-95 cursor-pointer aiq-button aiq-button-primary">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>

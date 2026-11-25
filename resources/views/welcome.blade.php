@@ -18,6 +18,107 @@
 
     <title>AI-Q | Examination Intelligence</title>
 
+    <style>
+        :root {
+            --aiq-purple: #7047df;
+            --aiq-deep: #4f2db5;
+            --aiq-ink: #282333;
+            --aiq-muted: #777382;
+            --aiq-paper: #fffdf8;
+            --aiq-pink: #f4a8e9;
+            --aiq-yellow: #ffe16a;
+            --aiq-line: #e8e4dc;
+        }
+        html { scroll-behavior: smooth; }
+        body.aiq-page {
+            background: #e9e1f3 !important;
+            color: var(--aiq-ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        #aiq-shell { max-width: 1480px; margin: 0 auto; background: var(--aiq-paper); box-shadow: 0 24px 80px #38225618; }
+        #aiq-site-header { position: relative; z-index: 5; background: var(--aiq-purple); color: #fff; border-color: #ffffff30; }
+        #aiq-site-header a, #aiq-site-header p, #aiq-site-header span { color: inherit; }
+        #aiq-site-header .text-slate-300, #aiq-site-header .text-slate-400 { color: #ded4ff; }
+        #aiq-site-header img { height: 39px; border-radius: 10px; box-shadow: 0 3px 0 #42268c; }
+        #aiq-site-header button, #aiq-site-header a[href*="dashboard"] { border-radius: 9px; box-shadow: 0 3px 0 #482b9b; }
+        #aiq-main { background: radial-gradient(circle at 9% 12%, #f4ecff 0, transparent 28%), var(--aiq-paper); }
+        .landing-grid { gap: clamp(28px, 5vw, 72px) !important; }
+        .landing-hero { position: relative; isolation: isolate; padding: clamp(20px, 3vw, 38px) 0; }
+        .landing-hero::before { content: ""; position: absolute; z-index: -1; width: 210px; height: 210px; left: -100px; top: 20%; border-radius: 50%; background: #f5a7e522; filter: blur(2px); }
+        .landing-eyebrow { width: fit-content; padding: 8px 12px; border: 1px solid #ded4fb !important; border-radius: 999px; background: #f7f2ff; }
+        .landing-hero h1 { max-width: 720px; color: var(--aiq-ink) !important; text-wrap: balance; }
+        .landing-hero h1 span { color: var(--aiq-purple) !important; }
+        .landing-hero > p { max-width: 620px !important; color: var(--aiq-muted) !important; }
+        .hero-scene {
+            position: relative; min-height: 210px; margin: 25px 0 28px; display: grid; place-items: center;
+            perspective: 900px; isolation: isolate; outline: none; --tilt-x: 0deg; --tilt-y: 0deg;
+        }
+        .hero-scene::before { content: ""; position: absolute; width: min(78%, 460px); height: 65%; bottom: 5px; left: 11%; border-radius: 50%; background: #6e48d52a; filter: blur(28px); z-index: -1; }
+        .scene-board {
+            position: relative; width: min(76%, 410px); min-height: 174px; padding: 20px 22px; border: 2px solid #30243e; border-radius: 17px;
+            background: linear-gradient(135deg, #ffdf65 0%, #ffdc63 54%, #ffd557 100%);
+            box-shadow: 8px 9px 0 #30243e, 0 22px 38px #33234420;
+            transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) rotate(-2deg); transform-style: preserve-3d;
+            transition: transform .18s ease-out, box-shadow .2s ease; animation: board-float 5s ease-in-out infinite;
+        }
+        .scene-board::before { content: ""; position: absolute; inset: 10px; border: 1px solid #42334760; border-radius: 11px; pointer-events: none; }
+        .scene-board::after { content: ""; position: absolute; width: 80px; height: 80px; right: 24px; top: 39px; border-radius: 50%; background: radial-gradient(circle at 32% 27%, #fff7 0 5%, transparent 7%), radial-gradient(circle at 35% 30%, #f9a5d2, #8d54e9 56%, #35bdae 74%); box-shadow: inset -10px -12px 18px #31224c66, 5px 8px 0 #30243e; transform: translateZ(25px); }
+        .scene-label { position: relative; z-index: 1; display: inline-flex; padding: 5px 8px; border: 1px solid #33283d; border-radius: 5px; background: #fffdf4; color: #5232b4; font-size: 9px; font-weight: 900; letter-spacing: .14em; transform: translateZ(24px); }
+        .scene-title { position: relative; z-index: 1; max-width: 230px; margin: 14px 0 5px; color: #292237; font-size: clamp(19px, 2.3vw, 27px); line-height: 1.03; font-weight: 950; letter-spacing: -.06em; transform: translateZ(34px); }
+        .scene-caption { position: relative; z-index: 1; margin: 0; color: #514555; font-size: 10px; transform: translateZ(24px); }
+        .scene-sticker { position: absolute; z-index: 3; display: grid; place-items: center; width: 47px; height: 47px; border: 1.5px solid #30243e; border-radius: 50%; background: #f38ddb; box-shadow: 3px 4px 0 #30243e; color: #30243e; font-size: 21px; animation: sticker-float 4s ease-in-out infinite; }
+        .scene-sticker.one { top: 13px; left: 12%; transform: translateZ(50px) rotate(-9deg); }
+        .scene-sticker.two { bottom: 14px; right: 10%; background: #ff9b45; animation-delay: -1.2s; }
+        .scene-note { position: absolute; z-index: 4; padding: 8px 11px; border: 1px solid #30243e; border-radius: 8px; background: #fffdf8; box-shadow: 3px 4px 0 #30243e; color: #30243e; font-size: 9px; font-weight: 800; }
+        .scene-note.left { left: 2%; top: 31%; transform: rotate(-5deg) translateZ(55px); }
+        .scene-note.right { right: 1%; top: 17%; background: #f4a8e9; transform: rotate(4deg) translateZ(55px); }
+        .scene-motion { position: absolute; right: 8%; bottom: 0; z-index: 5; border: 1px solid #33253f; border-radius: 999px; padding: 7px 11px; background: #fff; color: var(--aiq-deep); font-size: 9px; font-weight: 900; cursor: pointer; box-shadow: 2px 3px 0 #33253f; transition: transform .2s, background .2s; }
+        .scene-motion:hover { transform: translateY(-2px); background: var(--aiq-pink); }
+        .hero-scene.paused .scene-board, .hero-scene.paused .scene-sticker { animation-play-state: paused; }
+        .feature-grid { gap: 9px !important; border: 0 !important; padding-top: 0 !important; }
+        .feature-tile { min-height: 118px; padding: 15px; border: 1px solid #3b3043; border-radius: 10px; background: #fff; box-shadow: 0 4px 0 #3b3043; transition: transform .2s, box-shadow .2s; }
+        .feature-tile:hover { transform: translateY(-5px) rotate(-.5deg); box-shadow: 0 9px 0 #3b3043; }
+        .feature-tile:nth-child(2) { background: #f4a8e9; }
+        .feature-tile:nth-child(3) { background: #dff1dc; }
+        .feature-tile p:last-child { color: #514b5a !important; }
+        .auth-card { overflow: hidden; border: 1.5px solid #33253f !important; border-radius: 14px; background: #fffdf8 !important; box-shadow: 7px 8px 0 #33253f, 0 20px 55px #3723481c !important; transform-style: preserve-3d; transition: transform .25s, box-shadow .25s; }
+        .auth-card:hover { transform: translateY(-3px) rotateY(-1deg); box-shadow: 9px 11px 0 #33253f, 0 25px 60px #37234822 !important; }
+        .auth-card-head { padding-top: 24px !important; background: linear-gradient(140deg, #fffdf8, #f5edff); }
+        .auth-card h2 { color: var(--aiq-ink) !important; }
+        .auth-card [x-show] button { transition: color .2s, border-color .2s, transform .2s; }
+        .auth-card input:not([type="checkbox"]), .auth-card select { border-radius: 9px !important; background: #fff !important; }
+        .auth-card input:focus, .auth-card select:focus { box-shadow: 0 0 0 4px #7047df1c !important; }
+        .auth-card form button[type="submit"] { border: 1px solid #30243e; border-radius: 9px !important; background: var(--aiq-purple) !important; box-shadow: 0 4px 0 #392476; }
+        .auth-card form button[type="submit"]:hover { background: var(--aiq-deep) !important; box-shadow: 0 6px 0 #392476; }
+        #aiq-main > div > section { border-radius: 14px; }
+        #aiq-footer { background: #faf7f0; border-color: var(--aiq-line); }
+        @keyframes board-float { 0%,100% { translate: 0 0; } 50% { translate: 0 -7px; } }
+        @keyframes sticker-float { 0%,100% { margin-top: 0; } 50% { margin-top: -8px; } }
+        @media (max-width: 900px) {
+            .landing-grid { grid-template-columns: minmax(0,1fr) !important; }
+            .landing-hero { padding-bottom: 6px; }
+            #auth-workspace { width: min(100%, 560px); margin: 0 auto; }
+        }
+        @media (max-width: 560px) {
+            #aiq-site-header > div { height: 60px; }
+            .hero-scene { min-height: 190px; margin: 20px -4px 24px; }
+            .scene-board { width: 75%; min-height: 158px; padding: 17px; }
+            .scene-board::after { width: 58px; height: 58px; right: 18px; top: 42px; }
+            .scene-title { max-width: 170px; font-size: 19px; }
+            .scene-note { font-size: 8px; padding: 6px 8px; }
+            .scene-note.left { left: 0; }
+            .scene-note.right { right: 0; }
+            .scene-sticker { width: 38px; height: 38px; font-size: 17px; }
+            .scene-motion { right: 1%; }
+            .feature-grid { grid-template-columns: 1fr !important; }
+            .feature-tile { min-height: 0; }
+            .auth-card { box-shadow: 5px 6px 0 #33253f !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
+    </style>
+
 
     <link
         rel="preconnect"
@@ -45,7 +146,7 @@
 
 
 <body
-    class="min-h-full bg-slate-50
+    class="aiq-page min-h-full bg-slate-50
            font-sans text-slate-800 antialiased">
 
 
@@ -57,6 +158,7 @@
         registerLoading: false,
         mobileAuth: false
     }"
+        id="aiq-shell"
         class="flex min-h-screen flex-col">
 
 
@@ -65,6 +167,7 @@
         {{-- ====================================================== --}}
 
         <header
+            id="aiq-site-header"
             class="border-b border-slate-200
                bg-white/95 backdrop-blur-xl">
 
@@ -223,7 +326,7 @@
         {{-- MAIN                                                   --}}
         {{-- ====================================================== --}}
 
-        <main class="flex flex-1 items-center">
+        <main id="aiq-main" class="flex flex-1 items-center">
 
             <div
                 class="mx-auto w-full max-w-7xl
@@ -337,7 +440,7 @@
                 {{-- ========================================== --}}
 
                 <div
-                    class="grid items-center gap-12
+                    class="landing-grid grid items-center gap-12
                            lg:grid-cols-[minmax(0,1fr)_440px]
                            xl:gap-20">
 
@@ -346,11 +449,11 @@
                     {{-- LEFT: AI-Q IDENTITY                    --}}
                     {{-- ====================================== --}}
 
-                    <section>
+                    <section class="landing-hero">
 
 
                         <div
-                            class="inline-flex items-center
+                            class="landing-eyebrow inline-flex items-center
                                    gap-2 border-b
                                    border-indigo-200 pb-2">
 
@@ -411,15 +514,29 @@
 
 
 
+                        <div class="hero-scene" id="hero-scene" data-tilt tabindex="0" aria-label="Interactive 3D AI-Q learning card">
+                            <span class="scene-sticker one" aria-hidden="true">✦</span>
+                            <span class="scene-sticker two" aria-hidden="true">✎</span>
+                            <span class="scene-note left">LEARN · PRACTICE</span>
+                            <span class="scene-note right">AI-Q INSIGHTS</span>
+                            <div class="scene-board">
+                                <span class="scene-label">YOUR LEARNING SPACE</span>
+                                <h2 class="scene-title">Think clearly.<br>Grow confidently.</h2>
+                                <p class="scene-caption">One place for exams, results, and progress.</p>
+                            </div>
+                            <button type="button" class="scene-motion" id="scene-motion" aria-pressed="false">Ⅱ &nbsp; Pause motion</button>
+                        </div>
+
+
                         {{-- Feature signals --}}
                         <div
                             class="mt-10 grid gap-x-8
                                    gap-y-6 border-y
                                    border-slate-200 py-7
-                                   sm:grid-cols-3">
+                                   sm:grid-cols-3 feature-grid">
 
 
-                            <div>
+                            <div class="feature-tile">
 
                                 <p
                                     class="text-[9px]
@@ -454,7 +571,7 @@
 
 
                             <div
-                                class="sm:border-l
+                                class="feature-tile sm:border-l
                                        sm:border-slate-200
                                        sm:pl-7">
 
@@ -491,7 +608,7 @@
 
 
                             <div
-                                class="sm:border-l
+                                class="feature-tile sm:border-l
                                        sm:border-slate-200
                                        sm:pl-7">
 
@@ -591,14 +708,14 @@
 
                     <section
                         id="auth-workspace"
-                        class="border border-slate-200
+                        class="auth-card border border-slate-200
                                bg-white shadow-xl
                                shadow-slate-900/[0.04]">
 
 
                         {{-- Header --}}
                         <div
-                            class="border-b border-slate-200
+                            class="auth-card-head border-b border-slate-200
                                    px-6 pt-6 sm:px-7">
 
                             <p
@@ -1403,7 +1520,7 @@
         {{-- FOOTER                                                 --}}
         {{-- ====================================================== --}}
 
-        <footer class="border-t border-slate-200 bg-white">
+        <footer id="aiq-footer" class="border-t border-slate-200 bg-white">
 
             <div
                 class="mx-auto flex max-w-7xl
@@ -1431,6 +1548,45 @@
     </div>
 
     <script>
+        const heroScene = document.getElementById('hero-scene');
+        const sceneMotion = document.getElementById('scene-motion');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (heroScene && sceneMotion) {
+            if (reduceMotion) {
+                heroScene.classList.add('paused');
+                sceneMotion.textContent = '↻  Motion reduced';
+                sceneMotion.disabled = true;
+            } else {
+                const setTilt = (x, y) => {
+                    const bounds = heroScene.getBoundingClientRect();
+                    const px = (x - bounds.left) / bounds.width;
+                    const py = (y - bounds.top) / bounds.height;
+                    heroScene.style.setProperty('--tilt-x', `${(0.5 - py) * 10}deg`);
+                    heroScene.style.setProperty('--tilt-y', `${(px - 0.5) * 12}deg`);
+                };
+                heroScene.addEventListener('pointermove', event => setTilt(event.clientX, event.clientY));
+                heroScene.addEventListener('pointerleave', () => {
+                    heroScene.style.setProperty('--tilt-x', '0deg');
+                    heroScene.style.setProperty('--tilt-y', '0deg');
+                });
+                heroScene.addEventListener('keydown', event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        heroScene.classList.toggle('paused');
+                        sceneMotion.setAttribute('aria-pressed', heroScene.classList.contains('paused'));
+                        sceneMotion.textContent = heroScene.classList.contains('paused') ? '▶  Resume motion' : 'Ⅱ  Pause motion';
+                    }
+                });
+                sceneMotion.addEventListener('click', () => {
+                    heroScene.classList.toggle('paused');
+                    const paused = heroScene.classList.contains('paused');
+                    sceneMotion.setAttribute('aria-pressed', paused);
+                    sceneMotion.textContent = paused ? '▶  Resume motion' : 'Ⅱ  Pause motion';
+                });
+            }
+        }
+
         const accountIdCheck = document.getElementById('check-account-id');
         const accountIdInput = document.getElementById('account_id');
         const accountIdStatus = document.getElementById('account_id_status');
@@ -1458,7 +1614,7 @@
             accountIdCheck.disabled = true;
 
             try {
-                const response = await fetch('{{ route('register.check.account-id') }}', {
+                const response = await fetch('{{ route('register.check.account-id')}}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

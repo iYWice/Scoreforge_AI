@@ -7,13 +7,13 @@
 
 <div
     x-data="{ agreed: false, submitting: false }"
-    class="mx-auto max-w-5xl">
+    class="mx-auto max-w-5xl aiq-exam-instructions">
 
     {{-- ====================================================== --}}
     {{-- EXAM IDENTITY                                          --}}
     {{-- ====================================================== --}}
 
-    <section class="border-b border-slate-200 pb-7">
+    <section class="border-b border-slate-200 pb-7 aiq-panel aiq-panel-interactive p-5 sm:p-6">
 
         <div class="flex flex-col gap-5
                     lg:flex-row lg:items-end lg:justify-between">
@@ -48,7 +48,7 @@
                 </p>
 
                 <p class="mt-1 font-mono text-sm font-black
-                          tracking-[0.12em] text-indigo-600">
+                          tracking-[0.12em] text-indigo-600 aiq-badge">
                     {{ $exam->exam_code }}
                 </p>
 
@@ -73,7 +73,7 @@
 
 
         <div class="mt-5 grid grid-cols-2 gap-x-6 gap-y-6
-                    border-y border-slate-200 py-6 sm:grid-cols-4">
+                    border-y border-slate-200 py-6 sm:grid-cols-4 aiq-panel p-5 sm:p-6">
 
             {{-- Questions --}}
             <div class="border-r border-slate-200 pr-4">
@@ -170,7 +170,7 @@
     {{-- EXAM SCHEDULE                                          --}}
     {{-- ====================================================== --}}
 
-    <section class="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+    <section class="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 aiq-panel">
         <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-400">
             Examination Schedule
         </p>
@@ -225,7 +225,7 @@
             </div>
 
 
-            <div class="border-t border-slate-200">
+            <div class="border-t border-slate-200 aiq-panel p-4">
 
                 {{-- Rule 1 --}}
                 <div class="group flex gap-4 border-b
@@ -396,7 +396,7 @@
         <aside>
 
             <div class="sticky top-28 overflow-hidden
-                        border border-slate-200 bg-white">
+                        border border-slate-200 bg-white aiq-panel aiq-panel-interactive">
 
                 <div class="bg-slate-950 p-5 text-white">
 
@@ -434,7 +434,7 @@
                     {{-- Agreement --}}
                     <label
                         class="group flex cursor-pointer
-                               items-start gap-3">
+                               items-start gap-3 aiq-option">
 
                         <input
                             type="checkbox"
@@ -445,7 +445,7 @@
                             class="mt-0.5 h-4 w-4 rounded
                                    border-slate-300
                                    text-indigo-600
-                                   focus:ring-indigo-500">
+                                   focus:ring-indigo-500 aiq-check">
 
 
                         <span class="text-xs font-medium
@@ -494,12 +494,12 @@
                         type="submit"
                         :disabled="!agreed || submitting"
                         :class="agreed && !submitting
-                            ? 'bg-indigo-600 text-white hover:bg-indigo-500 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/20 active:translate-y-0 active:scale-95'
-                            : 'cursor-not-allowed bg-slate-100 text-slate-400'"
+                            ? '!bg-indigo-600 !text-white hover:bg-indigo-500 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/20 active:translate-y-0 active:scale-95'
+                            : 'cursor-not-allowed !bg-slate-100 !text-slate-400'"
                         class="flex w-full items-center
                                justify-center gap-2 rounded-xl
                                px-5 py-3 text-xs font-bold
-                               transition-all duration-200">
+                               transition-all duration-200 aiq-button">
 
 
                         {{-- Loading --}}

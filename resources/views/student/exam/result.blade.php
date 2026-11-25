@@ -34,7 +34,7 @@
 <div
     x-data="{ visible: false }"
     x-init="setTimeout(() => visible = true, 100)"
-    class="mx-auto max-w-5xl">
+    class="mx-auto max-w-5xl aiq-exam-result">
 
 
     {{-- ====================================================== --}}
@@ -46,7 +46,7 @@
         x-transition:enter="transition ease-out duration-500"
         x-transition:enter-start="opacity-0 translate-y-3"
         x-transition:enter-end="opacity-100 translate-y-0"
-        class="border-b border-slate-200 pb-8">
+        class="border-b border-slate-200 pb-8 aiq-panel aiq-panel-interactive p-5 sm:p-6">
 
 
         <div class="flex flex-col gap-6
@@ -145,7 +145,7 @@
         class="py-9">
 
 
-        <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] aiq-panel p-5 sm:p-6">
 
 
             {{-- Main score --}}
@@ -253,7 +253,7 @@
                 class="p-6 text-white
                        {{ $hasPassed
                             ? 'bg-slate-950'
-                            : 'bg-slate-950' }}">
+                            : 'bg-slate-950' }} aiq-panel-interactive">
 
 
                 <p class="text-[9px] font-extrabold uppercase
@@ -375,7 +375,7 @@
     {{-- RESULT BREAKDOWN                                       --}}
     {{-- ====================================================== --}}
 
-    <section class="border-y border-slate-200 py-7">
+    <section class="border-y border-slate-200 py-7 aiq-panel p-5 sm:p-6">
 
         <p class="text-[10px] font-extrabold uppercase
                   tracking-[0.2em] text-slate-400">
@@ -545,7 +545,7 @@
         </div>
     </div>
 </section> -->
-<section class="border-t border-slate-200 py-8">
+<section class="border-t border-slate-200 py-8 aiq-result-review">
     <div class="mb-5">
         <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">
             Exam Content
@@ -574,7 +574,7 @@
                 $studentAnswer = trim((string) ($answer?->answer_text ?? ''));
             @endphp
 
-            <article class="rounded-xl border {{ $isCorrect ? 'border-emerald-200' : 'border-rose-200' }} bg-white p-5">
+            <article class="rounded-xl border {{ $isCorrect ? 'border-emerald-200' : 'border-rose-200' }} bg-white p-5 aiq-panel-interactive">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wide text-slate-400">
@@ -668,7 +668,7 @@
 
 
             {{-- Analytics --}}
-            <div class="border-t-2 border-indigo-500 bg-white p-5">
+            <div class="border-t-2 border-indigo-500 bg-white p-5 aiq-panel aiq-panel-interactive">
 
                 <div class="flex items-start gap-4">
 
@@ -709,7 +709,7 @@
 
 
             {{-- Recommendation --}}
-            <div class="border-t-2 border-slate-800 bg-white p-5">
+            <div class="border-t-2 border-slate-800 bg-white p-5 aiq-panel aiq-panel-interactive">
 
                 <div class="flex items-start gap-4">
 
@@ -761,7 +761,7 @@
         class="flex flex-col gap-4 border-t
                border-slate-200 pt-7
                sm:flex-row sm:items-center
-               sm:justify-between">
+               sm:justify-between aiq-action-bar p-5">
 
 
         <div>
@@ -804,7 +804,7 @@
     href="{{ !empty($teacherView)
         ? route('teacher.students.performance', $attempt->student_id)
         : route('student.dashboard') }}"
-    class="group inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-xs font-bold text-white">
+    class="group inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-xs font-bold text-white aiq-button aiq-button-primary">
     {{ !empty($teacherView) ? 'Back to student performance' : 'View Performance' }}
 </a>
 
@@ -816,7 +816,7 @@
     {{-- AI-Q FUTURE                                            --}}
     {{-- ====================================================== --}}
 
-    <section class="mt-8 border-t border-slate-200 pt-6">
+    <section class="mt-8 border-t border-slate-200 pt-6 aiq-panel p-5">
 
         <div class="flex items-start gap-3">
 

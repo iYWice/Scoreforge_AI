@@ -36,14 +36,14 @@ $weakestTopic = $weakTopics->first();
         examPanel: false,
         performanceOpen: true
     }"
-    class="space-y-10">
+    class="space-y-10 aiq-student-dashboard">
 
 
     {{-- ====================================================== --}}
     {{-- STUDENT INTRO                                          --}}
     {{-- ====================================================== --}}
 
-    <section class="border-b border-slate-200 pb-8">
+    <section class="border-b border-slate-200 pb-8 aiq-panel aiq-panel-interactive p-5 sm:p-6">
 
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 
@@ -94,7 +94,7 @@ $weakestTopic = $weakTopics->first();
                            shadow-sm transition-all duration-200
                            hover:-translate-y-0.5 hover:bg-indigo-500
                            hover:shadow-lg hover:shadow-indigo-500/20
-                           active:translate-y-0 active:scale-95">
+                           active:translate-y-0 active:scale-95 aiq-button aiq-button-primary">
 
                     Take Exam
 
@@ -128,7 +128,7 @@ $weakestTopic = $weakTopics->first();
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-3"
         class="overflow-hidden border border-indigo-200
-               bg-indigo-50/50">
+               bg-indigo-50/50 aiq-panel">
 
 
         <div class="grid lg:grid-cols-[1fr_430px]">
@@ -160,7 +160,7 @@ $weakestTopic = $weakTopics->first();
 
                 <div class="mb-4 border border-rose-200
                                 bg-rose-50 px-3.5 py-2.5
-                                text-xs font-semibold text-rose-700">
+                                text-xs font-semibold text-rose-700 aiq-alert aiq-alert-error">
 
                     {{ session('error') }}
 
@@ -188,7 +188,7 @@ $weakestTopic = $weakTopics->first();
                     </label>
 
 
-                    <div class="flex flex-col gap-2 sm:flex-row">
+                    <div class="flex min-w-0 flex-col gap-2 sm:flex-row">
 
                         <input
                             type="text"
@@ -210,7 +210,7 @@ $weakestTopic = $weakTopics->first();
                                    focus:border-indigo-400
                                    focus:bg-white
                                    focus:ring-4
-                                   focus:ring-indigo-100/60">
+                                   focus:ring-indigo-100/60 aiq-field">
 
 
                         <button
@@ -221,7 +221,7 @@ $weakestTopic = $weakTopics->first();
                                    px-5 py-3 text-xs font-bold
                                    text-white transition-all
                                    hover:bg-indigo-600
-                                   active:scale-95">
+                                   active:scale-95 aiq-button aiq-button-primary w-full sm:w-auto">
 
                             Continue
 
@@ -252,7 +252,7 @@ $weakestTopic = $weakTopics->first();
 
         <div class="grid grid-cols-2 gap-x-6 gap-y-7
                     border-y border-slate-200 py-7
-                    lg:grid-cols-4">
+                    lg:grid-cols-4 aiq-panel p-5 sm:p-6">
 
 
             {{-- Average --}}
@@ -377,7 +377,7 @@ $weakestTopic = $weakTopics->first();
 
         {{-- Main performance --}}
         <div class="border border-slate-200 bg-white
-                    p-6 lg:col-span-8">
+                    p-6 lg:col-span-8 aiq-panel aiq-panel-interactive">
 
             <div class="flex items-start justify-between gap-4">
 
@@ -405,7 +405,7 @@ $weakestTopic = $weakTopics->first();
                     class="rounded-lg px-2 py-1 text-xs font-bold
                            text-slate-400 transition-all
                            hover:bg-slate-100 hover:text-slate-700
-                           active:scale-95">
+                           active:scale-95 aiq-button aiq-button-secondary">
 
                     <span x-text="performanceOpen ? 'Hide' : 'Show'"></span>
 
@@ -514,7 +514,7 @@ $weakestTopic = $weakTopics->first();
 
         {{-- Focus --}}
         <div class="bg-slate-950 p-6 text-white
-                    lg:col-span-4">
+                    lg:col-span-4 aiq-panel-interactive">
 
             <p class="text-[10px] font-extrabold uppercase
                       tracking-[0.2em] text-indigo-400">
@@ -631,7 +631,7 @@ $weakestTopic = $weakTopics->first();
 
 
             {{-- Weak --}}
-            <div class="border-t-2 border-rose-500 bg-white">
+            <div class="border-t-2 border-rose-500 bg-white aiq-panel-interactive">
 
                 <div class="border-b border-slate-200 px-5 py-4">
 
@@ -690,7 +690,7 @@ $weakestTopic = $weakTopics->first();
 
 
             {{-- Strong --}}
-            <div class="border-t-2 border-emerald-500 bg-white">
+            <div class="border-t-2 border-emerald-500 bg-white aiq-panel-interactive">
 
                 <div class="border-b border-slate-200 px-5 py-4">
 
@@ -773,18 +773,18 @@ $weakestTopic = $weakTopics->first();
 
             <a
                 href="{{ route('student.exam.history') }}"
-                class="mt-2 inline-block text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                class="mt-2 inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800 aiq-button aiq-button-secondary">
                 View all history →
             </a>
         </div>
 
-        <span class="text-xs font-bold text-slate-400">
+        <span class="text-xs font-bold text-slate-400 aiq-badge">
             {{ $attempts->count() }}
             {{ \Illuminate\Support\Str::plural('exam', $attempts->count()) }}
         </span>
     </div>
 
-    <div class="border-t border-slate-200">
+    <div class="mt-4 grid gap-3">
         @forelse($attempts as $attempt)
             @php
                 $passingScore = $attempt->exam?->passing_score ?? 0;
@@ -795,7 +795,7 @@ $weakestTopic = $weakTopics->first();
                     : null;
             @endphp
 
-            <div class="group grid gap-4 border-b border-slate-200 py-5 transition-colors hover:bg-white sm:grid-cols-[minmax(0,1fr)_120px_140px] sm:items-center">
+            <div class="group grid gap-4 border border-slate-200 bg-white p-4 transition-colors hover:bg-white sm:grid-cols-[minmax(0,1fr)_120px_140px] sm:items-center aiq-panel aiq-panel-interactive">
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
                         <h3 class="text-sm font-extrabold text-slate-850">
@@ -836,13 +836,13 @@ $weakestTopic = $weakTopics->first();
 
                     <a
                         href="{{ route('student.exam.result', $attempt) }}"
-                        class="mt-1 inline-block text-xs font-bold text-indigo-600 hover:text-indigo-800">
+                        class="mt-1 inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800 aiq-button aiq-button-secondary">
                         View result →
                     </a>
                 </div>
             </div>
         @empty
-            <div class="border-b border-slate-200 py-14 text-center">
+            <div class="border-b border-slate-200 py-14 text-center aiq-panel">
                 <p class="text-sm font-bold text-slate-600">
                     No examinations completed yet.
                 </p>
@@ -854,7 +854,7 @@ $weakestTopic = $weakTopics->first();
                 <button
                     type="button"
                     @click="examPanel = true; window.scrollTo({ top: 0, behavior: 'smooth' })"
-                    class="mt-4 text-xs font-bold text-indigo-600 transition-colors hover:text-indigo-800">
+                    class="mt-4 text-xs font-bold text-indigo-600 transition-colors hover:text-indigo-800 aiq-button aiq-button-secondary">
                     Enter Exam Code →
                 </button>
             </div>
@@ -868,7 +868,7 @@ $weakestTopic = $weakTopics->first();
     {{-- LEARNING RECOMMENDATION                                --}}
     {{-- ====================================================== --}}
 
-    <section class="border border-slate-200 bg-white">
+    <section class="border border-slate-200 bg-white aiq-panel aiq-panel-interactive">
 
         <div class="grid lg:grid-cols-[240px_1fr]">
 
@@ -936,7 +936,7 @@ $weakestTopic = $weakTopics->first();
     {{-- AI-Q FUTURE SIGNAL                                     --}}
     {{-- ====================================================== --}}
 
-    <section class="border-t border-slate-200 pt-7">
+    <section class="border-t border-slate-200 pt-7 aiq-action-bar p-5">
 
         <div class="flex flex-col gap-4
                     sm:flex-row sm:items-center
@@ -973,7 +973,7 @@ $weakestTopic = $weakTopics->first();
                 class="w-fit rounded-full bg-slate-100
                        px-3 py-1.5 text-[9px]
                        font-extrabold uppercase
-                       tracking-[0.15em] text-slate-400">
+                       tracking-[0.15em] text-slate-400 aiq-badge">
 
                 Gemini Integration Next
 

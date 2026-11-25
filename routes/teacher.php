@@ -233,4 +233,9 @@ Route::middleware(['auth', 'role:teacher'])->group(function () {
         '/teacher/subjects/{classSubject}/students',
         [ClassSubjectController::class, 'syncTeacherSubjectStudents']
     )->name('teacher.subjects.students.sync');
+
+    Route::patch(
+        '/teacher/subjects/{classSubject}',
+        [ClassSubjectController::class, 'updateTeacherSubject']
+    )->name('teacher.subjects.update');
 });

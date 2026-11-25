@@ -29,12 +29,131 @@
 
     Create Exam
 </a>
+
 @endsection
 
 
 @section('content')
 
-<div class="space-y-10">
+<style>
+    .aiq-dashboard {
+        --aiq-purple: #7047df;
+        --aiq-deep: #512fb7;
+        --aiq-ink: #292437;
+        --aiq-muted: #777382;
+        --aiq-cream: #fffdf8;
+        --aiq-pink: #f4a8e9;
+        --aiq-yellow: #ffe16a;
+        --aiq-line: #e8e4dc;
+        color: var(--aiq-ink);
+        position: relative;
+        isolation: isolate;
+        padding: clamp(14px, 2.5vw, 30px);
+        border: 1px solid #e6deef;
+        border-radius: 18px;
+        background: radial-gradient(circle at 4% 5%, #f1eaff 0, transparent 24%), var(--aiq-cream);
+        box-shadow: 0 16px 48px #35244c12;
+    }
+    .aiq-dashboard::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        right: 4%;
+        top: 2%;
+        width: 155px;
+        height: 155px;
+        border: 1px solid #7047df15;
+        border-radius: 50%;
+        box-shadow: 0 0 0 18px #7047df08, 0 0 0 42px #7047df05;
+        pointer-events: none;
+    }
+    .aiq-dashboard h2, .aiq-dashboard h3 { color: var(--aiq-ink); }
+    .aiq-dashboard .text-indigo-600 { color: var(--aiq-purple) !important; }
+    .aiq-dashboard a:focus-visible { outline: 3px solid #7047df66; outline-offset: 4px; }
+    .metric-card {
+        --tilt-x: 0deg;
+        --tilt-y: 0deg;
+        min-height: 143px;
+        padding: 16px 15px;
+        border: 1.5px solid #382d43 !important;
+        border-radius: 11px;
+        background: #fff;
+        box-shadow: 0 4px 0 #382d43;
+        transform: perspective(700px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+        transform-style: preserve-3d;
+        transition: transform .18s ease, box-shadow .2s, background .2s;
+    }
+    .metric-card:nth-child(2) { background: #fff2bd; }
+    .metric-card:nth-child(3) { background: #f9e4f6; }
+    .metric-card:nth-child(4) { background: #e7f3e5; }
+    .metric-card:hover { z-index: 2; transform: perspective(700px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-5px); box-shadow: 0 9px 0 #382d43, 0 16px 28px #33253c18; }
+    .metric-card .rounded-full { border: 1px solid #382d4330; background: #fff9 !important; }
+    .metric-card:hover .rounded-full { background: var(--aiq-purple) !important; }
+    .analytics-card {
+        --tilt-x: 0deg;
+        --tilt-y: 0deg;
+        border: 1.5px solid #35283f !important;
+        border-radius: 14px;
+        background: linear-gradient(140deg, #fffdf8 0%, #fff 68%, #f7efff 100%) !important;
+        box-shadow: 0 5px 0 #35283f, 0 15px 35px #35283f12;
+        transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+        transform-style: preserve-3d;
+        transition: transform .18s ease, box-shadow .2s;
+    }
+    .analytics-card:hover { box-shadow: 0 9px 0 #35283f, 0 22px 40px #35283f20 !important; }
+    .analytics-card > div { transform: translateZ(8px); }
+    .analytics-card .bg-indigo-600 { background: var(--aiq-purple) !important; }
+    .analytics-card .bg-slate-100 { border: 1px solid #35283f18; border-radius: 999px; }
+    .quick-actions-card {
+        border: 1.5px solid #30243e !important;
+        border-radius: 14px;
+        background: linear-gradient(145deg, #7047df, #5b38c2 74%, #4e2eaa) !important;
+        box-shadow: 6px 7px 0 #30243e;
+        transition: transform .22s, box-shadow .22s;
+    }
+    .quick-actions-card:hover { transform: translateY(-3px) rotateY(-1deg); box-shadow: 9px 10px 0 #30243e; }
+    .quick-actions-card h3, .quick-actions-card .text-white { color: white !important; }
+    .quick-actions-card .text-indigo-400 { color: #ffe16a !important; }
+    .quick-actions-card .border-slate-800 { border-color: #ffffff35; }
+    .quick-actions-card .text-slate-500 { color: #e1d8ff !important; }
+    .quick-actions-card a:hover { background: #ffffff12; border-radius: 8px; }
+    .activity-card {
+        border: 1.5px solid #382d43 !important;
+        border-radius: 11px;
+        padding: 18px !important;
+        background: #fff;
+        box-shadow: 0 4px 0 #382d43;
+        transition: transform .2s, box-shadow .2s, background .2s;
+    }
+    .activity-card:nth-child(2) { background: #f4a8e9; }
+    .activity-card:hover { transform: translateY(-4px) rotate(-.4deg); box-shadow: 0 8px 0 #382d43; }
+    .insight-banner {
+        --tilt-x: 0deg;
+        --tilt-y: 0deg;
+        border: 1.5px solid #35283f !important;
+        border-radius: 14px;
+        background: linear-gradient(115deg, #f4a8e9 0%, #f8c8ed 48%, #ffe16a 150%) !important;
+        box-shadow: 5px 6px 0 #35283f;
+        transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+        transition: transform .18s ease, box-shadow .2s;
+    }
+    .insight-banner:hover { box-shadow: 8px 9px 0 #35283f; }
+    .insight-banner .absolute { opacity: .45; background: #fff !important; }
+    .insight-banner h3 { color: #292437 !important; }
+    .insight-banner p:not(.text-indigo-600) { color: #57495e !important; }
+    .insight-banner .rounded-full { border-color: #35283f !important; color: #4e32aa !important; box-shadow: 2px 3px 0 #35283f; }
+    @media (max-width: 640px) {
+        .aiq-dashboard { padding: 13px; border-radius: 13px; }
+        .metric-card { min-height: 132px; padding: 12px; }
+        .metric-card .text-3xl { font-size: 1.75rem; }
+        .analytics-card > div { padding: 20px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .aiq-dashboard *, .aiq-dashboard *::before, .aiq-dashboard *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+</style>
+
+<div class="aiq-dashboard space-y-10">
 
     {{-- ====================================================== --}}
     {{-- ACADEMIC PULSE                                         --}}
@@ -76,7 +195,7 @@
             {{-- Exams --}}
             <a
                 href="{{ url('/teacher/exams') }}"
-                class="group relative border-r border-slate-200
+                class="metric-card dashboard-tilt group relative border-r border-slate-200
                        pr-5 transition-all duration-300
                        active:scale-[0.97]">
 
@@ -125,7 +244,7 @@
             {{-- Questions --}}
             <a
                 href="{{ url('/teacher/exams') }}"
-                class="group relative lg:border-r
+                class="metric-card dashboard-tilt group relative lg:border-r
                        lg:border-slate-200 lg:pr-5
                        transition-all duration-300
                        active:scale-[0.97]">
@@ -174,7 +293,7 @@
             {{-- Attempts --}}
             <a
                 href="{{ route('teacher.analytics.index') }}"
-                class="group relative border-r border-slate-200
+                class="metric-card dashboard-tilt group relative border-r border-slate-200
                        pr-5 transition-all duration-300
                        active:scale-[0.97]">
 
@@ -222,7 +341,7 @@
             {{-- Performance --}}
             <a
                 href="{{ route('teacher.analytics.index') }}"
-                class="group relative
+                class="metric-card dashboard-tilt group relative
                        transition-all duration-300
                        active:scale-[0.97]">
 
@@ -284,7 +403,7 @@
         {{-- Performance Workspace --}}
         <a
             href="{{ route('teacher.analytics.index') }}"
-            class="group relative overflow-hidden
+            class="analytics-card dashboard-tilt group relative overflow-hidden
                    border border-slate-200 bg-white
                    lg:col-span-8
                    transition-all duration-300
@@ -425,8 +544,7 @@
 
         {{-- Quick Actions --}}
         <div
-            class="border border-slate-200 bg-slate-950
-                   p-6 text-white lg:col-span-4 sm:p-8">
+            class="quick-actions-card p-6 text-white lg:col-span-4 sm:p-8">
 
             <p class="text-[10px] font-extrabold uppercase
                       tracking-[0.2em] text-indigo-400">
@@ -555,7 +673,7 @@
         {{-- Examination Activity --}}
         <a
             href="{{ url('/teacher/exams') }}"
-            class="group border-t border-slate-300
+            class="activity-card group border-t border-slate-300
                    py-6 transition-all duration-300">
 
             <div class="flex items-start justify-between">
@@ -596,7 +714,7 @@
         {{-- Student Activity --}}
         <a
             href="{{ route('teacher.analytics.index') }}"
-            class="group border-t border-slate-300
+            class="activity-card group border-t border-slate-300
                    py-6 transition-all duration-300">
 
             <div class="flex items-start justify-between">
@@ -642,7 +760,7 @@
     {{-- ====================================================== --}}
 
     <section
-        class="relative overflow-hidden
+        class="insight-banner dashboard-tilt relative overflow-hidden
                border border-indigo-100
                bg-indigo-50/60 p-6 sm:p-8">
 
@@ -712,5 +830,28 @@
     </section>
 
 </div>
+
+<script>
+    (() => {
+        const cards = document.querySelectorAll('.aiq-dashboard .dashboard-tilt');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduceMotion) return;
+
+        cards.forEach(card => {
+            card.addEventListener('pointermove', event => {
+                if (event.pointerType === 'touch') return;
+                const bounds = card.getBoundingClientRect();
+                const px = (event.clientX - bounds.left) / bounds.width;
+                const py = (event.clientY - bounds.top) / bounds.height;
+                card.style.setProperty('--tilt-x', `${(0.5 - py) * 5}deg`);
+                card.style.setProperty('--tilt-y', `${(px - 0.5) * 7}deg`);
+            });
+            card.addEventListener('pointerleave', () => {
+                card.style.setProperty('--tilt-x', '0deg');
+                card.style.setProperty('--tilt-y', '0deg');
+            });
+        });
+    })();
+</script>
 
 @endsection
