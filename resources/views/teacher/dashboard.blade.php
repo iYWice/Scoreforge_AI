@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Command Center')
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Teacher Workspace')
 
-{-- Define this page section and its presentation content. --}
 @section('page-actions')
 <a
     href="{{ url('/teacher/exams') }}"
@@ -37,7 +33,6 @@
 @endsection
 
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -164,7 +159,6 @@
     {{-- ACADEMIC PULSE                                         --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section>
 
         <div class="mb-6 flex flex-col gap-2
@@ -404,7 +398,6 @@
     {{-- COMMAND WORKSPACE                                      --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section class="grid grid-cols-1 gap-6 lg:grid-cols-12">
 
         {{-- Performance Workspace --}}
@@ -675,7 +668,6 @@
     {{-- ACTIVITY / SIGNAL AREA                                  --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
         {{-- Examination Activity --}}
@@ -767,7 +759,6 @@
     {{-- AI-Q PLACEHOLDER                                       --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section
         class="insight-banner dashboard-tilt relative overflow-hidden
                border border-indigo-100

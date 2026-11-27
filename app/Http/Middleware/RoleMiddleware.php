@@ -6,14 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-/**
- * Represents the RoleMiddleware application component.
- */
 class RoleMiddleware
 {
-    /**
-     * Handles handle.
-     */
     public function handle(Request $request, Closure $next, $role)
     {
         // FIRST: check if logged in

@@ -1,6 +1,4 @@
-{-- Render this meaningful page or content section. --}
 <section class="space-y-6">
-    {-- Render this navigation or page landmark. --}
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
             {{ __('Delete Account') }}
@@ -17,7 +15,6 @@
     >{{ __('Delete Account') }}</x-danger-button>
 
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        {-- Collect and submit the data for this operation. --}
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
             @csrf
             @method('delete')

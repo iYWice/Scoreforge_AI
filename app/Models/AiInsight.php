@@ -5,9 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Represents the AiInsight application component.
- */
 class AiInsight extends Model
 {
     use HasFactory;
@@ -29,17 +26,11 @@ class AiInsight extends Model
         'generated_at' => 'datetime',
     ];
 
-    /**
-     * Handles exam.
-     */
     public function exam()
     {
         return $this->belongsTo(Exam::class);
     }
 
-    /**
-     * Handles generator.
-     */
     public function generator()
     {
         return $this->belongsTo(

@@ -10,14 +10,8 @@ use App\Models\Recommendation;
 use App\Models\StudentAnalytics;
 use App\Services\StudentPerformanceService;
 
-/**
- * Represents the DashboardController application component.
- */
 class DashboardController extends Controller
 {
-    /**
-     * Handles index.
-     */
     public function index(StudentPerformanceService $performanceService)
     {
         $studentId = auth()->id();
@@ -75,9 +69,6 @@ class DashboardController extends Controller
         );
     }
 
-    /**
-     * Handles history.
-     */
     public function history()
     {
         $attempts = ExamAttempt::with('exam.subject')

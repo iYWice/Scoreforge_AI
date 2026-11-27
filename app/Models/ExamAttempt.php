@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
-/**
- * Represents the ExamAttempt application component.
- */
 class ExamAttempt extends Model
 {
     use HasFactory;
@@ -33,33 +30,21 @@ class ExamAttempt extends Model
         'question_order' => 'array',
     ];
 
-    /**
-     * Handles student.
-     */
     public function student()
     {
         return $this->belongsTo(User::class, 'student_id');
     }
 
-    /**
-     * Handles exam.
-     */
     public function exam()
     {
         return $this->belongsTo(Exam::class, 'exam_id');
     }
 
-    /**
-     * Handles answers.
-     */
     public function answers()
     {
         return $this->hasMany(Answer::class, 'attempt_id');
     }
 
-    /**
-     * Handles startExam.
-     */
     public function startExam(Request $request)
     {
         $request->validate([
@@ -90,9 +75,6 @@ class ExamAttempt extends Model
         );
     }
 
-    /**
-     * Handles markTimedOutIfExpired.
-     */
     public function markTimedOutIfExpired(): bool
     {
         if (
@@ -118,9 +100,6 @@ class ExamAttempt extends Model
         return false;
     }
 
-    /**
-     * Handles orderedQuestions.
-     */
     public function orderedQuestions()
     {
         $questions = $this->exam->questions;

@@ -4,22 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Services\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-/**
- * Represents the AuthenticatedSessionController application component.
- */
 class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
-     */
-    /**
-     * Handles create.
      */
     public function create(): View
     {
@@ -29,9 +22,6 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    /**
-     * Handles store.
-     */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
@@ -40,7 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         $user = auth()->user();
 
-        app(ActivityLogger::class)->log(
+        app(\App\Services\ActivityLogger::class)->log(
             'auth.login',
             'User logged in.',
             $user
@@ -60,15 +50,12 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    /**
-     * Handles destroy.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $user = Auth::user();
 
         if ($user) {
-            app(ActivityLogger::class)->log(
+            app(\App\Services\ActivityLogger::class)->log(
                 'auth.logout',
                 'User logged out.',
                 $user

@@ -8,14 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-/**
- * Represents the ActivityLogger application component.
- */
 class ActivityLogger
 {
-    /**
-     * Handles log.
-     */
     public function log(
         string $action,
         string $description,

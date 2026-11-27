@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-/**
- * Represents the SchoolClass application component.
- */
 class SchoolClass extends Model
 {
     use HasFactory;
@@ -22,9 +19,6 @@ class SchoolClass extends Model
         'subject_id',
     ];
 
-    /**
-     * Handles teacher.
-     */
     public function teacher()
     {
         return $this->belongsTo(
@@ -33,17 +27,11 @@ class SchoolClass extends Model
         );
     }
 
-    /**
-     * Handles subject.
-     */
     public function subject()
     {
         return $this->belongsTo(Subject::class);
     }
 
-    /**
-     * Handles exams.
-     */
     public function exams()
     {
         return $this->hasMany(
@@ -52,9 +40,6 @@ class SchoolClass extends Model
         );
     }
 
-    /**
-     * Handles enrollments.
-     */
     public function enrollments()
     {
         return $this->hasMany(
@@ -63,9 +48,6 @@ class SchoolClass extends Model
         );
     }
 
-    /**
-     * Handles students.
-     */
     public function students()
     {
         return $this->belongsToMany(
@@ -76,10 +58,6 @@ class SchoolClass extends Model
         )->withPivot('joined_at')
             ->withTimestamps();
     }
-
-    /**
-     * Handles generateClassCode.
-     */
     public static function generateClassCode(): string
     {
         do {
@@ -92,12 +70,8 @@ class SchoolClass extends Model
 
         return $code;
     }
-
-    /**
-     * Handles classSubjects.
-     */
     public function classSubjects()
-    {
-        return $this->hasMany(ClassSubject::class, 'class_id');
-    }
+{
+    return $this->hasMany(ClassSubject::class, 'class_id');
+}
 }

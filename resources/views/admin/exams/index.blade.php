@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Exam Management | AI-Q')
-{-- Define this page section and its presentation content. --}
 @section('page-title', 'Examination Management')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="space-y-6 aiq-exam-management" x-data="{ createOpen: false, editExam: null }">
 
@@ -25,17 +21,14 @@
         </button> -->
     </div>
 
-    {-- Render this content conditionally based on the current view state. --}
     @if(session('success'))
         <div class="rounded-xl bg-green-50 p-4 text-sm text-green-700 aiq-alert aiq-alert-success">
             {{ session('success') }}
         </div>
     @endif
-    {-- Render this content conditionally based on the current view state. --}
     @if($errors->any())
         <div class="rounded-xl bg-red-50 p-4 text-sm text-red-700 aiq-alert aiq-alert-error">
             <ul class="list-disc pl-5">
-                {-- Iterate over the related records and render each result. --}
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -43,7 +36,6 @@
         </div>
     @endif
 
-    {-- Collect and submit the data for this operation. --}
     <form method="GET" action="{{ route('admin.exams.index') }}"
         class="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_190px_auto] sm:items-center aiq-panel p-4">
         <input type="search" name="search"
@@ -53,7 +45,6 @@
 
         <select name="status" class="w-full rounded-xl border-slate-300 text-sm aiq-field">
             <option value="">All Statuses</option>
-            {-- Iterate over the related records and render each result. --}
             @foreach(['draft', 'published', 'closed'] as $status)
             <option value="{{ $status }}"
                 @selected(request('status')===$status)>
@@ -68,9 +59,7 @@
     </form>
 
     <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white aiq-panel">
-        {-- Present structured records in a table. --}
         <table class="min-w-full text-left text-sm">
-            {-- Present structured records in a table. --}
             <thead class="bg-slate-50 text-slate-600">
                 <tr>
                     <th class="px-5 py-4">Examination</th>
@@ -82,9 +71,7 @@
                     <th class="px-5 py-4 text-right">Action</th>
                 </tr>
             </thead>
-            {-- Present structured records in a table. --}
             <tbody class="divide-y divide-slate-100">
-                {-- Iterate over the related records and render each result. --}
                 @forelse($exams as $exam)
                 <tr>
                     <td class="px-5 py-4">
@@ -126,7 +113,6 @@
                                     'status' => $exam->status,
                                 ]) }}"
                                 class="font-semibold text-slate-700 hover:underline aiq-button aiq-button-secondary">Edit</button> -->
-                            {-- Collect and submit the data for this operation. --}
                             <form method="POST" action="{{ route('admin.exams.destroy', $exam) }}" onsubmit="return confirm('Delete this examination?')">
                                 @csrf
                                 @method('DELETE')
@@ -151,7 +137,6 @@
 <div x-show="createOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/50 p-4">
         <div class="my-auto max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl aiq-panel">
             <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Create Examination</h2><button type="button" @click="createOpen = false" class="aiq-button aiq-button-secondary" style="width:40px;min-width:40px;height:40px;min-height:40px;padding:0">✕</button></div>
-            {-- Collect and submit the data for this operation. --}
             <form method="POST" action="{{ route('admin.exams.store') }}" class="grid gap-4 sm:grid-cols-2">
                 @csrf
                 <input name="title" required maxlength="255" placeholder="Exam title" class="sm:col-span-2 w-full rounded-xl border-slate-300 aiq-field">
@@ -171,7 +156,6 @@
         <div class="my-auto max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl aiq-panel">
             <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Edit Examination</h2><button type="button" @click="editExam = null" class="aiq-button aiq-button-secondary" style="width:40px;min-width:40px;height:40px;min-height:40px;padding:0">✕</button></div>
             <template x-if="editExam">
-                {-- Collect and submit the data for this operation. --}
                 <form method="POST" :action="'{{ url('/admin/exams') }}/' + editExam.id" class="grid gap-4 sm:grid-cols-2">
                     @csrf
                     @method('PATCH')

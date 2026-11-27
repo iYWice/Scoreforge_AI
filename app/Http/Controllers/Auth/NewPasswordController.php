@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Services\ActivityLogger;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,16 +14,10 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
-/**
- * Represents the NewPasswordController application component.
- */
 class NewPasswordController extends Controller
 {
     /**
      * Display the password reset view.
-     */
-    /**
-     * Handles create.
      */
     public function create(Request $request): View
     {
@@ -35,9 +28,6 @@ class NewPasswordController extends Controller
      * Handle an incoming new password request.
      *
      * @throws ValidationException
-     */
-    /**
-     * Handles store.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -62,7 +52,7 @@ class NewPasswordController extends Controller
                     'remember_token' => Str::random(60),
                 ])->save();
 
-                app(ActivityLogger::class)->log(
+                app(\App\Services\ActivityLogger::class)->log(
                     'user.password_reset',
                     'User reset their password using the reset link.',
                     $user
@@ -78,6 +68,6 @@ class NewPasswordController extends Controller
         return $status == Password::PASSWORD_RESET
             ? redirect()->route('login')->with('status', __($status))
             : back()->withInput($request->only('email'))
-                ->withErrors(['email' => __($status)]);
+            ->withErrors(['email' => __($status)]);
     }
 }

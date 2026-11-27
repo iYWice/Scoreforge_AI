@@ -1,10 +1,7 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Performance Predictions')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -115,7 +112,6 @@
 
         <div class="p-6 space-y-3">
 
-            {-- Iterate over the related records and render each result. --}
             @forelse($achievers as $prediction)
 
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -181,10 +177,8 @@
 
         <div class="overflow-x-auto">
 
-            {-- Present structured records in a table. --}
             <table class="w-full text-sm">
 
-                {-- Present structured records in a table. --}
                 <thead class="bg-slate-50">
 
                     <tr class="text-left text-xs uppercase
@@ -214,10 +208,8 @@
 
                 </thead>
 
-                {-- Present structured records in a table. --}
                 <tbody class="divide-y divide-slate-100">
 
-                    {-- Iterate over the related records and render each result. --}
                     @forelse($atRiskStudents as $prediction)
 
                     <tr>

@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', $exam->title . ' Analysis')
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Exam Workspace')
 
-{-- Define this page section and its presentation content. --}
 @section('page-actions')
 <div class="flex items-center gap-2">
 
@@ -53,7 +49,6 @@
 @endsection
 
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -130,7 +125,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- EXAM IDENTITY                                          --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section class="exam-hero border-b border-slate-200 pb-7">
 
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -139,7 +133,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                 <div class="flex flex-wrap items-center gap-2">
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @if($examStatus === 'published')
 
                     <span class="inline-flex items-center gap-1.5
@@ -152,7 +145,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                     </span>
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @elseif($examStatus === 'draft')
 
                     <span class="inline-flex items-center gap-1.5
@@ -165,7 +157,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                     </span>
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @else
 
                     <span class="inline-flex items-center gap-1.5
@@ -181,7 +172,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     @endif
 
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @if($exam->subject)
 
                     <span class="text-slate-300">/</span>
@@ -193,7 +183,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     @endif
 
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @if($exam->class)
 
                     <span class="text-slate-300">/</span>
@@ -243,7 +232,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- EXAM WORKSPACE NAV                                     --}}
     {{-- ====================================================== --}}
 
-    {-- Render this navigation or page landmark. --}
     <nav class="exam-workspace-nav flex items-center gap-1 overflow-x-auto
                 border-b border-slate-200">
 
@@ -292,7 +280,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- ANALYSIS SUB NAV                                       --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section class="flex items-center gap-2 overflow-x-auto">
 
         <button
@@ -342,7 +329,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
 
     </section>
-    {-- Collect and submit the data for this operation. --}
     <form
         method="POST"
         action="{{ route(
@@ -430,7 +416,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
         {{-- METRICS                                            --}}
         {{-- ================================================== --}}
 
-        {-- Render this meaningful page or content section. --}
         <section>
 
             <p class="text-[10px] font-extrabold uppercase
@@ -550,7 +535,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
         {{-- PERFORMANCE + OUTCOMES                             --}}
         {{-- ================================================== --}}
 
-        {-- Render this meaningful page or content section. --}
         <section class="grid grid-cols-1 gap-6 lg:grid-cols-12">
 
 
@@ -742,7 +726,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
         {{-- SIGNALS                                            --}}
         {{-- ================================================== --}}
 
-        {-- Render this meaningful page or content section. --}
         <section>
 
             <div class="mb-5">
@@ -777,7 +760,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                         Needs Attention
                     </p>
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @if($weakestTopic)
 
                     <p class="mt-3 text-sm font-extrabold text-slate-900">
@@ -792,7 +774,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                         Lowest topic accuracy
                     </p>
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @else
 
                     <p class="mt-3 text-sm font-semibold text-slate-400">
@@ -818,7 +799,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                         Strongest Topic
                     </p>
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @if($strongestTopic)
 
                     <p class="mt-3 text-sm font-extrabold text-slate-900">
@@ -833,7 +813,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                         Highest topic accuracy
                     </p>
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @else
 
                     <p class="mt-3 text-sm font-semibold text-slate-400">
@@ -889,7 +868,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
         x-transition:enter-end="opacity-100 translate-y-0">
 
 
-        {-- Render this meaningful page or content section. --}
         <section>
 
             <div class="mb-6">
@@ -912,7 +890,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
             <div class="border-t border-slate-200">
 
-                {-- Iterate over the related records and render each result. --}
                 @forelse($topics as $topic)
 
                 @php
@@ -1023,7 +1000,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
         class="space-y-6">
 
 
-        {-- Render this meaningful page or content section. --}
         <section>
 
             <div class="flex flex-col gap-5
@@ -1158,10 +1134,8 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
             <div class="overflow-x-auto">
 
-                {-- Present structured records in a table. --}
                 <table class="w-full border-collapse text-left">
 
-                    {-- Present structured records in a table. --}
                     <thead>
 
                         <tr
@@ -1203,10 +1177,8 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     </thead>
 
 
-                    {-- Present structured records in a table. --}
                     <tbody>
 
-                        {-- Iterate over the related records and render each result. --}
                         @forelse($questions as $question)
 
                         @php
@@ -1266,7 +1238,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                             <td class="px-5 py-4">
 
-                                {-- Render this content conditionally based on the current view state. --}
                                 @if($questionTopic)
 
                                 <span
@@ -1275,7 +1246,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                     {{ $questionTopic }}
                                 </span>
 
-                                {-- Render this content conditionally based on the current view state. --}
                                 @else
 
                                 <span class="text-xs text-slate-300">
@@ -1342,7 +1312,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                             <td class="px-5 py-4">
 
-                                {-- Render this content conditionally based on the current view state. --}
                                 @if($difficultyLabel === 'Easy')
 
                                 <span
@@ -1354,7 +1323,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                     Easy
                                 </span>
 
-                                {-- Render this content conditionally based on the current view state. --}
                                 @elseif($difficultyLabel === 'Moderate')
 
                                 <span
@@ -1366,7 +1334,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                     Moderate
                                 </span>
 
-                                {-- Render this content conditionally based on the current view state. --}
                                 @elseif($difficultyLabel === 'Difficult')
 
                                 <span
@@ -1378,7 +1345,6 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                     Difficult
                                 </span>
 
-                                {-- Render this content conditionally based on the current view state. --}
                                 @else
 
                                 <span

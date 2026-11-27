@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Student Performance')
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Student Review')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:px-8 aiq-student-performance">
 
@@ -51,7 +47,6 @@
         </div>
     @endif
 
-    {-- Render this content conditionally based on the current view state. --}
     @if($errors->any())
         <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800 aiq-alert aiq-alert-error">
             {{ $errors->first() }}
@@ -69,7 +64,6 @@
             </p>
         </div>
 
-        {-- Collect and submit the data for this operation. --}
         <form
             method="POST"
             action="{{ route('teacher.students.analysis.overall', $student) }}"
@@ -120,7 +114,6 @@
         </div>
 
         <div class="space-y-5">
-            {-- Iterate over the related records and render each result. --}
             @forelse($attempts as $attempt)
                 @php
                     $totalScore = (float) ($attempt->total_score ?? 0);
@@ -182,14 +175,11 @@
                     {{-- Retry controls --}}
                     @if(in_array($attempt->id, $latestAttemptIds, true))
                         <div class="flex flex-wrap items-center gap-3 border-t border-slate-100 bg-slate-50 px-5 py-3 sm:px-6">
-                            {-- Render this content conditionally based on the current view state. --}
                             @if($attempt->retake_allowed)
                                 <span class="text-sm font-semibold text-emerald-700">
                                     Retry already allowed
                                 </span>
-                            {-- Render this content conditionally based on the current view state. --}
                             @else
-                                {-- Collect and submit the data for this operation. --}
                                 <form
                                     method="POST"
                                     action="{{ route('teacher.students.attempts.reset', $attempt) }}"
@@ -208,11 +198,9 @@
 
                     {{-- Strengths and areas for review --}}
                     <div class="grid gap-4 border-t border-slate-100 p-5 sm:p-6 md:grid-cols-2">
-                        {-- Render this meaningful page or content section. --}
                         <section class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-4 aiq-panel-interactive">
                             <h4 class="text-sm font-bold text-emerald-800">Strengths</h4>
 
-                            {-- Iterate over the related records and render each result. --}
                             @forelse($strengthTopics as $topic)
                                 <div class="mt-3 flex items-start justify-between gap-3 text-sm">
                                     <span class="font-medium text-slate-800">
@@ -230,13 +218,11 @@
                             @endforelse
                         </section>
 
-                        {-- Render this meaningful page or content section. --}
                         <section class="rounded-xl border border-amber-100 bg-amber-50/50 p-4 aiq-panel-interactive">
                             <h4 class="text-sm font-bold text-amber-800">
                                 Areas for review
                             </h4>
 
-                            {-- Iterate over the related records and render each result. --}
                             @forelse($reviewTopics as $topic)
                                 <div class="mt-3 flex items-start justify-between gap-3 text-sm">
                                     <span class="font-medium text-slate-800">
@@ -254,7 +240,6 @@
                             @endforelse
                         </section>
 
-                        {-- Render this content conditionally based on the current view state. --}
                         @if($topicStats->isEmpty())
                             <p class="text-sm text-slate-500 md:col-span-2">
                                 Topic analysis isn’t available because this exam’s questions don’t have topic labels.
@@ -268,7 +253,6 @@
                             Send feedback for this exam
                         </h4>
 
-                        {-- Collect and submit the data for this operation. --}
                         <form
                             method="POST"
                             action="{{ route('teacher.students.analysis.exam', [$student, $attempt]) }}"
@@ -331,7 +315,6 @@
         </div>
 
         <div class="space-y-4">
-            {-- Iterate over the related records and render each result. --}
             @forelse($analyses as $analysis)
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 aiq-panel aiq-panel-interactive">
                     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -348,9 +331,7 @@
                         </span>
                     </div>
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @if(!$analysis->sent_at)
-                        {-- Collect and submit the data for this operation. --}
                         <form
                             method="POST"
                             action="{{ route('teacher.performance-analyses.update', $analysis) }}"
@@ -372,7 +353,6 @@
                             </button>
                         </form>
 
-                        {-- Collect and submit the data for this operation. --}
                         <form
                             method="POST"
                             action="{{ route('teacher.performance-analyses.send', $analysis) }}"
@@ -385,7 +365,6 @@
                                 Send to Student
                             </button>
                         </form>
-                    {-- Render this content conditionally based on the current view state. --}
                     @else
                         <p class="whitespace-pre-line text-sm leading-6 text-slate-700">
                             {{ $analysis->content }}

@@ -1,4 +1,3 @@
-{-- Render this navigation or page landmark. --}
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,7 +39,6 @@
                         </x-dropdown-link>
 
                         <!-- Authentication -->
-                        {-- Collect and submit the data for this operation. --}
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
@@ -87,7 +85,6 @@
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
-                {-- Collect and submit the data for this operation. --}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 

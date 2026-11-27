@@ -4,17 +4,11 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Exam;
-use App\Models\ExamAttempt;
 use App\Models\Question;
+use App\Models\ExamAttempt;
 
-/**
- * Represents the DashboardController application component.
- */
 class DashboardController extends Controller
 {
-    /**
-     * Handles index.
-     */
     public function index()
     {
         $teacherId = auth()->id();

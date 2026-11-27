@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', $class->name)
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Class Workspace')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -112,7 +108,6 @@
             </div>
 
             <div class="class-list-card mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white aiq-panel">
-                {-- Iterate over the related records and render each result. --}
                 @forelse($class->students as $student)
                     <article class="class-show-student flex flex-col gap-4 border-b border-slate-100 px-5 py-4 last:border-0 sm:flex-row sm:items-center sm:justify-between aiq-panel-interactive">
                         <div class="flex min-w-0 items-center gap-3">
@@ -141,7 +136,6 @@
                                 View performance →
                             </a>
 
-                            {-- Collect and submit the data for this operation. --}
                             <form
                                 method="POST"
                                 action="{{ route('teacher.classes.students.remove', [$class, $student]) }}"
@@ -190,7 +184,6 @@
             </div>
 
             <div class="class-list-card mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white aiq-panel">
-                {-- Iterate over the related records and render each result. --}
                 @forelse($class->exams as $exam)
                     <a
                         href="{{ route('teacher.exams.show', $exam) }}"

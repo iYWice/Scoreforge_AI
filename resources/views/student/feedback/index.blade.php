@@ -1,15 +1,10 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Teacher Feedback')
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'My Feedback')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="mx-auto max-w-4xl space-y-6 aiq-teacher-feedback">
-    {-- Render this navigation or page landmark. --}
     <header class="aiq-panel aiq-panel-interactive p-5 sm:p-6">
         <h1 class="text-2xl font-extrabold text-slate-950">Teacher Feedback</h1>
         <p class="mt-1 text-sm text-slate-500">
@@ -18,17 +13,13 @@
     </header>
 
     <div class="space-y-4">
-        {-- Iterate over the related records and render each result. --}
         @forelse($analyses as $analysis)
             <article class="rounded-xl border border-slate-200 bg-white p-5 aiq-panel aiq-panel-interactive">
                 <p class="text-xs font-bold uppercase tracking-wide text-indigo-600 aiq-badge">
-                    {-- Render this content conditionally based on the current view state. --}
                     @if($analysis->scope === 'overall')
                         Overall performance
-                    {-- Render this content conditionally based on the current view state. --}
                     @else
                         {{ $analysis->attempt?->exam?->title ?? 'Exam review' }}
-                        {-- Render this content conditionally based on the current view state. --}
                         @if($analysis->attempt?->exam?->subject)
                             · {{ $analysis->attempt->exam->subject->name }}
                         @endif
@@ -43,7 +34,6 @@
                     Sent {{ $analysis->sent_at?->format('M d, Y g:i A') }}
                 </p>
 
-                {-- Render this content conditionally based on the current view state. --}
                 @if($analysis->attempt)
                     <a href="{{ route('student.exam.result', $analysis->attempt) }}"
                        class="mt-3 inline-flex items-center rounded-xl text-sm font-semibold text-indigo-600 hover:text-indigo-800 aiq-button aiq-button-secondary">

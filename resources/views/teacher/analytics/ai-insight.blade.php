@@ -1,19 +1,14 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'AI-Q Insight')
 
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'AI-Assisted Examination Analysis')
 
-{-- Define this page section and its presentation content. --}
 @section('page-header')
 AI-Q Insight
 @endsection
 
 
-{-- Define this page section and its presentation content. --}
 @section('page-actions')
 
 <a
@@ -31,7 +26,6 @@ AI-Q Insight
 
 </a>
 
-{-- Collect and submit the data for this operation. --}
 <form
     method="POST"
     action="{{ route(
@@ -69,7 +63,6 @@ AI-Q Insight
 
 
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -96,7 +89,6 @@ AI-Q Insight
     {{-- EXAM IDENTITY                                          --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section
         class="insight-hero border-b border-slate-200 pb-7">
 
@@ -220,7 +212,6 @@ AI-Q Insight
     {{-- AI PERFORMANCE SIGNAL                                  --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section
         class="insight-signal overflow-hidden rounded-xl
                bg-slate-950 text-white">
@@ -329,7 +320,6 @@ AI-Q Insight
 
             <div class="divide-y divide-slate-100">
 
-                {-- Iterate over the related records and render each result. --}
                 @forelse(
                 $aiInsight->key_findings ?? []
                 as $finding
@@ -411,7 +401,6 @@ AI-Q Insight
 
             <div class="divide-y divide-slate-100">
 
-                {-- Iterate over the related records and render each result. --}
                 @forelse(
                 $aiInsight->recommended_actions ?? []
                 as $action
@@ -465,7 +454,6 @@ AI-Q Insight
     {{-- EVIDENCE                                               --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section
         class="insight-evidence border-t border-slate-200
                pt-6 aiq-panel">
@@ -525,7 +513,6 @@ AI-Q Insight
 
             </span>
             <div>
-                {-- Render this content conditionally based on the current view state. --}
                 @if($aiInsight->generated_at)
 
                 <span

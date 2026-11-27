@@ -4,22 +4,13 @@ namespace App\Services;
 
 use App\Models\ExamAttempt;
 use App\Models\Prediction;
+use App\Services\GeminiService;
 
-/**
- * Represents the PerformancePredictionService application component.
- */
 class PerformancePredictionService
 {
-    /**
-     * Handles __construct.
-     */
     public function __construct(
         private readonly GeminiService $geminiService
     ) {}
-
-    /**
-     * Handles predict.
-     */
     public function predict(int $studentId): Prediction
     {
         $attempts = ExamAttempt::with('exam.subject')
@@ -139,7 +130,7 @@ class PerformancePredictionService
         $predictionData = [
             'completed_exams' => $attempts->count(),
             'score_percentages' => $percentages
-                ->map(fn ($score) => round((float) $score, 2))
+                ->map(fn($score) => round((float) $score, 2))
                 ->values()
                 ->all(),
             'overall_average' => round($average, 2),
@@ -149,14 +140,14 @@ class PerformancePredictionService
 
         try {
             $prompt = 'You are assisting with student performance forecasting. '
-                .'Use only the supplied examination percentages and summary statistics. '
-                .'Do not infer causes or use information not supplied. '
-                .'Return only JSON with these keys: predicted_score (number 0-100), '
-                .'predicted_level (Excellent, Very Good, Good, Needs Improvement, or At Risk), '
-                .'risk_level (Low, Moderate, or High), '
-                .'confidence_level (Low, Moderate, or High), and reason (brief evidence-based text). '
-                .'Treat this as an estimate based on limited examination history. '
-                .'Data: '.json_encode($predictionData, JSON_PRETTY_PRINT);
+                . 'Use only the supplied examination percentages and summary statistics. '
+                . 'Do not infer causes or use information not supplied. '
+                . 'Return only JSON with these keys: predicted_score (number 0-100), '
+                . 'predicted_level (Excellent, Very Good, Good, Needs Improvement, or At Risk), '
+                . 'risk_level (Low, Moderate, or High), '
+                . 'confidence_level (Low, Moderate, or High), and reason (brief evidence-based text). '
+                . 'Treat this as an estimate based on limited examination history. '
+                . 'Data: ' . json_encode($predictionData, JSON_PRETTY_PRINT);
 
             $rawPrediction = trim($this->geminiService->generate($prompt));
             $rawPrediction = preg_replace('/^```(?:json)?\s*/i', '', $rawPrediction);
@@ -200,30 +191,28 @@ class PerformancePredictionService
         |--------------------------------------------------------------------------
         */
         $predictionType = match (true) {
-            $predictedScore >= 90 => 'high achiever',
-            $riskLevel === 'High' || $riskLevel === 'Moderate' => 'at risk',
-            default => 'on track',
-        };
+    $predictedScore >= 90 => 'high achiever',
+    $riskLevel === 'High' || $riskLevel === 'Moderate' => 'at risk',
+    default => 'on track',
+};
 
-        return Prediction::updateOrCreate(
-            [
-                'student_id' => $studentId,
-                'subject_id' => null,
-            ],
-            [
-                'prediction_type' => $predictionType,
-                'predicted_score' => round($predictedScore, 2),
-                'predicted_level' => $predictedLevel,
-                'risk_level' => $riskLevel,
-                'confidence_level' => $confidence,
-                'reason' => $reason,
-            ]
-        );
+return Prediction::updateOrCreate(
+    [
+        'student_id' => $studentId,
+        'subject_id' => null,
+    ],
+    [
+        'prediction_type' => $predictionType,
+        'predicted_score' => round($predictedScore, 2),
+        'predicted_level' => $predictedLevel,
+        'risk_level' => $riskLevel,
+        'confidence_level' => $confidence,
+        'reason' => $reason,
+    ]
+);
     }
 
-    /**
-     * Handles performanceLevel.
-     */
+
     private function performanceLevel(
         float $score
     ): string {
@@ -247,9 +236,7 @@ class PerformancePredictionService
         return 'At Risk';
     }
 
-    /**
-     * Handles riskLevel.
-     */
+
     private function riskLevel(
         float $score
     ): string {
@@ -265,9 +252,7 @@ class PerformancePredictionService
         return 'Low';
     }
 
-    /**
-     * Handles confidenceLevel.
-     */
+
     private function confidenceLevel(
         int $attemptCount
     ): string {
@@ -283,9 +268,7 @@ class PerformancePredictionService
         return 'Low';
     }
 
-    /**
-     * Handles buildReason.
-     */
+
     private function buildReason(
         float $average,
         float $recentAverage,

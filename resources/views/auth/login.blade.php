@@ -18,7 +18,6 @@
 
         <x-auth-session-status class="mb-5" :status="session('status')" />
 
-        {-- Collect and submit the data for this operation. --}
         <form method="POST" action="{{ route('login') }}" class="space-y-5">
             @csrf
 
@@ -43,7 +42,6 @@
                 <div class="flex items-center justify-between">
                     <x-input-label for="password" :value="__('Password')" class="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300" />
 
-                    {-- Render this content conditionally based on the current view state. --}
                     @if (Route::has('password.request'))
                     <a class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 hover:underline underline-offset-4 transition-colors" href="{{ route('password.request') }}">
                         {{ __('Forgot password?') }}

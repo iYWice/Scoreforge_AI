@@ -7,14 +7,8 @@ use App\Models\SystemSetting;
 use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 
-/**
- * Represents the SystemSettingController application component.
- */
 class SystemSettingController extends Controller
 {
-    /**
-     * Handles index.
-     */
     public function index()
     {
         $settings = [
@@ -28,9 +22,6 @@ class SystemSettingController extends Controller
         return view('admin.settings.index', compact('settings'));
     }
 
-    /**
-     * Handles update.
-     */
     public function update(Request $request, ActivityLogger $logger)
     {
         $data = $request->validate([

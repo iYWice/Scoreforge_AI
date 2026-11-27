@@ -1,15 +1,10 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Subjects')
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Teacher Workspace')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="space-y-8 aiq-subject-management">
-    {-- Render this navigation or page landmark. --}
     <header class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between aiq-panel aiq-panel-interactive p-5 sm:p-6">
         <div>
             <h1 class="text-2xl font-extrabold tracking-tight text-slate-950">Subjects</h1>
@@ -22,12 +17,10 @@
         </span>
     </header>
 
-    {-- Render this content conditionally based on the current view state. --}
     @if ($errors->any())
         <div class="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-700 aiq-alert aiq-alert-error" role="alert">
             <p class="font-bold">Please check the form</p>
             <ul class="mt-2 list-disc space-y-1 pl-5">
-                {-- Iterate over the related records and render each result. --}
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -35,14 +28,12 @@
         </div>
     @endif
 
-    {-- Render this meaningful page or content section. --}
     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm aiq-panel aiq-panel-interactive">
         <div class="border-b border-slate-100 px-5 py-5 sm:px-6">
             <h2 class="text-lg font-bold text-slate-950">Create Subject</h2>
             <p class="mt-1 text-sm text-slate-500">Add the offering details and choose enrolled students.</p>
         </div>
 
-        {-- Collect and submit the data for this operation. --}
         <form id="create-subject-form" method="POST" action="{{ route('teacher.subjects.store') }}" class="p-5 sm:p-6">
             @csrf
 
@@ -87,7 +78,6 @@
                     <fieldset class="md:col-span-2">
                         <legend class="text-sm font-semibold text-slate-700">Class days</legend>
                         <div class="mt-2 flex flex-wrap gap-2">
-                            {-- Iterate over the related records and render each result. --}
                             @foreach (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $day)
                                 <label class="cursor-pointer">
                                     <input
@@ -150,7 +140,6 @@
                             required
                             class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 aiq-field">
                             <option value="">Select a class</option>
-                            {-- Iterate over the related records and render each result. --}
                             @foreach ($classes as $class)
                                 <option value="{{ $class->id }}" @selected(old('class_id') == $class->id)>
                                     {{ $class->name }}
@@ -170,7 +159,6 @@
                     </div>
 
                     <div class="mt-2 max-h-72 flex-1 overflow-y-auto rounded-xl border border-slate-200">
-                        {-- Iterate over the related records and render each result. --}
                         @forelse ($students as $student)
                             @php
                                 $studentClassIds = $classes
@@ -205,14 +193,12 @@
         </form>
     </section>
 
-    {-- Render this meaningful page or content section. --}
     <section class="space-y-4">
         <div>
             <h2 class="text-lg font-bold text-slate-950">My Subjects</h2>
             <p class="mt-1 text-sm text-slate-500">Review offerings and update student enrollment.</p>
         </div>
 
-        {-- Iterate over the related records and render each result. --}
         @forelse ($offerings as $offering)
             <article
                 x-data="{ editing: false }"
@@ -226,7 +212,6 @@
                     </button>
                 </div>
 
-                {-- Collect and submit the data for this operation. --}
                 <form
                     x-show="editing"
                     x-cloak
@@ -267,7 +252,6 @@
                             name="class_id"
                             required
                             class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 aiq-field">
-                            {-- Iterate over the related records and render each result. --}
                             @foreach ($classes as $class)
                                 <option value="{{ $class->id }}" @selected(old('class_id', $offering->class_id) == $class->id)>
                                     {{ $class->name }}
@@ -279,7 +263,6 @@
                     <fieldset>
                         <legend class="text-sm font-semibold text-slate-700">Class days</legend>
                         <div class="mt-2 flex flex-wrap gap-2">
-                            {-- Iterate over the related records and render each result. --}
                             @foreach (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as $day)
                                 <label class="cursor-pointer">
                                     <input type="checkbox" name="schedule_days[]" value="{{ $day }}" class="peer sr-only aiq-check">
@@ -311,7 +294,6 @@
                     </div>
                 </form>
 
-                {-- Collect and submit the data for this operation. --}
                 <form data-student-filter method="POST" action="{{ route('teacher.subjects.students.sync', $offering) }}">
                     @csrf
 
@@ -331,7 +313,6 @@
                                 name="class_id"
                                 required
                                 class="mt-1 w-full rounded-xl border-slate-300 bg-white text-sm font-semibold text-slate-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 aiq-field">
-                                {-- Iterate over the related records and render each result. --}
                                 @foreach ($classes as $class)
                                     <option value="{{ $class->id }}" @selected((int) $offering->class_id === (int) $class->id)>
                                         {{ $class->name }}
@@ -354,7 +335,6 @@
                     </div>
 
                     <div class="mt-3 grid max-h-72 gap-2 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">
-                        {-- Iterate over the related records and render each result. --}
                         @forelse ($students as $student)
                             @php
                                 $studentClassIds = $classes

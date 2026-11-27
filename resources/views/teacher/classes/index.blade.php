@@ -1,14 +1,10 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Classes')
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Teacher Workspace')
 
 
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -73,7 +69,6 @@
     </div>
     @endif
 
-    {-- Render this content conditionally based on the current view state. --}
     @if($errors->any())
     <div class="class-index-message mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 aiq-alert aiq-alert-error">
         <p class="font-semibold">
@@ -81,7 +76,6 @@
         </p>
 
         <ul class="mt-2 list-disc pl-5">
-            {-- Iterate over the related records and render each result. --}
             @foreach($errors->all() as $error)
             <li>{{ $error }}</li>
             @endforeach
@@ -91,7 +85,6 @@
 
     {{-- Classes --}}
     <div class="mt-8">
-        {-- Render this content conditionally based on the current view state. --}
         @if($classes->isEmpty())
 
         <div class="class-index-empty rounded-xl border border-dashed border-slate-300 bg-white px-6 py-16 text-center">
@@ -115,11 +108,9 @@
             </button>
         </div>
 
-        {-- Render this content conditionally based on the current view state. --}
         @else
 
         <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {-- Iterate over the related records and render each result. --}
             @foreach($classes as $class)
 
             <div
@@ -165,7 +156,6 @@
                     </button>
                 </div>
 
-                {-- Collect and submit the data for this operation. --}
                 <form
                     x-show="editOpen"
                     x-cloak
@@ -233,7 +223,6 @@
                 </button>
             </div>
 
-            {-- Collect and submit the data for this operation. --}
             <form
                 method="POST"
                 action="{{ route('teacher.classes.store') }}"

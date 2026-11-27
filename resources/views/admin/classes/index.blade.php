@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Class Management | AI-Q')
-{-- Define this page section and its presentation content. --}
 @section('page-title', 'Class Management')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="space-y-6 aiq-class-management" x-data="{ createOpen: false, editClass: null }">
 
@@ -25,17 +21,14 @@
         </button> -->
     </div>
 
-    {-- Render this content conditionally based on the current view state. --}
     @if(session('success'))
         <div class="rounded-xl bg-green-50 p-4 text-sm text-green-700 aiq-alert aiq-alert-success">
             {{ session('success') }}
         </div>
     @endif
-    {-- Render this content conditionally based on the current view state. --}
     @if($errors->any())
         <div class="rounded-xl bg-red-50 p-4 text-sm text-red-700 aiq-alert aiq-alert-error">
             <ul class="list-disc pl-5">
-                {-- Iterate over the related records and render each result. --}
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -43,7 +36,6 @@
         </div>
     @endif
 
-    {-- Collect and submit the data for this operation. --}
     <form method="GET" action="{{ route('admin.classes.index') }}"
         class="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center aiq-panel p-4">
         <input type="search" name="search"
@@ -57,9 +49,7 @@
     </form>
 
     <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white aiq-panel">
-        {-- Present structured records in a table. --}
         <table class="min-w-full text-left text-sm">
-            {-- Present structured records in a table. --}
             <thead class="bg-slate-50 text-slate-600">
                 <tr>
                     <th class="px-5 py-4">Class</th>
@@ -71,9 +61,7 @@
                     <th class="px-5 py-4 text-right">Action</th>
                 </tr>
             </thead>
-            {-- Present structured records in a table. --}
             <tbody class="divide-y divide-slate-100">
-                {-- Iterate over the related records and render each result. --}
                 @forelse($classes as $class)
                 <tr>
                     <td class="px-5 py-4 font-semibold text-slate-900">
@@ -103,7 +91,6 @@
                                     'created_by' => $class->created_by,
                                 ]) }}"
                                 class="font-semibold text-slate-700 hover:underline aiq-button aiq-button-secondary">Edit</button>
-                            {-- Collect and submit the data for this operation. --}
                             <form method="POST" action="{{ route('admin.classes.destroy', $class) }}" onsubmit="return confirm('Delete this class?')">
                                 @csrf
                                 @method('DELETE')
@@ -128,18 +115,15 @@
     <div x-show="createOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/50 p-4">
         <div class="my-auto w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl aiq-panel">
             <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Create Class</h2><button type="button" @click="createOpen = false" class="aiq-button aiq-button-secondary" style="width:40px;min-width:40px;height:40px;min-height:40px;padding:0">✕</button></div>
-            {-- Collect and submit the data for this operation. --}
             <form method="POST" action="{{ route('admin.classes.store') }}" class="space-y-4">
                 @csrf
                 <input name="name" required maxlength="255" placeholder="Class name" class="w-full rounded-xl border-slate-300 aiq-field">
                 <select name="subject_id" class="w-full rounded-xl border-slate-300 aiq-field">
                     <option value="">No subject</option>
-                    {-- Iterate over the related records and render each result. --}
                     @foreach($subjects as $subject)<option value="{{ $subject->id }}">{{ $subject->name }}</option>@endforeach
                 </select>
                 <select name="created_by" required class="w-full rounded-xl border-slate-300 aiq-field">
                     <option value="">Select teacher</option>
-                    {-- Iterate over the related records and render each result. --}
                     @foreach($teachers as $teacher)<option value="{{ $teacher->id }}">{{ $teacher->fname }} {{ $teacher->lname }}</option>@endforeach
                 </select>
                 <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white aiq-button aiq-button-primary">Create Class</button>
@@ -151,18 +135,15 @@
         <div class="my-auto w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl aiq-panel">
             <div class="mb-5 flex items-center justify-between"><h2 class="text-lg font-bold">Edit Class</h2><button type="button" @click="editClass = null" class="aiq-button aiq-button-secondary" style="width:40px;min-width:40px;height:40px;min-height:40px;padding:0">✕</button></div>
             <template x-if="editClass">
-                {-- Collect and submit the data for this operation. --}
                 <form method="POST" :action="'{{ url('/admin/classes') }}/' + editClass.id" class="space-y-4">
                     @csrf
                     @method('PATCH')
                     <input name="name" x-model="editClass.name" required maxlength="255" class="w-full rounded-xl border-slate-300 aiq-field">
                     <select name="subject_id" x-model="editClass.subject_id" class="w-full rounded-xl border-slate-300 aiq-field">
                         <option value="">No subject</option>
-                        {-- Iterate over the related records and render each result. --}
                         @foreach($subjects as $subject)<option value="{{ $subject->id }}">{{ $subject->name }}</option>@endforeach
                     </select>
                     <select name="created_by" x-model="editClass.created_by" required class="w-full rounded-xl border-slate-300 aiq-field">
-                        {-- Iterate over the related records and render each result. --}
                         @foreach($teachers as $teacher)<option value="{{ $teacher->id }}">{{ $teacher->fname }} {{ $teacher->lname }}</option>@endforeach
                     </select>
                     <button class="w-full rounded-xl bg-indigo-600 py-3 font-semibold text-white aiq-button aiq-button-primary">Save Changes</button>

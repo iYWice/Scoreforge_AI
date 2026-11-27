@@ -1,10 +1,7 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Edit Question')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <div class="max-w-4xl mx-auto space-y-6 aiq-question-edit">
@@ -21,7 +18,6 @@
             {{ strtoupper(str_replace('_', ' ', $question->question_type)) }}
         </span>
     </div>
-    {-- Render this content conditionally based on the current view state. --}
     @if($errors->any())
     <div class="bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 rounded-2xl p-4 aiq-alert aiq-alert-error">
 
@@ -47,7 +43,6 @@
 
                 <ul class="mt-2 list-disc list-inside text-xs text-rose-700 dark:text-rose-400 space-y-1">
 
-                    {-- Iterate over the related records and render each result. --}
                     @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                     @endforeach
@@ -84,7 +79,6 @@
             </p>
         </div>
 
-        {-- Collect and submit the data for this operation. --}
         <form method="POST" action="{{ route('teacher.questions.update', $question->id) }}" class="space-y-6">
             @csrf
             @method('PUT')
@@ -182,7 +176,6 @@
                     </label>
                 </div>
             </div>
-            {-- Render this content conditionally based on the current view state. --}
             @else
             <div class="space-y-1.5 pt-2">
                 <label for="correct_answer" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">

@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'System Settings | AI-Q')
-{-- Define this page section and its presentation content. --}
 @section('page-title', 'System Settings')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="mx-auto max-w-4xl space-y-6">
 
@@ -19,24 +15,20 @@
         </p>
     </div>
 
-    {-- Render this content conditionally based on the current view state. --}
     @if(session('success'))
     <div class="rounded-xl bg-green-50 p-4 text-sm text-green-700">
         {{ session('success') }}
     </div>
     @endif
 
-    {-- Render this content conditionally based on the current view state. --}
     @if($errors->any())
     <div class="rounded-xl bg-red-50 p-4 text-sm text-red-700">
-        {-- Iterate over the related records and render each result. --}
         @foreach($errors->all() as $error)
         <p>{{ $error }}</p>
         @endforeach
     </div>
     @endif
 
-    {-- Collect and submit the data for this operation. --}
     <form method="POST" action="{{ route('admin.settings.update') }}"
         class="space-y-6">
         @csrf

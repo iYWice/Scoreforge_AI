@@ -1,17 +1,12 @@
-{{-- Use the application layout and configure the page title. --}}
 @extends('layouts.app')
 
-{{-- Set browser metadata and the layout page heading. --}}
 @section('title', 'Admin Dashboard | AI-Q')
 @section('page-title', 'System Administration')
 
-{{-- Render the administrator overview, statistics, and recent activity. --}}
 @section('content')
 
-{{-- The main dashboard container keeps all overview widgets together. --}}
 <div class="space-y-6 aiq-admin-dashboard">
 
-    {{-- Introduce the dashboard and explain its purpose. --}}
     <div class="aiq-panel aiq-panel-interactive p-5 sm:p-6">
         <h1 class="text-2xl font-bold text-slate-900">
             System Overview
@@ -21,18 +16,16 @@
         </p>
     </div>
 
-    {{-- Display platform totals using a responsive statistics grid. --}}
     <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
 
-        {{-- Build one statistics card for each total returned by the controller. --}}
-        @foreach ({
+        @foreach ([
         'Total Users' => $stats['users'],
         'Teachers' => $stats['teachers'],
         'Students' => $stats['students'],
         'Classes' => $stats['classes'],
         'Examinations' => $stats['exams'],
         'Exam Attempts' => $stats['attempts'],
-        } as $label => $value)
+        ] as $label => $value)
 
         <div class="rounded-xl border border-slate-200 bg-white p-5 aiq-panel aiq-panel-interactive">
             <p class="text-sm text-slate-500">{{ $label }}</p>
@@ -45,10 +38,8 @@
 
     </div>
 
-    {{-- Place recent accounts and examinations side by side on large screens. --}}
     <div class="grid gap-6 lg:grid-cols-2">
 
-        {{-- Show the five newest account records. --}}
         <div class="rounded-xl border border-slate-200 bg-white p-5 aiq-panel aiq-panel-interactive">
             <h2 class="mb-4 font-semibold text-slate-900">
                 Recent Accounts
@@ -73,7 +64,6 @@
             @endforelse
         </div>
 
-        {{-- Show the five newest examinations and their assigned teachers. --}}
         <div class="rounded-xl border border-slate-200 bg-white p-5 aiq-panel aiq-panel-interactive">
             <h2 class="mb-4 font-semibold text-slate-900">
                 Recent Examinations

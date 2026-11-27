@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\ExamAttempt;
+use App\Models\Question;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Represents the Answer application component.
- */
 class Answer extends Model
 {
     use HasFactory;
@@ -28,21 +27,15 @@ class Answer extends Model
         'is_correct',
     ];
 
-    /**
-     * Handles attempt.
-     */
     public function attempt()
     {
         return $this->belongsTo(ExamAttempt::class, 'attempt_id');
     }
 
-    /**
-     * Handles question.
-     */
     public function question()
     {
         return $this->belongsTo(
-            Question::class,
+            \App\Models\Question::class,
             'question_id'
         );
     }

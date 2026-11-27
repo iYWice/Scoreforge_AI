@@ -10,14 +10,8 @@ use App\Services\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Represents the ClassController application component.
- */
 class ClassController extends Controller
 {
-    /**
-     * Handles index.
-     */
     public function index(Request $request)
     {
         $classes = SchoolClass::query()
@@ -48,9 +42,6 @@ class ClassController extends Controller
         return view('admin.classes.index', compact('classes', 'subjects', 'teachers'));
     }
 
-    /**
-     * Handles show.
-     */
     public function show(SchoolClass $class)
     {
         $class->load(['teacher', 'subject']);
@@ -71,9 +62,6 @@ class ClassController extends Controller
         ));
     }
 
-    /**
-     * Handles store.
-     */
     public function store(Request $request, ActivityLogger $logger): RedirectResponse
     {
         $data = $request->validate([
@@ -92,9 +80,6 @@ class ClassController extends Controller
         return back()->with('success', 'Class created successfully.');
     }
 
-    /**
-     * Handles update.
-     */
     public function update(Request $request, SchoolClass $class, ActivityLogger $logger): RedirectResponse
     {
         $data = $request->validate([
@@ -111,9 +96,6 @@ class ClassController extends Controller
         return back()->with('success', 'Class updated successfully.');
     }
 
-    /**
-     * Handles destroy.
-     */
     public function destroy(SchoolClass $class, ActivityLogger $logger): RedirectResponse
     {
         $className = $class->name;

@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Exam Details | AI-Q')
-{-- Define this page section and its presentation content. --}
 @section('page-title', 'Exam Details')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="space-y-6 aiq-exam-details-admin">
 
@@ -54,7 +50,6 @@
     <div class="rounded-xl border border-slate-200 bg-white p-6 aiq-panel aiq-panel-interactive">
         <h2 class="mb-4 text-lg font-bold">Questions</h2>
 
-        {-- Iterate over the related records and render each result. --}
         @forelse($questions as $index => $question)
         <div class="border-b border-slate-100 py-4 last:border-0 aiq-panel-interactive">
             <div class="flex items-start justify-between gap-4">
@@ -66,10 +61,8 @@
                 </span>
             </div>
 
-            {-- Render this content conditionally based on the current view state. --}
             @if($question->options->isNotEmpty())
             <div class="mt-3 space-y-1 pl-5 text-sm text-slate-600">
-                {-- Iterate over the related records and render each result. --}
                 @foreach($question->options as $option)
                 <p>{{ $option->option_text }}</p>
                 @endforeach

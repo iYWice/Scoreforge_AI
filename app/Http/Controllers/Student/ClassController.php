@@ -6,16 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\SchoolClass;
 use Illuminate\Http\Request;
 
-/**
- * Represents the ClassController application component.
- */
 class ClassController extends Controller
 {
     /**
      * Show classes joined by the current student.
-     */
-    /**
-     * Handles index.
      */
     public function index()
     {
@@ -45,9 +39,6 @@ class ClassController extends Controller
 
     /**
      * Join a class using its class code.
-     */
-    /**
-     * Handles join.
      */
     public function join(Request $request)
     {
@@ -115,9 +106,6 @@ class ClassController extends Controller
 
     /**
      * Open a joined class.
-     */
-    /**
-     * Handles show.
      */
     public function show(SchoolClass $class)
     {

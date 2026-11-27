@@ -4,9 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Represents the QuestionOption application component.
- */
 class QuestionOption extends Model
 {
     protected $fillable = [
@@ -19,9 +16,6 @@ class QuestionOption extends Model
 
     ];
 
-    /**
-     * Handles question.
-     */
     public function question()
     {
         return $this->belongsTo(Question::class);

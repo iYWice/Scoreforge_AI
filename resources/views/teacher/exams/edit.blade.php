@@ -1,10 +1,7 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Edit Exam')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -51,7 +48,6 @@
             </p>
         </div>
 
-        {-- Collect and submit the data for this operation. --}
         <form method="POST" action="{{ route('teacher.exams.update', $exam->id) }}" class="space-y-6">
             @csrf
             @method('PUT')
@@ -92,7 +88,6 @@
             required
             class="w-full rounded-xl border border-slate-300 px-4 py-2.5 aiq-field">
             <option value="">Select Class</option>
-            {-- Iterate over the related records and render each result. --}
             @foreach ($classes as $class)
                 <option
                     value="{{ $class->id }}"
@@ -119,9 +114,7 @@
             class="w-full rounded-xl border border-slate-300 px-4 py-2.5 aiq-field">
             <option value="">Select a class first</option>
 
-            {-- Iterate over the related records and render each result. --}
             @foreach ($classes as $class)
-                {-- Iterate over the related records and render each result. --}
                 @foreach ($class->classSubjects as $offering)
                     <option
                         value="{{ $offering->subject_id }}"

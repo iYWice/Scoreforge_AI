@@ -1,15 +1,10 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Activity Logs | AI-Q')
-{-- Define this page section and its presentation content. --}
 @section('page-title', 'Activity Logs')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="space-y-6 aiq-activity-logs">
-    {-- Render this navigation or page landmark. --}
     <header class="flex flex-wrap items-center justify-between gap-4 aiq-panel aiq-panel-interactive p-5 sm:p-6">
     <div>
         <h1 class="text-2xl font-bold text-slate-900">
@@ -26,7 +21,6 @@
     </a>
     </header>
 
-    {-- Collect and submit the data for this operation. --}
     <form method="GET" action="{{ route('admin.activity-logs.index') }}"
         class="rounded-xl border border-slate-200 bg-white p-4 aiq-panel">
 
@@ -38,7 +32,6 @@
 
             <select name="action" class="w-full rounded-xl border-slate-300 text-sm aiq-field">
                 <option value="">All Actions</option>
-                {-- Iterate over the related records and render each result. --}
                 @foreach($actions as $action)
                 <option value="{{ $action }}"
                     @selected(request('action')===$action)>
@@ -69,9 +62,7 @@
     </form>
 
     <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white aiq-panel">
-        {-- Present structured records in a table. --}
         <table class="min-w-full text-left text-sm">
-            {-- Present structured records in a table. --}
             <thead class="bg-slate-50 text-slate-600">
                 <tr>
                     <th class="px-5 py-4">Log ID</th>
@@ -84,9 +75,7 @@
                 </tr>
             </thead>
 
-            {-- Present structured records in a table. --}
             <tbody class="divide-y divide-slate-100">
-                {-- Iterate over the related records and render each result. --}
                 @forelse($logs as $log)
                 <tr>
                     <td class="px-5 py-4 font-mono text-xs text-slate-600">
@@ -127,16 +116,13 @@
                     </td>
 
                     <td class="max-w-xs px-5 py-4 text-xs text-slate-500">
-                        {-- Render this content conditionally based on the current view state. --}
                         @if(!empty($log->properties))
-                            {-- Iterate over the related records and render each result. --}
                             @foreach($log->properties as $key => $value)
                                 <div>
                                     <span class="font-semibold text-slate-700">{{ str_replace('_', ' ', ucwords($key, '_')) }}:</span>
                                     {{ is_bool($value) ? ($value ? 'Yes' : 'No') : ($value ?? '—') }}
                                 </div>
                             @endforeach
-                        {-- Render this content conditionally based on the current view state. --}
                         @else
                             —
                         @endif

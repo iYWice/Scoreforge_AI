@@ -1,16 +1,11 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'My Profile')
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Account Settings')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="mx-auto max-w-3xl space-y-6 aiq-profile-settings">
 
-    {-- Render this meaningful page or content section. --}
     <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 aiq-panel aiq-panel-interactive">
         <div class="mb-6">
             <h2 class="text-lg font-bold text-slate-900">Profile information</h2>
@@ -19,14 +14,12 @@
             </p>
         </div>
 
-        {-- Render this content conditionally based on the current view state. --}
         @if (session('status') === 'profile-updated')
         <div class="mb-5 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700 aiq-alert aiq-alert-success">
             Profile saved.
         </div>
         @endif
 
-        {-- Collect and submit the data for this operation. --}
         <form method="POST" action="{{ route('profile.update') }}" class="space-y-5">
             @csrf
             @method('PATCH')
@@ -101,7 +94,6 @@
         </form>
     </section>
 
-    {-- Render this meaningful page or content section. --}
     <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 aiq-panel aiq-panel-interactive">
         @include('profile.partials.update-password-form')
     </section>

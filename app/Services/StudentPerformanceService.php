@@ -3,15 +3,10 @@
 namespace App\Services;
 
 use App\Models\ExamAttempt;
+use App\Models\StudentAnalytics;
 
-/**
- * Represents the StudentPerformanceService application component.
- */
 class StudentPerformanceService
 {
-    /**
-     * Handles getStudentPerformance.
-     */
     public function getStudentPerformance(int $studentId): array
     {
         $attempts = ExamAttempt::with([
@@ -71,9 +66,6 @@ class StudentPerformanceService
         ];
     }
 
-    /**
-     * Handles getTopicPerformance.
-     */
     private function getTopicPerformance($attempts)
     {
         $stats = [];
@@ -89,7 +81,7 @@ class StudentPerformanceService
                 $topic = preg_replace('/\s+/u', ' ', $rawTopic) ?? $rawTopic;
                 $key = strtolower($topic);
 
-                if (! isset($stats[$key])) {
+                if (!isset($stats[$key])) {
                     $stats[$key] = [
                         'topic' => $topic,
                         'correct' => 0,
@@ -117,30 +109,16 @@ class StudentPerformanceService
         })->values();
     }
 
-    /**
-     * Handles getPerformanceLevel.
-     */
     private function getPerformanceLevel(float $percentage): string
     {
-        if ($percentage >= 90) {
-            return 'Excellent';
-        }
-        if ($percentage >= 80) {
-            return 'Very Good';
-        }
-        if ($percentage >= 75) {
-            return 'Good';
-        }
-        if ($percentage >= 60) {
-            return 'Needs Improvement';
-        }
+        if ($percentage >= 90) return 'Excellent';
+        if ($percentage >= 80) return 'Very Good';
+        if ($percentage >= 75) return 'Good';
+        if ($percentage >= 60) return 'Needs Improvement';
 
         return 'At Risk';
     }
 
-    /**
-     * Handles getTrend.
-     */
     private function getTrend(array $percentages): string
     {
         if (count($percentages) < 2) {
@@ -150,19 +128,12 @@ class StudentPerformanceService
         $previous = $percentages[count($percentages) - 2];
         $latest = $percentages[count($percentages) - 1];
 
-        if ($latest > $previous) {
-            return 'Improving';
-        }
-        if ($latest < $previous) {
-            return 'Declining';
-        }
+        if ($latest > $previous) return 'Improving';
+        if ($latest < $previous) return 'Declining';
 
         return 'Stable';
     }
 
-    /**
-     * Handles getSubjectPerformance.
-     */
     private function getSubjectPerformance($attempts): array
     {
         return $attempts

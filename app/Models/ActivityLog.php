@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-/**
- * Represents the ActivityLog application component.
- */
 class ActivityLog extends Model
 {
     public $timestamps = false;
@@ -29,17 +26,11 @@ class ActivityLog extends Model
         'created_at' => 'datetime',
     ];
 
-    /**
-     * Handles user.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Handles subject.
-     */
     public function subject(): MorphTo
     {
         return $this->morphTo();

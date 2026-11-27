@@ -12,14 +12,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
-/**
- * Represents the UserController application component.
- */
 class UserController extends Controller
 {
-    /**
-     * Handles index.
-     */
     public function index(Request $request)
     {
         $users = User::query()
@@ -45,9 +39,6 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    /**
-     * Handles store.
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -103,9 +94,6 @@ class UserController extends Controller
         return back()->with('success', 'User account created successfully.');
     }
 
-    /**
-     * Handles update.
-     */
     public function update(Request $request, User $user)
     {
         if ($user->role === 'admin') {
@@ -178,9 +166,6 @@ class UserController extends Controller
         return back()->with('success', 'User account updated successfully.');
     }
 
-    /**
-     * Handles resetPassword.
-     */
     public function resetPassword(Request $request, User $user)
     {
         if ($user->role === 'admin') {

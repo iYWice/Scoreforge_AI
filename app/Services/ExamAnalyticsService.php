@@ -4,14 +4,8 @@ namespace App\Services;
 
 use App\Models\Exam;
 
-/**
- * Represents the ExamAnalyticsService application component.
- */
 class ExamAnalyticsService
 {
-    /**
-     * Handles analyze.
-     */
     public function analyze(Exam $exam): array
     {
         $exam->load([
@@ -131,7 +125,7 @@ class ExamAnalyticsService
         */
 
         $topicAnalysis = collect($questionAnalysis)
-            ->filter(fn ($question) => ! empty($question['topic']))
+            ->filter(fn($question) => !empty($question['topic']))
             ->groupBy('topic')
             ->map(function ($questions, $topic) {
 
@@ -170,9 +164,6 @@ class ExamAnalyticsService
         ];
     }
 
-    /**
-     * Handles getDifficulty.
-     */
     private function getDifficulty(
         float $accuracy,
         int $totalAnswers

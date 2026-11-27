@@ -1,6 +1,4 @@
-{-- Render this meaningful page or content section. --}
 <section>
-    {-- Render this navigation or page landmark. --}
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
             {{ __('Profile Information') }}
@@ -11,12 +9,10 @@
         </p>
     </header>
 
-    {-- Collect and submit the data for this operation. --}
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
 
-    {-- Collect and submit the data for this operation. --}
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
@@ -52,7 +48,6 @@
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            {-- Render this content conditionally based on the current view state. --}
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
             <div>
                 <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
@@ -63,7 +58,6 @@
                     </button>
                 </p>
 
-                {-- Render this content conditionally based on the current view state. --}
                 @if (session('status') === 'verification-link-sent')
                 <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
                     {{ __('A new verification link has been sent to your email address.') }}
@@ -76,7 +70,6 @@
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
-            {-- Render this content conditionally based on the current view state. --}
             @if (session('status') === 'profile-updated')
             <p
                 x-data="{ show: true }"

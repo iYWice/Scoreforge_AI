@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
-/**
- * Represents the Exam application component.
- */
 class Exam extends Model
 {
     use HasFactory;
@@ -37,9 +34,6 @@ class Exam extends Model
         'randomize_questions' => true,
     ];
 
-    /**
-     * Handles casts.
-     */
     protected function casts(): array
     {
         return [
@@ -49,57 +43,36 @@ class Exam extends Model
         ];
     }
 
-    /**
-     * Handles subject.
-     */
     public function subject()
     {
         return $this->belongsTo(Subject::class);
     }
 
-    /**
-     * Handles class.
-     */
     public function class()
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 
-    /**
-     * Handles teacher.
-     */
     public function teacher()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    /**
-     * Handles questions.
-     */
     public function questions()
     {
         return $this->hasMany(Question::class, 'exam_id');
     }
 
-    /**
-     * Handles attempts.
-     */
     public function attempts()
     {
         return $this->hasMany(ExamAttempt::class, 'exam_id');
     }
 
-    /**
-     * Handles aiInsights.
-     */
     public function aiInsights()
     {
         return $this->hasMany(AiInsight::class);
     }
 
-    /**
-     * Handles scopeAvailableToStudent.
-     */
     public function scopeAvailableToStudent(Builder $query, User $student): Builder
     {
         $offering = new ClassSubject;
@@ -127,9 +100,6 @@ class Exam extends Model
         });
     }
 
-    /**
-     * Handles isAvailableToStudent.
-     */
     public function isAvailableToStudent(User $student): bool
     {
         return static::query()
@@ -138,9 +108,6 @@ class Exam extends Model
             ->exists();
     }
 
-    /**
-     * Handles isWithinAvailabilityWindow.
-     */
     public function isWithinAvailabilityWindow(): bool
     {
         if ($this->status !== 'published') {
@@ -158,9 +125,6 @@ class Exam extends Model
         return true;
     }
 
-    /**
-     * Handles availabilityMessage.
-     */
     public function availabilityMessage(): string
     {
         if ($this->status !== 'published') {
@@ -178,9 +142,6 @@ class Exam extends Model
         return 'This exam is open.';
     }
 
-    /**
-     * Handles effectiveDeadline.
-     */
     public function effectiveDeadline($startedAt): Carbon
     {
         $durationDeadline = Carbon::parse($startedAt)
@@ -195,9 +156,6 @@ class Exam extends Model
             : $this->closes_at->copy();
     }
 
-    /**
-     * Handles closeIfExpired.
-     */
     public function closeIfExpired(): bool
     {
         if (
@@ -213,9 +171,6 @@ class Exam extends Model
         return false;
     }
 
-    /**
-     * Handles closeExpiredForTeacher.
-     */
     public static function closeExpiredForTeacher(User $teacher): void
     {
         static::query()

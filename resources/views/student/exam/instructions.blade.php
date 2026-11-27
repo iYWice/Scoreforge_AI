@@ -1,12 +1,8 @@
-{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
-{-- Define this page section and its presentation content. --}
 @section('title', 'Exam Instructions')
-{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Examination')
 
-{-- Define this page section and its presentation content. --}
 @section('content')
 
 <div
@@ -17,7 +13,6 @@
     {{-- EXAM IDENTITY                                          --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section class="border-b border-slate-200 pb-7 aiq-panel aiq-panel-interactive p-5 sm:p-6">
 
         <div class="flex flex-col gap-5
@@ -69,7 +64,6 @@
     {{-- EXAM PARAMETERS                                        --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section class="py-7">
 
         <p class="text-[10px] font-extrabold uppercase
@@ -176,7 +170,6 @@
     {{-- EXAM SCHEDULE                                          --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section class="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 aiq-panel">
         <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-slate-400">
             Examination Schedule
@@ -207,7 +200,6 @@
     {{-- MAIN INSTRUCTIONS                                      --}}
     {{-- ====================================================== --}}
 
-    {-- Render this meaningful page or content section. --}
     <section class="grid grid-cols-1 gap-8
                     lg:grid-cols-[minmax(0,1fr)_330px]">
 
@@ -425,7 +417,6 @@
                 </div>
 
 
-                {-- Collect and submit the data for this operation. --}
                 <form
                     method="POST"
                     action="{{ route('student.exam.begin') }}"

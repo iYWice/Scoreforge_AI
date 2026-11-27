@@ -5,9 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Represents the QuestionGenerationSession application component.
- */
 class QuestionGenerationSession extends Model
 {
     use HasFactory;
@@ -30,17 +27,11 @@ class QuestionGenerationSession extends Model
         'generated_questions' => 'array',
     ];
 
-    /**
-     * Handles user.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Handles exam.
-     */
     public function exam()
     {
         return $this->belongsTo(Exam::class);

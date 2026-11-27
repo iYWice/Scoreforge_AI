@@ -451,9 +451,7 @@
 
 <body class="aiq-app-shell min-h-full bg-[#f7f8fb] text-slate-900 antialiased">
 
-    {-- Apply the applicable access or presence condition. --}
     @auth
-    {-- Render this content conditionally based on the current view state. --}
     @if(\App\Models\SystemSetting::getValue('maintenance_notice', '0') === '1')
     <div class="border-b border-amber-200 bg-amber-50 px-5 py-3 text-center text-sm font-medium text-amber-900">
         AI-Q is currently undergoing maintenance. Some features may be temporarily unavailable.
@@ -472,7 +470,6 @@
         {{-- GLOBAL COMMAND BAR                                        --}}
         {{-- ========================================================= --}}
 
-        {-- Render this navigation or page landmark. --}
         <header
             id="aiq-global-header"
             class="sticky top-0 z-50
@@ -541,7 +538,6 @@
                         class="hidden lg:flex
                            h-full items-center gap-1">
 
-                        {-- Render this content conditionally based on the current view state. --}
                         @if(auth()->user()->role === 'teacher')
 
                         {{-- Overview --}}
@@ -557,7 +553,6 @@
                                         : 'text-slate-500' }}">
                             Overview
 
-                            {-- Render this content conditionally based on the current view state. --}
                             @if(request()->is('teacher/dashboard'))
                             <span
                                 class="absolute inset-x-4 bottom-0
@@ -580,7 +575,6 @@
                                         : 'text-slate-500' }}">
                             Exams
 
-                            {-- Render this content conditionally based on the current view state. --}
                             @if(request()->is('teacher/exams*'))
                             <span
                                 class="absolute inset-x-4 bottom-0
@@ -603,7 +597,6 @@
                : 'text-slate-500' }}">
                             Classes
 
-                            {-- Render this content conditionally based on the current view state. --}
                             @if(request()->routeIs('teacher.classes.*'))
                             <span
                                 class="absolute inset-x-4 bottom-0
@@ -622,7 +615,6 @@
             : 'text-slate-500' }}">
     Subjects
 
-    {-- Render this content conditionally based on the current view state. --}
     @if(request()->routeIs('teacher.subjects.*'))
         <span class="absolute inset-x-4 bottom-0 h-[3px] rounded-t-full bg-indigo-600"></span>
     @endif
@@ -640,7 +632,6 @@
                                         : 'text-slate-500' }}">
                             Analytics
 
-                            {-- Render this content conditionally based on the current view state. --}
                             @if(request()->routeIs('teacher.analytics*'))
                             <span
                                 class="absolute inset-x-4 bottom-0
@@ -673,7 +664,6 @@
 
                         </button>-->
 
-                        {-- Render this content conditionally based on the current view state. --}
                         @elseif(auth()->user()->role === 'student')
 
                         {{-- Overview --}}
@@ -689,7 +679,6 @@
                : 'text-slate-500' }}">
                             Overview
 
-                            {-- Render this content conditionally based on the current view state. --}
                             @if(request()->is('student/dashboard'))
                             <span
                                 class="absolute inset-x-4 bottom-0
@@ -713,7 +702,6 @@
                : 'text-slate-500' }}">
                             Classes
 
-                            {-- Render this content conditionally based on the current view state. --}
                             @if(request()->routeIs('student.classes.*'))
                             <span
                                 class="absolute inset-x-4 bottom-0
@@ -759,7 +747,6 @@
                         </span> -->
 
 
-                        {-- Render this content conditionally based on the current view state. --}
                         @elseif(auth()->user()->role === 'admin')
 
                         @php
@@ -797,7 +784,6 @@
                         ];
                         @endphp
 
-                        {-- Iterate over the related records and render each result. --}
                         @foreach($adminNav as $item)
                         @php
                         $active = request()->routeIs($item['active']);
@@ -813,7 +799,6 @@
                    {{ $active ? 'text-slate-950' : 'text-slate-500' }}">
                             {{ $item['label'] }}
 
-                            {-- Render this content conditionally based on the current view state. --}
                             @if($active)
                             <span
                                 class="absolute inset-x-4 bottom-0
@@ -966,7 +951,6 @@
 
                                 <div class="p-2">
 
-                                    {-- Collect and submit the data for this operation. --}
                                     <form
                                         method="POST"
                                         action="{{ route('logout') }}">
@@ -1068,7 +1052,6 @@
 
                     <div class="grid gap-1">
 
-                        {-- Render this content conditionally based on the current view state. --}
                         @if(auth()->user()->role === 'teacher')
 
                         <a
@@ -1116,7 +1099,6 @@
                             Analytics
                         </a>
 
-                        {-- Render this content conditionally based on the current view state. --}
                         @elseif(auth()->user()->role === 'student')
 
                         <a
@@ -1135,7 +1117,6 @@
                             Take Exam
                         </a>
 
-                        {-- Render this content conditionally based on the current view state. --}
                         @else
 
                         <a
@@ -1163,7 +1144,6 @@
         {{-- PAGE                                                       --}}
         {{-- ========================================================= --}}
 
-        {-- Render this meaningful page or content section. --}
         <main id="aiq-main" class="page-enter">
 
             {{-- Context Header --}}
@@ -1171,7 +1151,6 @@
 
             @yield('page-header')
 
-            {-- Render this content conditionally based on the current view state. --}
             @else
 
             <div
@@ -1208,7 +1187,6 @@
 
                         </div>
 
-                        {-- Apply the applicable access or presence condition. --}
                         @hasSection('page-actions')
 
                         <div id="aiq-page-actions" class="mt-4 sm:mt-0">
@@ -1331,7 +1309,6 @@
 
     </div>
 
-    {-- Render this content conditionally based on the current view state. --}
     @else
 
     {{-- Guest pages --}}
