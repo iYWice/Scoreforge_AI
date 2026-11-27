@@ -71,7 +71,7 @@
                         <code>{{ $class->class_code }}</code>
                     </td>
                     <td class="px-5 py-4">
-                        {{ $class->subject?->name ?? 'Unassigned' }}
+                        {{ collect([$class->subject?->name])->merge($class->classSubjects->pluck('subject.name'))->filter()->unique()->implode(', ') ?: 'Unassigned' }}
                     </td>
                     <td class="px-5 py-4">
                         {{ $class->teacher?->fname }}

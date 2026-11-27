@@ -15,7 +15,7 @@ class ClassController extends Controller
     public function index(Request $request)
     {
         $classes = SchoolClass::query()
-            ->with(['teacher', 'subject'])
+            ->with(['teacher', 'subject', 'classSubjects.subject'])
             ->withCount(['students', 'exams'])
             ->when($request->filled('search'), function ($query) use ($request) {
                 $search = $request->input('search');
@@ -100,7 +100,12 @@ class ClassController extends Controller
     {
         $className = $class->name;
 
-        if ($class->exams()->exists() || $class->students()->exists() || $class->classSubjects()->exists()) {
+        if (
+            $class->exams()->exists()
+            || $class->students()->exists()
+            || $class->subject()->exists()
+            || $class->classSubjects()->exists()
+        ) {
             return back()->withErrors([
                 'class' => 'Class cannot be deleted while it has students, subjects, or examinations.',
             ]);

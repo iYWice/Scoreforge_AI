@@ -17,9 +17,8 @@ return new class extends Migration
             DB::statement("ALTER TABLE exam_attempts MODIFY status ENUM('ongoing', 'completed', 'timed_out') NOT NULL DEFAULT 'ongoing'");
         } elseif ($driver === 'sqlite') {
             DB::statement('PRAGMA foreign_keys=OFF');
-            DB::statement('ALTER TABLE exam_attempts RENAME TO exam_attempts_old_status');
 
-            DB::statement("CREATE TABLE exam_attempts (
+            DB::statement("CREATE TABLE exam_attempts_new_status (
                 id integer primary key autoincrement not null,
                 exam_id integer not null,
                 student_id integer not null,
@@ -35,11 +34,13 @@ return new class extends Migration
                 foreign key(student_id) references users(id) on delete cascade
             )");
 
-            DB::statement('INSERT INTO exam_attempts (id, exam_id, student_id, score, total_score, submitted_at, status, retake_allowed, started_at, created_at, updated_at)
-                SELECT id, exam_id, student_id, score, total_score, submitted_at, status, retake_allowed, started_at, created_at, updated_at
-                FROM exam_attempts_old_status');
+            DB::statement('INSERT INTO exam_attempts_new_status (id, exam_id, student_id, score, total_score, submitted_at, status, retake_allowed, started_at, created_at, updated_at)
+                SELECT id, exam_id, student_id, score, total_score, submitted_at, status,
+                    retake_allowed, started_at, created_at, updated_at
+                FROM exam_attempts');
 
-            DB::statement('DROP TABLE exam_attempts_old_status');
+            DB::statement('DROP TABLE exam_attempts');
+            DB::statement('ALTER TABLE exam_attempts_new_status RENAME TO exam_attempts');
             DB::statement('PRAGMA foreign_keys=ON');
         }
     }
@@ -56,9 +57,8 @@ return new class extends Migration
             DB::statement("ALTER TABLE exam_attempts MODIFY status ENUM('ongoing', 'completed') NOT NULL DEFAULT 'ongoing'");
         } elseif ($driver === 'sqlite') {
             DB::statement('PRAGMA foreign_keys=OFF');
-            DB::statement('ALTER TABLE exam_attempts RENAME TO exam_attempts_old_status');
 
-            DB::statement("CREATE TABLE exam_attempts (
+            DB::statement("CREATE TABLE exam_attempts_new_status (
                 id integer primary key autoincrement not null,
                 exam_id integer not null,
                 student_id integer not null,
@@ -74,11 +74,14 @@ return new class extends Migration
                 foreign key(student_id) references users(id) on delete cascade
             )");
 
-            DB::statement('INSERT INTO exam_attempts (id, exam_id, student_id, score, total_score, submitted_at, status, retake_allowed, started_at, created_at, updated_at)
-                SELECT id, exam_id, student_id, score, total_score, submitted_at, status, retake_allowed, started_at, created_at, updated_at
-                FROM exam_attempts_old_status');
+            DB::statement('INSERT INTO exam_attempts_new_status (id, exam_id, student_id, score, total_score, submitted_at, status, retake_allowed, started_at, created_at, updated_at)
+                SELECT id, exam_id, student_id, score, total_score, submitted_at,
+                    CASE WHEN status = \'timed_out\' THEN \'ongoing\' ELSE status END,
+                    retake_allowed, started_at, created_at, updated_at
+                FROM exam_attempts');
 
-            DB::statement('DROP TABLE exam_attempts_old_status');
+            DB::statement('DROP TABLE exam_attempts');
+            DB::statement('ALTER TABLE exam_attempts_new_status RENAME TO exam_attempts');
             DB::statement('PRAGMA foreign_keys=ON');
         }
     }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\ClassSubject;
+use App\Models\SchoolClass;
 use App\Models\Subject;
 use App\Models\User;
 
@@ -51,6 +53,66 @@ it('shows subject class and exam pages to an admin', function () {
     $this->actingAs($admin)
         ->get(route('admin.exams.index'))
         ->assertSuccessful();
+});
+
+it('allows an admin to delete a class with no students subjects or examinations', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $class = SchoolClass::create(['name' => 'Empty class']);
+
+    $this->actingAs($admin)
+        ->delete(route('admin.classes.destroy', $class))
+        ->assertRedirect()
+        ->assertSessionHas('success', 'Class deleted successfully.');
+
+    $this->assertModelMissing($class);
+});
+
+it('prevents an admin from deleting a class that has a subject', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $subject = Subject::create(['name' => 'Mathematics']);
+    $class = SchoolClass::create([
+        'name' => 'Grade 7',
+        'subject_id' => $subject->id,
+    ]);
+
+    $this->actingAs($admin)
+        ->delete(route('admin.classes.destroy', $class))
+        ->assertRedirect()
+        ->assertSessionHasErrors([
+            'class' => 'Class cannot be deleted while it has students, subjects, or examinations.',
+        ]);
+
+    $this->assertModelExists($class);
+});
+
+it('shows class subject offerings in the admin class list and prevents deletion', function () {
+    $admin = User::factory()->create(['role' => 'admin']);
+    $teacher = User::factory()->create(['role' => 'teacher']);
+    $subject = Subject::create(['name' => 'Science']);
+    $class = SchoolClass::create([
+        'name' => 'Grade 8',
+        'created_by' => $teacher->id,
+    ]);
+
+    ClassSubject::create([
+        'class_id' => $class->id,
+        'subject_id' => $subject->id,
+        'teacher_id' => $teacher->id,
+        'edp_code' => '987654',
+        'schedule' => 'Mon | 09:00-10:00',
+    ]);
+
+    $this->actingAs($admin)
+        ->get(route('admin.classes.index'))
+        ->assertSuccessful()
+        ->assertSee('Science');
+
+    $this->actingAs($admin)
+        ->delete(route('admin.classes.destroy', $class))
+        ->assertRedirect()
+        ->assertSessionHasErrors('class');
+
+    $this->assertModelExists($class);
 });
 
 it('allows an admin to create another admin account', function () {
