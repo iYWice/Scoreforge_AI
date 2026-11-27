@@ -3,6 +3,7 @@
         {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
     </div>
 
+    {-- Collect and submit the data for this operation. --}
     <form method="POST" action="{{ route('password.confirm') }}">
         @csrf
 

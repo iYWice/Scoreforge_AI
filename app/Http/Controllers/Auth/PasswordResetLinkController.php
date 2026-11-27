@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Represents the PasswordResetLinkController application component.
+ */
 class PasswordResetLinkController extends Controller
 {
     /**
      * Display the password reset link request view.
+     */
+    /**
+     * Handles create.
      */
     public function create(): View
     {
@@ -23,6 +29,9 @@ class PasswordResetLinkController extends Controller
      * Handle an incoming password reset link request.
      *
      * @throws ValidationException
+     */
+    /**
+     * Handles store.
      */
     public function store(Request $request): RedirectResponse
     {

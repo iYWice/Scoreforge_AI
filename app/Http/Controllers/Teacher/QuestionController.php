@@ -3,14 +3,21 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Exam;
 use App\Models\Question;
-use App\Models\QuestionOption;
 use App\Models\QuestionGenerationSession;
+use App\Models\QuestionOption;
+use App\Services\ActivityLogger;
+use Illuminate\Http\Request;
 
+/**
+ * Represents the QuestionController application component.
+ */
 class QuestionController extends Controller
 {
+    /**
+     * Handles edit.
+     */
     public function edit(Question $question)
     {
         $question->load('exam', 'options');
@@ -23,6 +30,10 @@ class QuestionController extends Controller
             compact('question')
         );
     }
+
+    /**
+     * Handles authorizeExam.
+     */
     private function authorizeExam(Exam $exam): void
     {
         if ($exam->created_by !== auth()->id()) {
@@ -30,6 +41,9 @@ class QuestionController extends Controller
         }
     }
 
+    /**
+     * Handles update.
+     */
     public function update(Request $request, Question $question)
     {
         $question->load('exam', 'options');
@@ -72,18 +86,17 @@ class QuestionController extends Controller
 
             foreach ($question->options as $index => $option) {
 
-                if (!isset($texts[$index])) {
+                if (! isset($texts[$index])) {
                     continue;
                 }
 
                 $option->update([
                     'option_text' => $texts[$index],
-                    'is_correct' =>
-                    $request->correct_answer === $texts[$index],
+                    'is_correct' => $request->correct_answer === $texts[$index],
                 ]);
             }
         }
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'question.updated',
             'Teacher edited an examination question.',
             $question
@@ -95,12 +108,15 @@ class QuestionController extends Controller
         );
     }
 
+    /**
+     * Handles destroy.
+     */
     public function destroy(Question $question)
     {
         $question->load('exam');
 
         $this->authorizeExam($question->exam);
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'question.deleted',
             'Teacher deleted an examination question.',
             $question
@@ -113,6 +129,9 @@ class QuestionController extends Controller
         );
     }
 
+    /**
+     * Handles index.
+     */
     public function index(Exam $exam)
     {
         $this->authorizeExam($exam);
@@ -144,6 +163,9 @@ class QuestionController extends Controller
         );
     }
 
+    /**
+     * Handles create.
+     */
     public function create(Exam $exam)
     {
         $this->authorizeExam($exam);
@@ -154,6 +176,9 @@ class QuestionController extends Controller
         );
     }
 
+    /**
+     * Handles store.
+     */
     public function store(Request $request, Exam $exam)
     {
         $this->authorizeExam($exam);
@@ -224,20 +249,18 @@ class QuestionController extends Controller
         if ($validated['question_type'] === 'mcq') {
 
             foreach (
-                $validated['options']
-                as $index => $option
+                $validated['options'] as $index => $option
             ) {
 
                 QuestionOption::create([
                     'question_id' => $question->id,
                     'option_text' => $option,
-                    'is_correct' =>
-                    $index ===
+                    'is_correct' => $index ===
                         (int) $validated['correct_option'],
                 ]);
             }
         }
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'question.created',
             'Teacher added a question to an examination.',
             $question,

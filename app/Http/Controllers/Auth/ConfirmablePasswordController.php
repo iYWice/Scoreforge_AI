@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Represents the ConfirmablePasswordController application component.
+ */
 class ConfirmablePasswordController extends Controller
 {
     /**
      * Show the confirm password view.
+     */
+    /**
+     * Handles show.
      */
     public function show(): View
     {
@@ -21,6 +27,9 @@ class ConfirmablePasswordController extends Controller
 
     /**
      * Confirm the user's password.
+     */
+    /**
+     * Handles store.
      */
     public function store(Request $request): RedirectResponse
     {

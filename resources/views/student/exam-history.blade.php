@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Exam History')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Examination History')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="space-y-6 aiq-exam-history">
     <div class="flex flex-wrap items-end justify-between gap-4 aiq-panel aiq-panel-interactive p-5 sm:p-6">
@@ -23,6 +27,7 @@
     </div>
 
     <div class="grid gap-3">
+        {-- Iterate over the related records and render each result. --}
         @forelse($attempts as $attempt)
             @php
                 $passingScore = $attempt->exam?->passing_score ?? 0;

@@ -6,6 +6,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    {-- Collect and submit the data for this operation. --}
     <form method="POST" action="{{ route('password.email') }}">
         @csrf
 

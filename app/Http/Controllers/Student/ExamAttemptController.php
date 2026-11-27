@@ -14,18 +14,30 @@ use App\Services\StudentAnalyticsService;
 use App\Services\StudentRankingService;
 use Illuminate\Http\Request;
 
+/**
+ * Represents the ExamAttemptController application component.
+ */
 class ExamAttemptController extends Controller
 {
+    /**
+     * Handles enterCode.
+     */
     public function enterCode()
     {
         return view('student.enter-code');
     }
 
+    /**
+     * Handles showCodeForm.
+     */
     public function showCodeForm()
     {
         return view('student.enter-code');
     }
 
+    /**
+     * Handles startExam.
+     */
     public function startExam(Request $request)
     {
         $request->validate([
@@ -93,6 +105,9 @@ class ExamAttemptController extends Controller
     /*
     Start Exam
     */
+    /**
+     * Handles beginExam.
+     */
     public function beginExam(Request $request)
     {
         $request->validate([
@@ -188,6 +203,9 @@ class ExamAttemptController extends Controller
     /*
     Take Exam
     */
+    /**
+     * Handles takeExam.
+     */
     public function takeExam(ExamAttempt $attempt)
     {
         $this->authorizeAttempt($attempt);
@@ -262,6 +280,9 @@ class ExamAttemptController extends Controller
     /*
     Submit Exam
     */
+    /**
+     * Handles submitExam.
+     */
     public function submitExam(Request $request, ExamAttempt $attempt)
     {
         $this->authorizeAttempt($attempt);
@@ -462,6 +483,9 @@ class ExamAttemptController extends Controller
     /*
     Result Page
     */
+    /**
+     * Handles result.
+     */
     public function result(ExamAttempt $attempt)
     {
         $this->authorizeAttempt($attempt);
@@ -530,6 +554,9 @@ class ExamAttemptController extends Controller
         );
     }
 
+    /**
+     * Handles authorizeAttempt.
+     */
     private function authorizeAttempt(ExamAttempt $attempt): void
     {
         if ($attempt->student_id !== auth()->id()) {
@@ -539,6 +566,9 @@ class ExamAttemptController extends Controller
         $this->authorizeExam($attempt->exam);
     }
 
+    /**
+     * Handles authorizeExam.
+     */
     private function authorizeExam(Exam $exam): void
     {
         abort_unless(

@@ -1,7 +1,10 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Take Exam')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 @php
@@ -15,6 +18,7 @@
     x-init="init()"
     class="mx-auto max-w-6xl aiq-exam-workspace">
 
+    {-- Collect and submit the data for this operation. --}
     <form
         id="examForm"
         method="POST"
@@ -28,6 +32,7 @@
         {{-- EXAM HEADER                                        --}}
         {{-- ================================================== --}}
 
+        {-- Render this navigation or page landmark. --}
         <header
             class="sticky top-16 z-30 border-b border-slate-200
                    bg-white/95 backdrop-blur-xl aiq-panel px-4 sm:px-6">
@@ -163,10 +168,13 @@
             {{-- QUESTION                                      --}}
             {{-- ============================================== --}}
 
+            {-- Render this meaningful page or content section. --}
             <main class="min-w-0">
 
+                {-- Iterate over the related records and render each result. --}
                 @forelse($questions as $question)
 
+                    {-- Render this meaningful page or content section. --}
                     <section
                         x-cloak
                         x-show="current === {{ $loop->index }}"
@@ -206,12 +214,16 @@
                                                uppercase tracking-[0.16em]
                                                text-slate-400">
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @if($question->question_type === 'mcq')
                                             Multiple Choice
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @elseif($question->question_type === 'tf')
                                             True / False
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @elseif($question->question_type === 'identification')
                                             Identification
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @else
                                             Question
                                         @endif
@@ -219,6 +231,7 @@
                                     </p>
 
 
+                                    {-- Render this content conditionally based on the current view state. --}
                                     @if($question->topic)
 
                                         <p class="mt-0.5 text-[10px]
@@ -268,10 +281,12 @@
                         {{-- MULTIPLE CHOICE                    --}}
                         {{-- ================================== --}}
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @if($question->question_type === 'mcq')
 
                             <div class="space-y-3">
 
+                                {-- Iterate over the related records and render each result. --}
                                 @foreach($question->options as $option)
 
                                     <label
@@ -358,6 +373,7 @@
                         {{-- TRUE / FALSE                       --}}
                         {{-- ================================== --}}
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @if($question->question_type === 'tf')
 
                             <div class="grid gap-3 sm:grid-cols-2">
@@ -454,6 +470,7 @@
                         {{-- IDENTIFICATION                     --}}
                         {{-- ================================== --}}
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @if($question->question_type === 'identification')
 
                             <div>
@@ -525,6 +542,7 @@
 
 
 
+                            {-- Render this content conditionally based on the current view state. --}
                             @if(!$loop->last)
 
                                 <button
@@ -550,6 +568,7 @@
 
                                 </button>
 
+                            {-- Render this content conditionally based on the current view state. --}
                             @else
 
                                 <button
@@ -602,6 +621,7 @@
             {{-- QUESTION NAVIGATOR                             --}}
             {{-- ============================================== --}}
 
+            {-- Render this content conditionally based on the current view state. --}
             @if($totalQuestions > 0)
 
                 <aside class="hidden lg:block">
@@ -616,6 +636,7 @@
 
                         <div class="mt-4 grid grid-cols-5 gap-2">
 
+                            {-- Iterate over the related records and render each result. --}
                             @foreach($questions as $question)
 
                                 <button
@@ -731,6 +752,7 @@
         {{-- MOBILE NAVIGATOR                                   --}}
         {{-- ================================================== --}}
 
+        {-- Render this content conditionally based on the current view state. --}
         @if($totalQuestions > 0)
 
             <div
@@ -849,6 +871,7 @@
 
                 <div class="mt-5 grid grid-cols-6 gap-2 sm:grid-cols-8">
 
+                    {-- Iterate over the related records and render each result. --}
                     @foreach($questions as $question)
 
                         <button
@@ -1224,8 +1247,10 @@
                 }
 
 
+                {-- Iterate over the related records and render each result. --}
                 @foreach($questions as $question)
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($question->question_type === 'identification')
 
                         const text{{ $loop->index }} =
@@ -1240,6 +1265,7 @@
                             this.answered[{{ $loop->index }}] = true;
                         }
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @else
 
                         const selected{{ $loop->index }} =

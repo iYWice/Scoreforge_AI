@@ -9,8 +9,14 @@ use App\Models\User;
 use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 
+/**
+ * Represents the ClassController application component.
+ */
 class ClassController extends Controller
 {
+    /**
+     * Handles index.
+     */
     public function index()
     {
         $classes = SchoolClass::where('created_by', auth()->id())
@@ -26,6 +32,9 @@ class ClassController extends Controller
         ));
     }
 
+    /**
+     * Handles store.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -44,6 +53,9 @@ class ClassController extends Controller
             ->with('success', 'Class created successfully.');
     }
 
+    /**
+     * Handles show.
+     */
     public function show(SchoolClass $class)
     {
         abort_if(
@@ -65,6 +77,9 @@ class ClassController extends Controller
         );
     }
 
+    /**
+     * Handles update.
+     */
     public function update(
         Request $request,
         SchoolClass $class
@@ -86,6 +101,9 @@ class ClassController extends Controller
         );
     }
 
+    /**
+     * Handles removeStudent.
+     */
     public function removeStudent(SchoolClass $class, User $student)
     {
         abort_unless(

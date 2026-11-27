@@ -1,7 +1,10 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Classes & Subjects')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -52,6 +55,7 @@
         <span>{{ session('success') }}</span>
     </div>
     @endif
+    {-- Render this content conditionally based on the current view state. --}
     @if(session('error'))
     <div class="subjects-alert subjects-error flex items-center gap-3 bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 px-4 py-3 rounded-xl text-sm font-medium aiq-alert aiq-alert-error">
 
@@ -103,6 +107,7 @@
                 Create Class
             </h2>
 
+            {-- Collect and submit the data for this operation. --}
             <form method="POST" action="{{ route('teacher.classes.store') }}" class="space-y-4" x-data="{ loading: false }" @submit="loading = true">
                 @csrf
 
@@ -139,6 +144,7 @@
                 Create Subject
             </h2>
 
+            {-- Collect and submit the data for this operation. --}
             <form method="POST" action="{{ route('teacher.subjects.store') }}" class="space-y-4" x-data="{ loading: false }" @submit="loading = true">
                 @csrf
 
@@ -179,6 +185,7 @@
         </div>
 
         <div class="divide-y divide-slate-800/60">
+            {-- Iterate over the related records and render each result. --}
             @forelse($classes as $class)
             <div class="managed-row p-4 sm:p-5 flex justify-between items-center hover:bg-slate-800/30 transition-colors aiq-panel-interactive">
                 <div class="space-y-1">
@@ -193,6 +200,7 @@
                     </p> -->
                 </div>
 
+                {-- Collect and submit the data for this operation. --}
                 <form method="POST" action="{{ route('teacher.classes.destroy', $class->id) }}" onsubmit="return confirm('Delete this class?')">
                     @csrf
                     @method('DELETE')
@@ -224,6 +232,7 @@
         </div>
 
         <div class="divide-y divide-slate-800/60">
+            {-- Iterate over the related records and render each result. --}
             @forelse($subjects as $subject)
             <div class="managed-row p-4 sm:p-5 flex justify-between items-center hover:bg-slate-800/30 transition-colors aiq-panel-interactive">
                 <div class="space-y-1">
@@ -232,6 +241,7 @@
                     </h3>
                 </div>
 
+                {-- Collect and submit the data for this operation. --}
                 <form method="POST" action="{{ route('teacher.subjects.destroy', $subject->id) }}" onsubmit="return confirm('Delete this subject?')">
                     @csrf
                     @method('DELETE')

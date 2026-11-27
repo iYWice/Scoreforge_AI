@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', $exam->title)
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Exam Workspace')
 
+{-- Define this page section and its presentation content. --}
 @section('page-actions')
 
 <div class="flex items-center gap-2">
@@ -58,6 +62,7 @@
 @endsection
 
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 @php
@@ -138,6 +143,7 @@ if (($attempt->total_score ?? 0) <= 0) {
         {{-- EXAM IDENTITY                                          --}}
         {{-- ====================================================== --}}
 
+        {-- Render this meaningful page or content section. --}
         <section
             class="relative overflow-hidden
                border-b border-slate-200 pb-8">
@@ -185,6 +191,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                         </span>
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @elseif($status === 'draft')
 
                         <span
@@ -202,6 +209,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                         </span>
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @else
 
                         <span
@@ -225,6 +233,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                         <span class="text-slate-300">/</span>
 
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @if($exam->subject)
 
                         <span
@@ -236,6 +245,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                         @endif
 
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @if($exam->class)
 
                         <span class="text-slate-300">/</span>
@@ -367,6 +377,7 @@ if (($attempt->total_score ?? 0) <= 0) {
         {{-- EXAM NAVIGATION                                        --}}
         {{-- ====================================================== --}}
 
+        {-- Render this navigation or page landmark. --}
         <nav
             class="flex items-center gap-1
                overflow-x-auto border-b
@@ -928,6 +939,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                             <dd class="flex items-center
                                   gap-2 text-xs font-bold">
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if($ongoingCount > 0)
 
                                 <span
@@ -987,6 +999,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                     </div>
 
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($totalAttempts > 0)
 
                     <button
@@ -1014,10 +1027,12 @@ if (($attempt->total_score ?? 0) <= 0) {
                 </div>
 
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if($totalAttempts > 0)
 
                 <div class="border-t border-slate-200">
 
+                    {-- Iterate over the related records and render each result. --}
                     @foreach($attempts->take(5) as $attempt)
 
                     <div
@@ -1047,11 +1062,13 @@ if (($attempt->total_score ?? 0) <= 0) {
                                            group-hover:bg-indigo-50
                                            group-hover:text-indigo-600">
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if($attempt->student)
 
                                 {{ strtoupper(substr($attempt->student->fname, 0, 1)) }}
                                 {{ strtoupper(substr($attempt->student->lname, 0, 1)) }}
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @else
 
                                 ?
@@ -1067,11 +1084,13 @@ if (($attempt->total_score ?? 0) <= 0) {
                                     class="text-sm font-bold
                                                text-slate-800">
 
+                                    {-- Render this content conditionally based on the current view state. --}
                                     @if($attempt->student)
 
                                     {{ $attempt->student->fname }}
                                     {{ $attempt->student->lname }}
 
+                                    {-- Render this content conditionally based on the current view state. --}
                                     @else
 
                                     Student unavailable
@@ -1086,10 +1105,12 @@ if (($attempt->total_score ?? 0) <= 0) {
                                                font-medium
                                                text-slate-400">
 
+                                    {-- Render this content conditionally based on the current view state. --}
                                     @if($attempt->started_at)
 
                                     {{ \Carbon\Carbon::parse($attempt->started_at)->format('M d, Y • h:i A') }}
 
+                                    {-- Render this content conditionally based on the current view state. --}
                                     @else
 
                                     Start time unavailable
@@ -1101,13 +1122,17 @@ if (($attempt->total_score ?? 0) <= 0) {
                                 <p
                                     class="mt-0.5 text-[10px]
                                                font-medium text-slate-400">
+                                    {-- Render this content conditionally based on the current view state. --}
                                     @if($attempt->submitted_at)
                                         Finished {{ \Carbon\Carbon::parse($attempt->submitted_at)->format('M d, Y • h:i A') }}
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @if($exam->closes_at && $attempt->submitted_at->lte($exam->closes_at))
                                             <span class="block text-emerald-600">Within open hours</span>
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @elseif($exam->closes_at)
                                             <span class="block text-rose-600">After deadline</span>
                                         @endif
+                                    {-- Render this content conditionally based on the current view state. --}
                                     @else
                                         Finish time unavailable
                                     @endif
@@ -1121,6 +1146,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                         <div class="flex items-center gap-4">
 
+                            {-- Render this content conditionally based on the current view state. --}
                             @if($attempt->status === 'ongoing')
 
                             <span
@@ -1140,6 +1166,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                             </span>
 
+                            {-- Render this content conditionally based on the current view state. --}
                             @elseif($attempt->status === 'timed_out')
 
                             <span
@@ -1149,6 +1176,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                                 Ran out of time
                             </span>
 
+                            {-- Render this content conditionally based on the current view state. --}
                             @elseif($attempt->status === 'completed')
 
                             <span
@@ -1167,6 +1195,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                             </span>
 
+                            {-- Render this content conditionally based on the current view state. --}
                             @else
 
                             <span
@@ -1183,6 +1212,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                                 class="min-w-[70px]
                                            text-right">
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if($attempt->status === 'completed')
 
                                 <span
@@ -1197,6 +1227,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                                     /{{ $attempt->total_score ?? 0 }}
                                 </span>
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @else
 
                                 <span class="text-slate-300">
@@ -1215,6 +1246,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                 </div>
 
+                {-- Render this content conditionally based on the current view state. --}
                 @else
 
                 <div
@@ -1260,6 +1292,7 @@ if (($attempt->total_score ?? 0) <= 0) {
             x-transition:enter-end="opacity-100 translate-y-0">
 
 
+            {-- Render this meaningful page or content section. --}
             <section>
 
                 <div
@@ -1380,6 +1413,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
 
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if($totalAttempts > 0)
 
                 <div
@@ -1389,11 +1423,13 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                     <div class="overflow-x-auto">
 
+                        {-- Present structured records in a table. --}
                         <table
                             class="w-full border-collapse
                                    text-left">
 
 
+                            {-- Present structured records in a table. --}
                             <thead>
 
                                 <tr
@@ -1429,8 +1465,10 @@ if (($attempt->total_score ?? 0) <= 0) {
                             </thead>
 
 
+                            {-- Present structured records in a table. --}
                             <tbody>
 
+                                {-- Iterate over the related records and render each result. --}
                                 @foreach($attempts as $attempt)
 
                                 <tr
@@ -1462,11 +1500,13 @@ if (($attempt->total_score ?? 0) <= 0) {
                                                            group-hover:bg-indigo-100
                                                            group-hover:text-indigo-700">
 
+                                                {-- Render this content conditionally based on the current view state. --}
                                                 @if($attempt->student)
 
                                                 {{ strtoupper(substr($attempt->student->fname, 0, 1)) }}
                                                 {{ strtoupper(substr($attempt->student->lname, 0, 1)) }}
 
+                                                {-- Render this content conditionally based on the current view state. --}
                                                 @else
 
                                                 ?
@@ -1481,11 +1521,13 @@ if (($attempt->total_score ?? 0) <= 0) {
                                                            font-bold
                                                            text-slate-800">
 
+                                                {-- Render this content conditionally based on the current view state. --}
                                                 @if($attempt->student)
 
                                                 {{ $attempt->student->fname }}
                                                 {{ $attempt->student->lname }}
 
+                                                {-- Render this content conditionally based on the current view state. --}
                                                 @else
 
                                                 Student unavailable
@@ -1506,10 +1548,12 @@ if (($attempt->total_score ?? 0) <= 0) {
                                                    text-xs font-medium
                                                    text-slate-500">
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @if($attempt->started_at)
 
                                         {{ \Carbon\Carbon::parse($attempt->started_at)->format('M d, Y • h:i A') }}
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @else
 
                                         —
@@ -1523,6 +1567,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                                     {{-- Status --}}
                                     <td class="px-5 py-4">
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @if($attempt->status === 'ongoing')
 
                                         <span
@@ -1544,6 +1589,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                                         </span>
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @elseif($attempt->status === 'timed_out')
 
                                         <span
@@ -1553,6 +1599,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                                             Ran out of time
                                         </span>
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @elseif($attempt->status === 'completed')
 
                                         <span
@@ -1573,6 +1620,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                                         </span>
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @else
 
                                         <span
@@ -1594,6 +1642,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                                         class="px-5 py-4
                                                    text-right">
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @if($attempt->status === 'completed')
 
                                         <span
@@ -1610,6 +1659,7 @@ if (($attempt->total_score ?? 0) <= 0) {
                                             {{ $attempt->total_score ?? 0 }}
                                         </span>
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @else
 
                                         <span
@@ -1633,6 +1683,7 @@ if (($attempt->total_score ?? 0) <= 0) {
 
                 </div>
 
+                {-- Render this content conditionally based on the current view state. --}
                 @else
 
                 <div

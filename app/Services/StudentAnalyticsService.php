@@ -5,8 +5,14 @@ namespace App\Services;
 use App\Models\ExamAttempt;
 use App\Models\StudentAnalytics;
 
+/**
+ * Represents the StudentAnalyticsService application component.
+ */
 class StudentAnalyticsService
 {
+    /**
+     * Handles updateStudentAnalytics.
+     */
     public function updateStudentAnalytics(int $studentId): StudentAnalytics
     {
         $attempts = ExamAttempt::where('student_id', $studentId)
@@ -26,7 +32,7 @@ class StudentAnalyticsService
         }
 
         $percentages = $attempts->map(function ($attempt) {
-            if (!$attempt->total_score || $attempt->total_score <= 0) {
+            if (! $attempt->total_score || $attempt->total_score <= 0) {
                 return 0;
             }
 
@@ -57,6 +63,10 @@ class StudentAnalyticsService
 
         return $analytics;
     }
+
+    /**
+     * Handles updateRankings.
+     */
     public function updateRankings(): void
     {
         $analytics = StudentAnalytics::orderByDesc('average_score')->get();

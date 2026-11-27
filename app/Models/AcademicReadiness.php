@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Represents the AcademicReadiness application component.
+ */
 class AcademicReadiness extends Model
 {
     use HasFactory;
@@ -24,6 +27,9 @@ class AcademicReadiness extends Model
         'evaluated_at' => 'datetime',
     ];
 
+    /**
+     * Handles student.
+     */
     public function student()
     {
         return $this->belongsTo(User::class, 'student_id');

@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Question Bank')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Exam Workspace')
 
+{-- Define this page section and its presentation content. --}
 @section('page-actions')
 <div class="flex items-center gap-2">
 
@@ -55,6 +59,7 @@
 @endsection
 
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 <style>
     #aiq-page-content .question-builder-close { box-sizing:border-box; width:36px !important; min-width:36px !important; height:36px !important; min-height:36px !important; flex:0 0 36px !important; padding:0 !important; }
@@ -86,7 +91,9 @@ $examStatus = strtolower($exam->status ?? 'draft');
         }
     }"
     class="space-y-8 aiq-question-bank">
+    {-- Render this content conditionally based on the current view state. --}
     @if($savedQuestionSets->isNotEmpty())
+    {-- Render this meaningful page or content section. --}
     <section class="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-5 sm:p-6 aiq-panel">
         <div class="mb-4">
             <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-indigo-500">
@@ -99,6 +106,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
         </div>
 
         <div class="grid gap-3 md:grid-cols-2">
+            {-- Iterate over the related records and render each result. --}
             @foreach($savedQuestionSets as $questionSet)
             <article class="flex items-center justify-between gap-4 rounded-xl border border-indigo-100 bg-white p-4 aiq-panel-interactive">
                 <div class="min-w-0">
@@ -126,6 +134,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- EXAM IDENTITY                                          --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="border-b border-slate-200 pb-7">
 
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -134,6 +143,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                 <div class="flex flex-wrap items-center gap-2">
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($examStatus === 'published')
 
                     <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold
@@ -144,6 +154,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                     </span>
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @elseif($examStatus === 'draft')
 
                     <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold
@@ -154,6 +165,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                     </span>
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @else
 
                     <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold
@@ -167,6 +179,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     @endif
 
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($exam->subject)
 
                     <span class="text-slate-300">/</span>
@@ -178,6 +191,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                     @endif
 
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($exam->class)
 
                     <span class="text-slate-300">/</span>
@@ -245,6 +259,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- EXAM WORKSPACE NAVIGATION                              --}}
     {{-- ====================================================== --}}
 
+    {-- Render this navigation or page landmark. --}
     <nav class="flex items-center gap-1 overflow-x-auto border-b border-slate-200">
 
         <a
@@ -297,6 +312,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- FLASH / VALIDATION                                     --}}
     {{-- ====================================================== --}}
 
+    {-- Render this content conditionally based on the current view state. --}
     @if(session('success'))
 
     <div
@@ -311,6 +327,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     @endif
 
 
+    {-- Render this content conditionally based on the current view state. --}
     @if(session('error'))
 
     <div
@@ -322,6 +339,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     @endif
 
 
+    {-- Render this content conditionally based on the current view state. --}
     @if($errors->any())
 
     <div
@@ -332,6 +350,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
         </p>
 
         <ul class="mt-2 list-inside list-disc space-y-1 text-xs">
+            {-- Iterate over the related records and render each result. --}
             @foreach($errors->all() as $error)
             <li>{{ $error }}</li>
             @endforeach
@@ -347,6 +366,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- QUESTION BUILDER                                       --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section
         id="questionBuilder"
         class="{{ $errors->any() ? '' : 'hidden' }} overflow-hidden border border-indigo-100 bg-white
@@ -463,6 +483,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
 
 
+                {-- Collect and submit the data for this operation. --}
                 <form
                     method="POST"
                     action="{{ route('teacher.questions.store', $exam->id) }}"
@@ -678,6 +699,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                             <div class="space-y-3">
 
+                                {-- Iterate over the related records and render each result. --}
                                 @foreach(['A', 'B', 'C', 'D'] as $index => $letter)
 
                                 <div class="group flex items-center gap-3">
@@ -902,6 +924,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- QUESTION BANK HEADER                                   --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section>
 
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -964,6 +987,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- FILTERS                                                --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="border-y border-slate-200">
 
         <div class="flex items-center gap-1 overflow-x-auto">
@@ -1065,10 +1089,12 @@ $examStatus = strtolower($exam->status ?? 'draft');
     {{-- QUESTIONS                                              --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section>
 
         <div class="border-t border-slate-200 aiq-panel">
 
+            {-- Iterate over the related records and render each result. --}
             @forelse($questions as $question)
 
             @php
@@ -1146,6 +1172,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                            text-[9px] font-extrabold uppercase tracking-[0.13em]
                                            text-slate-400">
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if($question->topic)
 
                                 <span class="text-indigo-500">
@@ -1218,6 +1245,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
 
                         <div class="space-y-2">
 
+                            {-- Iterate over the related records and render each result. --}
                             @forelse($question->options as $option)
 
                             @php
@@ -1248,6 +1276,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                                 </span>
 
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if(trim((string) $question->correct_answer) === trim((string) $optionText))
 
                                 <span
@@ -1326,6 +1355,7 @@ $examStatus = strtolower($exam->status ?? 'draft');
                             </a>
 
 
+                            {-- Collect and submit the data for this operation. --}
                             <form
                                 method="POST"
                                 action="{{ route('teacher.questions.destroy', $question->id) }}"

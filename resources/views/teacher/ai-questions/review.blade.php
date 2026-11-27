@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Generated Questions')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'AI Question Builder')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -86,6 +90,7 @@
             questions from {{ $session->source_name }}.
         </p>
 
+        {-- Render this content conditionally based on the current view state. --}
         @if(session('success'))
         <div class="aiq-alert aiq-alert-success review-alert mt-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800">
             {{ session('success') }}
@@ -93,11 +98,14 @@
         @endif
     </div>
 
+    {-- Render this content conditionally based on the current view state. --}
     @if($session->status === 'used')
     <div class="aiq-alert aiq-alert-info review-notice mb-5 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-800">
         These questions have already been added to an examination.
     </div>
+    {-- Render this content conditionally based on the current view state. --}
     @else
+    {-- Collect and submit the data for this operation. --}
     <form
         method="POST"
         action="{{ route('teacher.ai-questions.commit', [$exam, $session]) }}">
@@ -109,6 +117,7 @@
             </p>
 
             <div class="flex flex-wrap gap-2">
+                {-- Render this content conditionally based on the current view state. --}
                 @if($session->purpose !== 'question_bank')
                 <button
                     type="submit"
@@ -130,6 +139,7 @@
         </div>
 
         <div class="space-y-4">
+            {-- Iterate over the related records and render each result. --}
             @foreach($session->generated_questions ?? [] as $index => $question)
             <article class="aiq-panel aiq-panel-interactive question-review-card rounded-2xl border border-slate-200 bg-white p-6" data-3d-card>
                 <div class="mb-4 flex items-start justify-between gap-4">
@@ -155,8 +165,10 @@
                     {{ $question['topic'] ?? 'General' }}
                 </p>
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if(!empty($question['options']))
                 <div class="mb-4 space-y-2">
+                    {-- Iterate over the related records and render each result. --}
                     @foreach($question['options'] as $option)
                     <div class="aiq-option rounded-lg bg-slate-50 px-4 py-2 text-sm text-slate-700">
                         {{ $option }}
@@ -182,6 +194,7 @@
         Edit question
     </summary>
 
+    {-- Collect and submit the data for this operation. --}
     <form
         method="POST"
         action="{{ route('teacher.ai-questions.update-question', [
@@ -215,7 +228,9 @@
                 class="aiq-field w-full rounded-lg border-slate-300">
         </div>
 
+        {-- Render this content conditionally based on the current view state. --}
         @if($question['question_type'] === 'multiple_choice')
+        {-- Iterate over the related records and render each result. --}
         @foreach($question['options'] as $optionIndex => $option)
         <div>
             <label class="mb-1 block text-sm font-medium text-slate-700">
@@ -241,6 +256,7 @@
                 required
                 maxlength="500"
                 class="w-full rounded-lg border-slate-300">
+            {-- Render this content conditionally based on the current view state. --}
             @if($question['question_type'] === 'multiple_choice')
             <p class="mt-1 text-xs text-slate-500">
                 For multiple choice, this must exactly match one of the choices.

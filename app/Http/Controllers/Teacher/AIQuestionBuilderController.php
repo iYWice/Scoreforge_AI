@@ -4,22 +4,29 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Exam;
+use App\Models\Question;
 use App\Models\QuestionGenerationSession;
+use App\Models\QuestionOption;
+use App\Models\SystemSetting;
+use App\Services\ActivityLogger;
 use App\Services\GeminiService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Smalot\PdfParser\Parser;
 use Throwable;
-use App\Models\SystemSetting;
-use App\Models\Question;
-use App\Models\QuestionOption;
-use Illuminate\Support\Facades\DB;
 
+/**
+ * Represents the AIQuestionBuilderController application component.
+ */
 class AIQuestionBuilderController extends Controller
 {
     /**
      * Show AI Question Builder.
+     */
+    /**
+     * Handles create.
      */
     public function create(Exam $exam)
     {
@@ -44,6 +51,9 @@ class AIQuestionBuilderController extends Controller
     /**
      * Upload PDF, extract text,
      * generate questions, and save draft.
+     */
+    /**
+     * Handles generate.
      */
     public function generate(
         Request $request,
@@ -122,7 +132,7 @@ class AIQuestionBuilderController extends Controller
             $fullPath = Storage::disk('local')
                 ->path($storedPath);
 
-            $parser = new Parser();
+            $parser = new Parser;
 
             $pdf = $parser->parseFile($fullPath);
 
@@ -161,28 +171,23 @@ class AIQuestionBuilderController extends Controller
 
                 'exam_id' => $exam->id,
 
-                'source_name' =>
-                $uploadedFile->getClientOriginalName(),
+                'source_name' => $uploadedFile->getClientOriginalName(),
 
                 'source_file' => $storedPath,
 
                 'purpose' => 'exam',
 
-                'question_count' =>
-                count($questions),
+                'question_count' => count($questions),
 
-                'question_types' =>
-                $validated['question_types'],
+                'question_types' => $validated['question_types'],
 
-                'difficulty' =>
-                $validated['difficulty'] ?? null,
+                'difficulty' => $validated['difficulty'] ?? null,
 
-                'generated_questions' =>
-                $questions,
+                'generated_questions' => $questions,
 
                 'status' => 'draft',
             ]);
-            app(\App\Services\ActivityLogger::class)->log(
+            app(ActivityLogger::class)->log(
                 'questions.ai_generated',
                 'Teacher generated questions with AI.',
                 $session,
@@ -221,14 +226,16 @@ class AIQuestionBuilderController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'source_file' =>
-                    $exception->getMessage(),
+                    'source_file' => $exception->getMessage(),
                 ]);
         }
     }
 
     /**
      * Show generated draft questions.
+     */
+    /**
+     * Handles review.
      */
     public function review(
         Exam $exam,
@@ -241,7 +248,7 @@ class AIQuestionBuilderController extends Controller
 
         abort_if(
             $session->exam_id !== $exam->id &&
-                !($session->purpose === 'question_bank' && $session->status === 'saved'),
+                ! ($session->purpose === 'question_bank' && $session->status === 'saved'),
             404
         );
 
@@ -255,6 +262,10 @@ class AIQuestionBuilderController extends Controller
             )
         );
     }
+
+    /**
+     * Handles commit.
+     */
     public function commit(
         Request $request,
         Exam $exam,
@@ -265,7 +276,7 @@ class AIQuestionBuilderController extends Controller
 
         abort_if(
             $session->exam_id !== $exam->id &&
-                !($session->purpose === 'question_bank' && $session->status === 'saved'),
+                ! ($session->purpose === 'question_bank' && $session->status === 'saved'),
             404
         );
 
@@ -313,7 +324,7 @@ class AIQuestionBuilderController extends Controller
                 'status' => 'saved',
             ]);
 
-            app(\App\Services\ActivityLogger::class)->log(
+            app(ActivityLogger::class)->log(
                 'questions.saved_to_bank',
                 'Teacher saved generated questions to the question bank.',
                 $savedSet,
@@ -359,7 +370,7 @@ class AIQuestionBuilderController extends Controller
             }
         });
 
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'questions.added_to_exam',
             'Teacher reused generated questions in an examination.',
             $exam,
@@ -370,9 +381,13 @@ class AIQuestionBuilderController extends Controller
             ->route('teacher.exams.questions', $exam)
             ->with(
                 'success',
-                $selectedQuestions->count() . ' questions added to the examination.'
+                $selectedQuestions->count().' questions added to the examination.'
             );
     }
+
+    /**
+     * Handles updateGeneratedQuestion.
+     */
     public function updateGeneratedQuestion(
         Request $request,
         Exam $exam,
@@ -403,7 +418,7 @@ class AIQuestionBuilderController extends Controller
 
         if (
             $question['question_type'] === 'multiple_choice' &&
-            !in_array($validated['correct_answer'], $validated['options'], true)
+            ! in_array($validated['correct_answer'], $validated['options'], true)
         ) {
             return back()
                 ->withErrors([
@@ -427,7 +442,7 @@ class AIQuestionBuilderController extends Controller
             'generated_questions' => $questions,
         ]);
 
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'question.ai_draft_updated',
             'Teacher edited an AI-generated question.',
             $session,

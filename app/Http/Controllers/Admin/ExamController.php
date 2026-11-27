@@ -12,8 +12,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/**
+ * Represents the ExamController application component.
+ */
 class ExamController extends Controller
 {
+    /**
+     * Handles index.
+     */
     public function index(Request $request)
     {
         $exams = Exam::query()
@@ -44,6 +50,9 @@ class ExamController extends Controller
         return view('admin.exams.index', compact('exams', 'subjects', 'classes', 'teachers'));
     }
 
+    /**
+     * Handles show.
+     */
     public function show(Exam $exam)
     {
         $exam->load(['teacher', 'subject', 'class']);
@@ -60,6 +69,9 @@ class ExamController extends Controller
         ));
     }
 
+    /**
+     * Handles store.
+     */
     public function store(Request $request, ActivityLogger $logger): RedirectResponse
     {
         $data = $request->validate([
@@ -97,6 +109,9 @@ class ExamController extends Controller
         return back()->with('success', 'Examination created successfully.');
     }
 
+    /**
+     * Handles update.
+     */
     public function update(Request $request, Exam $exam, ActivityLogger $logger): RedirectResponse
     {
         $data = $request->validate([
@@ -131,6 +146,9 @@ class ExamController extends Controller
         return back()->with('success', 'Examination updated successfully.');
     }
 
+    /**
+     * Handles destroy.
+     */
     public function destroy(Exam $exam, ActivityLogger $logger): RedirectResponse
     {
         $examTitle = $exam->title;

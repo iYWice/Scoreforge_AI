@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Examinations')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Examination Workspace')
 
+{-- Define this page section and its presentation content. --}
 @section('page-actions')
 <button
     type="button"
@@ -33,6 +37,7 @@
 @endsection
 
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -89,6 +94,7 @@ $closedCount = $exams->where('status', 'closed')->count();
     {{-- WORKSPACE INTRO                                        --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="exam-index-hero">
 
         <div class="flex flex-col gap-5
@@ -154,6 +160,7 @@ $closedCount = $exams->where('status', 'closed')->count();
     {{-- STATUS FILTERS                                         --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="exam-status-tabs border-y border-slate-200">
 
         <div class="flex items-center gap-1 overflow-x-auto">
@@ -279,6 +286,7 @@ $closedCount = $exams->where('status', 'closed')->count();
     {{-- CREATE EXAM DRAWER                                     --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section
         id="createExamPanel"
         class="hidden overflow-hidden aiq-panel-interactive
@@ -418,6 +426,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                 </div>
 
 
+                {-- Collect and submit the data for this operation. --}
                 <form
                     id="createExamForm"
                     method="POST"
@@ -475,6 +484,7 @@ $closedCount = $exams->where('status', 'closed')->count();
         class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 aiq-field">
         <option value="">Select class</option>
 
+        {-- Iterate over the related records and render each result. --}
         @foreach ($classes as $class)
             <option value="{{ $class->id }}">
                 {{ $class->name }}
@@ -497,7 +507,9 @@ $closedCount = $exams->where('status', 'closed')->count();
         class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-60 aiq-field">
         <option value="">Select a class first</option>
 
+        {-- Iterate over the related records and render each result. --}
         @foreach ($classes as $class)
+            {-- Iterate over the related records and render each result. --}
             @foreach ($class->classSubjects->unique('subject_id') as $offering)
                 <option
                     value="{{ $offering->subject_id }}"
@@ -709,6 +721,7 @@ $closedCount = $exams->where('status', 'closed')->count();
     {{-- EXAMINATION WORKSPACE LIST                              --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section>
 
         <div class="mb-4 flex items-center justify-between">
@@ -728,6 +741,7 @@ $closedCount = $exams->where('status', 'closed')->count();
 
         <div class="exam-index-list border-t border-slate-200 aiq-panel">
 
+            {-- Iterate over the related records and render each result. --}
             @forelse($exams as $exam)
 
             <article
@@ -788,6 +802,7 @@ $closedCount = $exams->where('status', 'closed')->count();
 
                                 </span>
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @elseif($exam->status === 'draft')
 
                                 <span
@@ -807,6 +822,7 @@ $closedCount = $exams->where('status', 'closed')->count();
 
                                 </span>
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @else
 
                                 <span
@@ -900,6 +916,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                     minutes
                                 </span>
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if($exam->subject)
                                 <span class="hidden text-slate-300 sm:inline">
                                     /
@@ -910,6 +927,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                 </span>
                                 @endif
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if($exam->class)
                                 <span class="hidden text-slate-300 sm:inline">
                                     /
@@ -1102,6 +1120,7 @@ $closedCount = $exams->where('status', 'closed')->count();
                                     </div>
 
 
+                                    {-- Collect and submit the data for this operation. --}
                                     <form
                                         action="{{ route('teacher.exams.destroy', $exam->id) }}"
                                         method="POST"

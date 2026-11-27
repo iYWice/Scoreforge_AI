@@ -7,8 +7,14 @@ use App\Models\ActivityLog;
 use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 
+/**
+ * Represents the ActivityLogController application component.
+ */
 class ActivityLogController extends Controller
 {
+    /**
+     * Handles index.
+     */
     public function index(Request $request)
     {
         $logs = ActivityLog::with('user')
@@ -51,6 +57,9 @@ class ActivityLogController extends Controller
         ));
     }
 
+    /**
+     * Handles export.
+     */
     public function export(Request $request)
     {
         app(ActivityLogger::class)->log(

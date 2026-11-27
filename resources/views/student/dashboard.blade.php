@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Student Overview')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Student Workspace')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 @php
@@ -43,6 +47,7 @@ $weakestTopic = $weakTopics->first();
     {{-- STUDENT INTRO                                          --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="border-b border-slate-200 pb-8 aiq-panel aiq-panel-interactive p-5 sm:p-6">
 
         <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -118,6 +123,7 @@ $weakestTopic = $weakTopics->first();
     {{-- EXAM CODE PANEL                                        --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section
         x-cloak
         x-show="examPanel"
@@ -156,6 +162,7 @@ $weakestTopic = $weakTopics->first();
             <div class="border-t border-indigo-100 bg-white
                         p-6 lg:border-l lg:border-t-0">
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if(session('error'))
 
                 <div class="mb-4 border border-rose-200
@@ -169,6 +176,7 @@ $weakestTopic = $weakTopics->first();
                 @endif
 
 
+                {-- Collect and submit the data for this operation. --}
                 <form
                     method="POST"
                     action="{{ route('student.exam.start') }}"
@@ -248,6 +256,7 @@ $weakestTopic = $weakTopics->first();
     {{-- CORE METRICS                                           --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section>
 
         <div class="grid grid-cols-2 gap-x-6 gap-y-7
@@ -298,6 +307,7 @@ $weakestTopic = $weakTopics->first();
                                     ? 'text-rose-600'
                                     : 'text-slate-950') }}">
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($improvementRate > 0)
                     +
                     @endif
@@ -372,6 +382,7 @@ $weakestTopic = $weakTopics->first();
     {{-- PERFORMANCE                                            --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="grid grid-cols-1 gap-6 lg:grid-cols-12">
 
 
@@ -421,10 +432,12 @@ $weakestTopic = $weakTopics->first();
                 class="mt-7">
 
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if($subjects->isNotEmpty())
 
                 <div class="space-y-6">
 
+                    {-- Iterate over the related records and render each result. --}
                     @foreach($subjects as $subject)
 
                     @php
@@ -489,6 +502,7 @@ $weakestTopic = $weakTopics->first();
 
                 </div>
 
+                {-- Render this content conditionally based on the current view state. --}
                 @else
 
                 <div class="border-y border-slate-100 py-10 text-center">
@@ -541,6 +555,7 @@ $weakestTopic = $weakTopics->first();
                         Strongest
                     </p>
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($strongestTopic)
 
                     <div>
@@ -552,6 +567,7 @@ $weakestTopic = $weakTopics->first();
     </p>
 </div>
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @else
 
                     <p class="mt-2 text-sm text-slate-500">
@@ -576,6 +592,7 @@ $weakestTopic = $weakTopics->first();
                         Focus Next
                     </p>
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($weakestTopic)
 
                     <div>
@@ -587,6 +604,7 @@ $weakestTopic = $weakTopics->first();
     </p>
 </div>
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @else
 
                     <p class="mt-2 text-sm text-slate-500">
@@ -609,8 +627,10 @@ $weakestTopic = $weakTopics->first();
     {{-- TOPIC DETAILS                                          --}}
     {{-- ====================================================== --}}
 
+    {-- Render this content conditionally based on the current view state. --}
     @if($weakTopics->isNotEmpty() || $strongTopics->isNotEmpty())
 
+    {-- Render this meaningful page or content section. --}
     <section>
 
         <div class="mb-5">
@@ -645,6 +665,7 @@ $weakestTopic = $weakTopics->first();
 
                 <div class="divide-y divide-slate-100">
 
+                    {-- Iterate over the related records and render each result. --}
                     @forelse($weakTopics as $topic)
 
                     <div
@@ -704,6 +725,7 @@ $weakestTopic = $weakTopics->first();
 
                 <div class="divide-y divide-slate-100">
 
+                    {-- Iterate over the related records and render each result. --}
                     @forelse($strongTopics as $topic)
 
                     <div
@@ -785,6 +807,7 @@ $weakestTopic = $weakTopics->first();
     </div>
 
     <div class="mt-4 grid gap-3">
+        {-- Iterate over the related records and render each result. --}
         @forelse($attempts as $attempt)
             @php
                 $passingScore = $attempt->exam?->passing_score ?? 0;
@@ -826,10 +849,12 @@ $weakestTopic = $weakTopics->first();
                 </div>
 
                 <div class="sm:text-right">
+                    {-- Render this content conditionally based on the current view state. --}
                     @if($attemptPercentage !== null)
                         <p class="text-lg font-black {{ $passed ? 'text-emerald-600' : 'text-rose-600' }}">
                             {{ number_format($attemptPercentage, 1) }}%
                         </p>
+                    {-- Render this content conditionally based on the current view state. --}
                     @else
                         <p class="text-lg font-black text-slate-400">—</p>
                     @endif
@@ -868,6 +893,7 @@ $weakestTopic = $weakTopics->first();
     {{-- LEARNING RECOMMENDATION                                --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="border border-slate-200 bg-white aiq-panel aiq-panel-interactive">
 
         <div class="grid lg:grid-cols-[240px_1fr]">
@@ -894,8 +920,10 @@ $weakestTopic = $weakTopics->first();
 
             <div class="p-6">
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if($latestRecommendation)
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if($latestRecommendation->subject)
 
                 <p class="mb-3 text-[9px] font-extrabold uppercase
@@ -915,6 +943,7 @@ $weakestTopic = $weakTopics->first();
 
                 </p>
 
+                {-- Render this content conditionally based on the current view state. --}
                 @else
 
                 <p class="text-sm font-medium text-slate-500">
@@ -936,6 +965,7 @@ $weakestTopic = $weakTopics->first();
     {{-- AI-Q FUTURE SIGNAL                                     --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="border-t border-slate-200 pt-7 aiq-action-bar p-5">
 
         <div class="flex flex-col gap-4

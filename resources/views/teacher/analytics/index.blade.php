@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Performance Analytics')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Analytics Workspace')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -56,6 +60,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
     {{-- HEADER                                                 --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="analytics-hero border-b border-slate-200 pb-8">
 
 
@@ -125,6 +130,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
     {{-- ANALYTICS NAVIGATION                                   --}}
     {{-- ====================================================== --}}
 
+    {-- Render this navigation or page landmark. --}
     <nav class="analytics-tabs flex items-center gap-1 overflow-x-auto border-b border-slate-200">
 
         <button
@@ -171,6 +177,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
         </button>
 
 
+        {-- Render this content conditionally based on the current view state. --}
         @if(Route::has('teacher.analytics.predictions'))
 
         <a
@@ -218,6 +225,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
         {{-- ACADEMIC PULSE                                     --}}
         {{-- ================================================== --}}
 
+        {-- Render this meaningful page or content section. --}
         <section>
 
             <div class="mb-6">
@@ -347,6 +355,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
         {{-- PERFORMANCE VISUALIZATION                          --}}
         {{-- ================================================== --}}
 
+        {-- Render this meaningful page or content section. --}
         <section class="grid grid-cols-1 gap-6 lg:grid-cols-12">
 
 
@@ -602,6 +611,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
         {{-- PERFORMANCE MOVEMENT                               --}}
         {{-- ================================================== --}}
 
+        {-- Render this meaningful page or content section. --}
         <section>
 
             <div class="mb-5 flex items-end justify-between">
@@ -678,6 +688,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
 
                     <div class="divide-y divide-slate-100">
 
+                        {-- Iterate over the related records and render each result. --}
                         @forelse($improvingStudents as $analytics)
 
                         <div
@@ -770,6 +781,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
 
                     <div class="divide-y divide-slate-100">
 
+                        {-- Iterate over the related records and render each result. --}
                         @forelse($decliningStudents as $analytics)
 
                         <div
@@ -848,6 +860,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
         x-transition:enter-end="opacity-100 translate-y-0">
 
 
+        {-- Render this meaningful page or content section. --}
         <section>
 
             <div
@@ -922,8 +935,10 @@ $safePassRate = max(0, min(100, (float) $passRate));
 
                 <div class="overflow-x-auto">
 
+                    {-- Present structured records in a table. --}
                     <table class="w-full border-collapse text-left">
 
+                        {-- Present structured records in a table. --}
                         <thead>
 
                             <tr
@@ -958,8 +973,10 @@ $safePassRate = max(0, min(100, (float) $passRate));
                         </thead>
 
 
+                        {-- Present structured records in a table. --}
                         <tbody>
 
+                            {-- Iterate over the related records and render each result. --}
                             @forelse($studentRankings as $student)
 
                             @php
@@ -1092,6 +1109,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
                                         </div>
 
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @if($studentAverage >= 75)
 
                                         <span
@@ -1102,6 +1120,7 @@ $safePassRate = max(0, min(100, (float) $passRate));
                                             Passing
                                         </span>
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @else
 
                                         <span

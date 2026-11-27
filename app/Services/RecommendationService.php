@@ -4,14 +4,22 @@ namespace App\Services;
 
 use App\Models\ExamAttempt;
 use App\Models\Recommendation;
-use App\Services\StudentPerformanceService;
-use App\Services\GeminiService;
 
+/**
+ * Represents the RecommendationService application component.
+ */
 class RecommendationService
 {
+    /**
+     * Handles __construct.
+     */
     public function __construct(
         private readonly GeminiService $geminiService
     ) {}
+
+    /**
+     * Handles generate.
+     */
     public function generate(ExamAttempt $attempt): Recommendation
     {
         $studentId = $attempt->student_id;
@@ -58,10 +66,10 @@ class RecommendationService
 
         try {
             $prompt = 'You are an educational study-support assistant. '
-                . 'Give up to five brief, practical study recommendations using only the supplied exam metrics, subjects, and weak topics. '
-                . 'Do not diagnose students, infer personal circumstances, or invent causes. '
-                . 'Return only JSON in this format: {"recommendations":["..."]}. '
-                . 'Data: ' . json_encode($recommendationData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+                .'Give up to five brief, practical study recommendations using only the supplied exam metrics, subjects, and weak topics. '
+                .'Do not diagnose students, infer personal circumstances, or invent causes. '
+                .'Return only JSON in this format: {"recommendations":["..."]}. '
+                .'Data: '.json_encode($recommendationData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
             $rawRecommendations = trim($this->geminiService->generate($prompt));
             $rawRecommendations = preg_replace('/^```(?:json)?\s*/i', '', $rawRecommendations);
@@ -73,7 +81,7 @@ class RecommendationService
             if (is_array($aiRecommendations)) {
                 $aiRecommendations = array_values(array_filter(
                     $aiRecommendations,
-                    fn($item) => is_string($item) && trim($item) !== ''
+                    fn ($item) => is_string($item) && trim($item) !== ''
                 ));
 
                 if ($aiRecommendations !== []) {
@@ -138,16 +146,16 @@ class RecommendationService
         ) {
             $recommendations[] =
                 'Focus on the topic "'
-                . $weakestTopic['topic']
-                . '" because it is currently your weakest area. '
-                . 'You answered '
-                . $weakestTopic['incorrect']
-                . ' question(s) incorrectly in this topic, with a performance rate of '
-                . number_format(
+                .$weakestTopic['topic']
+                .'" because it is currently your weakest area. '
+                .'You answered '
+                .$weakestTopic['incorrect']
+                .' question(s) incorrectly in this topic, with a performance rate of '
+                .number_format(
                     $weakestTopic['percentage'],
                     1
                 )
-                . '%.';
+                .'%.';
         }
 
         /*
@@ -162,13 +170,13 @@ class RecommendationService
         ) {
             $recommendations[] =
                 'You should also spend more study time on '
-                . $weakestSubject['subject_name']
-                . ', where your current average is '
-                . number_format(
+                .$weakestSubject['subject_name']
+                .', where your current average is '
+                .number_format(
                     $weakestSubject['average_percentage'],
                     1
                 )
-                . '%.';
+                .'%.';
         }
 
         /*
@@ -201,11 +209,9 @@ class RecommendationService
         return Recommendation::create([
             'student_id' => $studentId,
 
-            'subject_id' =>
-            $attempt->exam->subject_id,
+            'subject_id' => $attempt->exam->subject_id,
 
-            'recommendation_text' =>
-            $message,
+            'recommendation_text' => $message,
         ]);
     }
 }

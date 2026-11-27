@@ -3,18 +3,24 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Models\AiInsight;
 use App\Models\Exam;
 use App\Models\ExamAttempt;
-use App\Models\StudentAnalytics;
-use App\Services\ExamAnalyticsService;
 use App\Models\Prediction;
+use App\Models\StudentAnalytics;
+use App\Services\ActivityLogger;
+use App\Services\ExamAnalyticsService;
 use App\Services\GeminiService;
-use Illuminate\Http\Request;
-use App\Models\AiInsight;
 use Throwable;
 
+/**
+ * Represents the AnalyticsController application component.
+ */
 class AnalyticsController extends Controller
 {
+    /**
+     * Handles index.
+     */
     public function index()
     {
         $teacherId = auth()->id();
@@ -146,6 +152,9 @@ class AnalyticsController extends Controller
         ));
     }
 
+    /**
+     * Handles exam.
+     */
     public function exam(
         Exam $exam,
         ExamAnalyticsService $analyticsService
@@ -166,6 +175,10 @@ class AnalyticsController extends Controller
             compact('exam', 'analytics')
         );
     }
+
+    /**
+     * Handles predictions.
+     */
     public function predictions()
     {
         $teacherId = auth()->id();
@@ -176,7 +189,7 @@ class AnalyticsController extends Controller
     |--------------------------------------------------------------------------
     */
 
-        $studentIds = \App\Models\ExamAttempt::whereHas(
+        $studentIds = ExamAttempt::whereHas(
             'exam',
             function ($query) use ($teacherId) {
                 $query->where('created_by', $teacherId);
@@ -250,6 +263,9 @@ class AnalyticsController extends Controller
         );
     }
 
+    /**
+     * Handles generateAiInsight.
+     */
     public function generateAiInsight(
         Exam $exam,
         ExamAnalyticsService $analyticsService,
@@ -340,17 +356,13 @@ class AnalyticsController extends Controller
 
                 'type' => 'teacher_exam',
 
-                'performance_summary' =>
-                $generated['performance_summary'],
+                'performance_summary' => $generated['performance_summary'],
 
-                'key_findings' =>
-                $generated['key_findings'],
+                'key_findings' => $generated['key_findings'],
 
-                'recommended_actions' =>
-                $generated['recommended_actions'],
+                'recommended_actions' => $generated['recommended_actions'],
 
-                'model' =>
-                config('services.gemini.model'),
+                'model' => config('services.gemini.model'),
 
                 'generated_at' => now(),
             ]);
@@ -363,7 +375,7 @@ class AnalyticsController extends Controller
                     'aiInsight'
                 )
             );
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
 
             report($exception);
 
@@ -374,6 +386,9 @@ class AnalyticsController extends Controller
         }
     }
 
+    /**
+     * Handles regenerateAiInsight.
+     */
     public function regenerateAiInsight(
         Exam $exam,
         ExamAnalyticsService $analyticsService,
@@ -410,17 +425,13 @@ class AnalyticsController extends Controller
                 'generated_by' => auth()->id(),
                 'type' => 'teacher_exam',
 
-                'performance_summary' =>
-                $generated['performance_summary'],
+                'performance_summary' => $generated['performance_summary'],
 
-                'key_findings' =>
-                $generated['key_findings'],
+                'key_findings' => $generated['key_findings'],
 
-                'recommended_actions' =>
-                $generated['recommended_actions'],
+                'recommended_actions' => $generated['recommended_actions'],
 
-                'model' =>
-                config('services.gemini.model'),
+                'model' => config('services.gemini.model'),
 
                 'generated_at' => now(),
             ]);
@@ -441,7 +452,7 @@ class AnalyticsController extends Controller
                 'error',
                 $exception->getMessage()
             );
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
 
             report($exception);
 
@@ -451,9 +462,13 @@ class AnalyticsController extends Controller
             );
         }
     }
+
+    /**
+     * Handles export.
+     */
     public function export()
     {
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'report.analytics_exported',
             'Teacher exported analytics report.'
         );
@@ -487,7 +502,7 @@ class AnalyticsController extends Controller
                             : 0;
 
                         fputcsv($stream, [
-                            trim(($attempt->student?->fname ?? '') . ' ' . ($attempt->student?->lname ?? '')),
+                            trim(($attempt->student?->fname ?? '').' '.($attempt->student?->lname ?? '')),
                             $attempt->student?->email,
                             $attempt->exam?->title,
                             $attempt->exam?->subject?->name,
@@ -503,14 +518,17 @@ class AnalyticsController extends Controller
                 });
 
             fclose($stream);
-        }, 'teacher-analytics-' . now()->format('Ymd-His') . '.csv', [
+        }, 'teacher-analytics-'.now()->format('Ymd-His').'.csv', [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }
 
+    /**
+     * Handles exportPredictions.
+     */
     public function exportPredictions()
     {
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'report.predictions_exported',
             'Teacher exported performance predictions.'
         );
@@ -543,7 +561,7 @@ class AnalyticsController extends Controller
                 ->chunk(500, function ($predictions) use ($stream): void {
                     foreach ($predictions as $prediction) {
                         fputcsv($stream, [
-                            trim(($prediction->student?->fname ?? '') . ' ' . ($prediction->student?->lname ?? '')),
+                            trim(($prediction->student?->fname ?? '').' '.($prediction->student?->lname ?? '')),
                             $prediction->student?->email,
                             $prediction->predicted_score,
                             $prediction->predicted_level,
@@ -555,7 +573,7 @@ class AnalyticsController extends Controller
                 });
 
             fclose($stream);
-        }, 'performance-predictions-' . now()->format('Ymd-His') . '.csv', [
+        }, 'performance-predictions-'.now()->format('Ymd-His').'.csv', [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }

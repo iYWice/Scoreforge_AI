@@ -9,8 +9,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Represents the SubjectController application component.
+ */
 class SubjectController extends Controller
 {
+    /**
+     * Handles index.
+     */
     public function index(Request $request): View
     {
         $subjects = Subject::query()
@@ -26,6 +32,9 @@ class SubjectController extends Controller
         return view('admin.subjects.index', compact('subjects'));
     }
 
+    /**
+     * Handles store.
+     */
     public function store(Request $request, ActivityLogger $logger): RedirectResponse
     {
         $data = $request->validate([
@@ -38,6 +47,9 @@ class SubjectController extends Controller
         return back()->with('success', 'Subject created successfully.');
     }
 
+    /**
+     * Handles update.
+     */
     public function update(Request $request, Subject $subject, ActivityLogger $logger): RedirectResponse
     {
         $data = $request->validate([
@@ -50,6 +62,9 @@ class SubjectController extends Controller
         return back()->with('success', 'Subject updated successfully.');
     }
 
+    /**
+     * Handles destroy.
+     */
     public function destroy(Subject $subject, ActivityLogger $logger): RedirectResponse
     {
         $subjectName = $subject->name;

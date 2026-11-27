@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'AI Question Builder')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Exam Workspace')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 <style>
@@ -119,6 +123,7 @@
         <ul
             class="mt-2 list-disc space-y-1
                        pl-5 text-sm text-red-700">
+            {-- Iterate over the related records and render each result. --}
             @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>
             @endforeach
@@ -128,6 +133,7 @@
     @endif
 
 
+    {-- Collect and submit the data for this operation. --}
     <form
         method="POST"
         action="{{ route(

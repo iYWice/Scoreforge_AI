@@ -15,10 +15,16 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
+/**
+ * Represents the RegisteredUserController application component.
+ */
 class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
+     */
+    /**
+     * Handles create.
      */
     public function create(): View
     {
@@ -35,6 +41,9 @@ class RegisteredUserController extends Controller
      * Handle an incoming registration request.
      *
      * @throws ValidationException
+     */
+    /**
+     * Handles store.
      */
     public function store(Request $request): RedirectResponse
     {

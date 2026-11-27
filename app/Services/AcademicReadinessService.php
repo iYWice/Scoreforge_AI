@@ -5,8 +5,14 @@ namespace App\Services;
 use App\Models\AcademicReadiness;
 use App\Models\ExamAttempt;
 
+/**
+ * Represents the AcademicReadinessService application component.
+ */
 class AcademicReadinessService
 {
+    /**
+     * Handles evaluate.
+     */
     public function evaluate(int $studentId): AcademicReadiness
     {
         $attempts = ExamAttempt::where(
@@ -134,22 +140,20 @@ class AcademicReadinessService
         return AcademicReadiness::updateOrCreate(
             ['student_id' => $studentId],
             [
-                'readiness_score' =>
-                round($readinessScore, 2),
+                'readiness_score' => round($readinessScore, 2),
 
-                'readiness_level' =>
-                $level,
+                'readiness_level' => $level,
 
-                'reason' =>
-                $reason,
+                'reason' => $reason,
 
-                'evaluated_at' =>
-                now(),
+                'evaluated_at' => now(),
             ]
         );
     }
 
-
+    /**
+     * Handles classify.
+     */
     private function classify(
         float $score
     ): string {

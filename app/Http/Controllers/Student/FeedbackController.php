@@ -5,8 +5,14 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\StudentPerformanceAnalysis;
 
+/**
+ * Represents the FeedbackController application component.
+ */
 class FeedbackController extends Controller
 {
+    /**
+     * Handles index.
+     */
     public function index()
     {
         $analyses = StudentPerformanceAnalysis::with('attempt.exam.subject')

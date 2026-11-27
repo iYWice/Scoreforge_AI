@@ -11,8 +11,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
+/**
+ * Represents the ClassSubjectController application component.
+ */
 class ClassSubjectController extends Controller
 {
+    /**
+     * Handles index.
+     */
     public function index()
     {
         $classes = SchoolClass::where('created_by', auth()->id())
@@ -27,6 +33,9 @@ class ClassSubjectController extends Controller
     }
 
     // CREATE CLASS
+    /**
+     * Handles storeClass.
+     */
     public function storeClass(Request $request)
     {
         $validated = $request->validateWithBag(
@@ -47,6 +56,9 @@ class ClassSubjectController extends Controller
     }
 
     // CREATE SUBJECT
+    /**
+     * Handles storeSubject.
+     */
     public function storeSubject(Request $request)
     {
         $validated = $request->validateWithBag(
@@ -66,6 +78,9 @@ class ClassSubjectController extends Controller
     }
 
     // DELETE CLASS
+    /**
+     * Handles destroyClass.
+     */
     public function destroyClass($id)
     {
         $class = SchoolClass::findOrFail($id);
@@ -87,6 +102,9 @@ class ClassSubjectController extends Controller
     }
 
     // DELETE SUBJECT
+    /**
+     * Handles destroySubject.
+     */
     public function destroySubject($id)
     {
         $subject = Subject::findOrFail($id);
@@ -108,6 +126,9 @@ class ClassSubjectController extends Controller
     }
 
     // ADD A SUBJECT OFFERING TO A CLASS
+    /**
+     * Handles storeOffering.
+     */
     public function storeOffering(Request $request, SchoolClass $class)
     {
         abort_unless((int) $class->created_by === (int) auth()->id(), 403);
@@ -144,6 +165,9 @@ class ClassSubjectController extends Controller
     }
 
     // ASSIGN JOINED STUDENTS TO A SUBJECT OFFERING
+    /**
+     * Handles assignStudents.
+     */
     public function assignStudents(Request $request, ClassSubject $classSubject)
     {
         $class = $classSubject->schoolClass;
@@ -185,6 +209,9 @@ class ClassSubjectController extends Controller
         return back()->with('success', 'Students assigned to the subject offering.');
     }
 
+    /**
+     * Handles teacherSubjects.
+     */
     public function teacherSubjects()
     {
         $offerings = ClassSubject::query()
@@ -213,6 +240,9 @@ class ClassSubjectController extends Controller
         ));
     }
 
+    /**
+     * Handles storeIndependentSubject.
+     */
     public function storeIndependentSubject(Request $request)
     {
         $request->merge([
@@ -290,6 +320,9 @@ class ClassSubjectController extends Controller
             ->with('success', 'Subject created and students enrolled.');
     }
 
+    /**
+     * Handles syncTeacherSubjectStudents.
+     */
     public function syncTeacherSubjectStudents(Request $request, ClassSubject $classSubject)
     {
         abort_unless(
@@ -344,6 +377,9 @@ class ClassSubjectController extends Controller
         return back()->with('success', 'Subject class and student list updated.');
     }
 
+    /**
+     * Handles updateTeacherSubject.
+     */
     public function updateTeacherSubject(Request $request, ClassSubject $classSubject)
     {
         abort_unless(

@@ -8,8 +8,14 @@ use App\Models\Exam;
 use App\Models\Question;
 use App\Models\QuestionOption;
 
+/**
+ * Represents the QuestionController application component.
+ */
 class QuestionController extends Controller
 {
+    /**
+     * Handles edit.
+     */
     public function edit(Question $question)
     {
         return view(
@@ -18,6 +24,9 @@ class QuestionController extends Controller
         );
     }
 
+    /**
+     * Handles update.
+     */
     public function update(Request $request, Question $question)
     {
         $request->validate([
@@ -69,6 +78,9 @@ class QuestionController extends Controller
             );
     }
 
+    /**
+     * Handles destroy.
+     */
     public function destroy(
         Question $question
     ) {
@@ -81,16 +93,25 @@ class QuestionController extends Controller
                 'Question deleted successfully.'
             );
     }
+    /**
+     * Handles index.
+     */
     public function index(Exam $exam)
     {
         $questions = $exam->questions;
 
         return view('teacher.questions.index', compact('exam', 'questions'));
     }
+    /**
+     * Handles create.
+     */
     public function create(Exam $exam)
     {
         return view('teacher.questions.create', compact('exam'));
     }
+    /**
+     * Handles store.
+     */
     public function store(Request $request, Exam $exam)
     {
         $request->validate([

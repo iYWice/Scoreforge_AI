@@ -3,15 +3,22 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * Represents the PasswordController application component.
+ */
 class PasswordController extends Controller
 {
     /**
      * Update the user's password.
+     */
+    /**
+     * Handles update.
      */
     public function update(Request $request): RedirectResponse
     {
@@ -24,7 +31,7 @@ class PasswordController extends Controller
             ],
         ]);
 
-        app(\App\Services\ActivityLogger::class)->log(
+        app(ActivityLogger::class)->log(
             'user.password_changed',
             'User changed their password.',
             $request->user()

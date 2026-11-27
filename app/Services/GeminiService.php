@@ -2,17 +2,24 @@
 
 namespace App\Services;
 
+use App\Models\Exam;
+use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Throwable;
-use App\Models\SystemSetting;
 
+/**
+ * Represents the GeminiService application component.
+ */
 class GeminiService
 {
     private string $baseUrl =
-    'https://generativelanguage.googleapis.com/v1beta';
+        'https://generativelanguage.googleapis.com/v1beta';
 
+    /**
+     * Handles generate.
+     */
     public function generate(string $prompt): string
     {
         $apiKey = config('services.gemini.key');
@@ -88,12 +95,11 @@ class GeminiService
                 );
             }
 
-
             $body = $response->json();
 
             $text = collect(data_get($body, 'candidates.0.content.parts', []))
                 ->pluck('text')
-                ->filter(fn($part) => is_string($part) && trim($part) !== '')
+                ->filter(fn ($part) => is_string($part) && trim($part) !== '')
                 ->implode("\n");
 
             if (trim($text) === '') {
@@ -110,7 +116,6 @@ class GeminiService
             }
 
             return trim($text);
-
 
             if (empty($text)) {
 
@@ -137,11 +142,13 @@ class GeminiService
         }
     }
 
-
     /**
      * Simple connection test.
      */
 
+    /**
+     * Handles generateQuestions.
+     */
     public function generateQuestions(
         string $sourceText,
         int $count,
@@ -317,15 +324,15 @@ PROMPT;
             true
         );
 
-        if (!is_array($decoded)) {
+        if (! is_array($decoded)) {
             throw new RuntimeException(
                 'Gemini returned an invalid question format.'
             );
         }
 
         if (
-            !isset($decoded['questions']) ||
-            !is_array($decoded['questions'])
+            ! isset($decoded['questions']) ||
+            ! is_array($decoded['questions'])
         ) {
             throw new RuntimeException(
                 'Gemini did not return a question list.'
@@ -345,7 +352,7 @@ PROMPT;
             $questionType =
                 $question['question_type'] ?? null;
 
-            if (!in_array(
+            if (! in_array(
                 $questionType,
                 $allowedTypes,
                 true
@@ -362,34 +369,31 @@ PROMPT;
 
             $options = $question['options'] ?? [];
 
-            if (!is_array($options)) {
+            if (! is_array($options)) {
                 $options = [];
             }
-$topic = trim((string) ($question['topic'] ?? ''));
+            $topic = trim((string) ($question['topic'] ?? ''));
 
-if (in_array(mb_strtolower($topic), [
-    'topic',
-    'topic name',
-    'general',
-    'unknown',
-], true)) {
-    $topic = '';
-}
+            if (in_array(mb_strtolower($topic), [
+                'topic',
+                'topic name',
+                'general',
+                'unknown',
+            ], true)) {
+                $topic = '';
+            }
             $questions[] = [
                 'question_type' => $questionType,
 
                 'topic' => $topic,
 
-                'question_text' =>
-                trim($question['question_text']),
+                'question_text' => trim($question['question_text']),
 
-                'correct_answer' =>
-                trim((string) $question['correct_answer']),
+                'correct_answer' => trim((string) $question['correct_answer']),
 
                 'points' => 1,
 
-                'options' =>
-                array_values($options),
+                'options' => array_values($options),
             ];
         }
 
@@ -401,6 +405,10 @@ if (in_array(mb_strtolower($topic), [
 
         return $questions;
     }
+
+    /**
+     * Handles testConnection.
+     */
     public function testConnection(): string
     {
         return $this->generate(
@@ -408,14 +416,15 @@ if (in_array(mb_strtolower($topic), [
         );
     }
 
-
-
+    /**
+     * Handles generateExamInsight.
+     */
     public function generateExamInsight(
-        \App\Models\Exam $exam,
+        Exam $exam,
         array $analytics
     ): array {
         if (SystemSetting::getValue('ai_insights', '1') !== '1') {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'AI Performance Insights is currently disabled by the administrator.'
             );
         }
@@ -451,7 +460,7 @@ if (in_array(mb_strtolower($topic), [
                 $analytics['question_analysis'] ?? []
             )
                 ->filter(
-                    fn($question) => ($question['difficulty'] ?? null) === 'Difficult'
+                    fn ($question) => ($question['difficulty'] ?? null) === 'Difficult'
                 )
                 ->sortBy('accuracy')
                 ->take(5)
@@ -546,24 +555,21 @@ PROMPT;
             true
         );
 
-        if (!is_array($decoded)) {
-            throw new \RuntimeException(
+        if (! is_array($decoded)) {
+            throw new RuntimeException(
                 'Gemini returned an invalid exam insight format.'
             );
         }
 
         return [
-            'performance_summary' =>
-            $decoded['performance_summary']
+            'performance_summary' => $decoded['performance_summary']
                 ?? 'No performance summary was generated.',
 
-            'key_findings' =>
-            is_array($decoded['key_findings'] ?? null)
+            'key_findings' => is_array($decoded['key_findings'] ?? null)
                 ? $decoded['key_findings']
                 : [],
 
-            'recommended_actions' =>
-            is_array($decoded['recommended_actions'] ?? null)
+            'recommended_actions' => is_array($decoded['recommended_actions'] ?? null)
                 ? $decoded['recommended_actions']
                 : [],
         ];

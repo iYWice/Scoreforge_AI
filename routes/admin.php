@@ -1,5 +1,6 @@
 <?php
 
+// Import admin controllers and Laravel's route facade.
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\ClassController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -9,16 +10,17 @@ use App\Http\Controllers\Admin\SystemSettingController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
+// Apply authentication and the administrator role check to every route below.
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        Route::get('/dashboard', [
-            DashboardController::class,
-            'index',
-        ])->name('dashboard');
+        // Administrator dashboard overview.
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
 
+        // Account listing and account-management actions.
         Route::get('/users', [UserController::class, 'index'])
             ->name('users.index');
 
@@ -30,7 +32,8 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::patch('/users/{user}/password', [UserController::class, 'resetPassword'])
             ->name('users.password');
-        // Class monitoring and management
+
+        // Class monitoring and management.
         Route::get('/classes', [ClassController::class, 'index'])
             ->name('classes.index');
 
@@ -46,7 +49,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/classes/{class}', [ClassController::class, 'show'])
             ->name('classes.show');
 
-        // Examination monitoring and management
+        // Examination monitoring and management.
         Route::get('/exams', [ExamController::class, 'index'])
             ->name('exams.index');
 
@@ -61,28 +64,33 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::get('/exams/{exam}', [ExamController::class, 'show'])
             ->name('exams.show');
-        // Activity Logs
+
+        // Activity log viewing and export.
         Route::get('/activity-logs', [ActivityLogController::class, 'index'])
             ->name('activity-logs.index');
 
-        // System Settings
+        // System configuration settings.
         Route::get('/settings', [SystemSettingController::class, 'index'])
             ->name('settings.index');
 
         Route::patch('/settings', [SystemSettingController::class, 'update'])
             ->name('settings.update');
+
         Route::get(
             '/activity-logs/export',
             [ActivityLogController::class, 'export']
         )->name('activity-logs.export');
 
-        // Subject monitoring and management
+        // Subject monitoring and management.
         Route::get('/subjects', [SubjectController::class, 'index'])
             ->name('subjects.index');
+
         Route::post('/subjects', [SubjectController::class, 'store'])
             ->name('subjects.store');
+
         Route::patch('/subjects/{subject}', [SubjectController::class, 'update'])
             ->name('subjects.update');
+
         Route::delete('/subjects/{subject}', [SubjectController::class, 'destroy'])
             ->name('subjects.destroy');
     });

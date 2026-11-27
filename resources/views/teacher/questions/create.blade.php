@@ -1,7 +1,10 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Question Builder')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 <div class="max-w-4xl mx-auto space-y-6 aiq-question-create">
@@ -27,6 +30,7 @@
             <div>
                 <h3 class="text-xs font-bold text-rose-800 dark:text-rose-300 uppercase tracking-wider">Please fix the following validation errors:</h3>
                 <ul class="mt-1.5 list-disc list-inside text-xs text-rose-700 dark:text-rose-400 space-y-1 font-medium">
+                    {-- Iterate over the related records and render each result. --}
                     @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                     @endforeach
@@ -53,6 +57,7 @@
             </span>
         </div>
 
+        {-- Collect and submit the data for this operation. --}
         <form method="POST" action="{{ route('teacher.questions.store', $exam->id) }}" class="space-y-6">
             @csrf
 

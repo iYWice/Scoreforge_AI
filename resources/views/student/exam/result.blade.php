@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Exam Result')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Examination Result')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 @php
@@ -41,6 +45,7 @@
     {{-- RESULT IDENTITY                                        --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section
         x-show="visible"
         x-transition:enter="transition ease-out duration-500"
@@ -107,6 +112,7 @@
                 </p>
 
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if($hasPassed)
 
                     <p class="mt-1 text-sm font-black
@@ -115,6 +121,7 @@
                         Passed
                     </p>
 
+                {-- Render this content conditionally based on the current view state. --}
                 @else
 
                     <p class="mt-1 text-sm font-black
@@ -137,6 +144,7 @@
     {{-- SCORE HERO                                             --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section
         x-show="visible"
         x-transition:enter="transition ease-out duration-500 delay-100"
@@ -268,6 +276,7 @@
 
 
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if($hasPassed)
 
                     <div
@@ -293,6 +302,7 @@
                         required passing score for this examination.
                     </p>
 
+                {-- Render this content conditionally based on the current view state. --}
                 @else
 
                     <div
@@ -375,6 +385,7 @@
     {{-- RESULT BREAKDOWN                                       --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="border-y border-slate-200 py-7 aiq-panel p-5 sm:p-6">
 
         <p class="text-[10px] font-extrabold uppercase
@@ -482,6 +493,7 @@
     $answersByQuestion = $attempt->answers->keyBy('question_id');
 @endphp
 
+{-- Render this meaningful page or content section. --}
 <!-- <section class="border-t border-slate-200 py-8">
     <div class="mb-5">
         <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">
@@ -502,6 +514,7 @@
             </p>
 
             <div class="mt-3 divide-y divide-rose-100">
+                {-- Iterate over the related records and render each result. --}
                 @forelse($reviewTopics as $topic)
                     <div class="flex items-start justify-between gap-4 py-3">
                         <div>
@@ -526,6 +539,7 @@
             </p>
 
             <div class="mt-3 divide-y divide-emerald-100">
+                {-- Iterate over the related records and render each result. --}
                 @forelse($strengthTopics as $topic)
                     <div class="flex items-start justify-between gap-4 py-3">
                         <div>
@@ -545,6 +559,7 @@
         </div>
     </div>
 </section> -->
+{-- Render this meaningful page or content section. --}
 <section class="border-t border-slate-200 py-8 aiq-result-review">
     <div class="mb-5">
         <p class="text-[10px] font-extrabold uppercase tracking-[0.2em] text-indigo-600">
@@ -559,6 +574,7 @@
     </div>
 
     <div class="space-y-4">
+        {-- Iterate over the related records and render each result. --}
         @forelse($attempt->exam->questions as $index => $question)
             @php
                 $answer = $answersByQuestion->get($question->id);
@@ -579,6 +595,7 @@
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wide text-slate-400">
                             Question {{ $index + 1 }}
+                            {-- Render this content conditionally based on the current view state. --}
                             @if($question->topic)
                                 · {{ $question->topic }}
                             @endif
@@ -594,8 +611,10 @@
                     </span>
                 </div>
 
+                {-- Render this content conditionally based on the current view state. --}
                 @if($question->options->isNotEmpty())
                     <div class="mt-4 space-y-2">
+                        {-- Iterate over the related records and render each result. --}
                         @foreach($question->options as $option)
                             @php
                                 $isStudentChoice = $studentAnswer !== ''
@@ -612,16 +631,19 @@
                             <div class="rounded-lg border px-4 py-3 text-sm {{ $optionClass }}">
                                 <span>{{ $option->option_text }}</span>
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if($isStudentChoice)
                                     <span class="ml-2 font-semibold">Your answer</span>
                                 @endif
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if($isCorrectOption)
                                     <span class="ml-2 font-semibold">Correct answer</span>
                                 @endif
                             </div>
                         @endforeach
                     </div>
+                {-- Render this content conditionally based on the current view state. --}
                 @else
                     <div class="mt-4 grid gap-3 sm:grid-cols-2">
                         <div class="rounded-lg bg-slate-50 p-4">
@@ -662,6 +684,7 @@
     {{-- WHAT HAPPENS NEXT                                      --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="py-8">
 
         <div class="grid gap-6 lg:grid-cols-2">
@@ -757,6 +780,7 @@
     {{-- ACTIONS                                                --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section
         class="flex flex-col gap-4 border-t
                border-slate-200 pt-7
@@ -816,6 +840,7 @@
     {{-- AI-Q FUTURE                                            --}}
     {{-- ====================================================== --}}
 
+    {-- Render this meaningful page or content section. --}
     <section class="mt-8 border-t border-slate-200 pt-6 aiq-panel p-5">
 
         <div class="flex items-start gap-3">

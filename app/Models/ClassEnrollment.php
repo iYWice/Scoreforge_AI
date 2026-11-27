@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Represents the ClassEnrollment application component.
+ */
 class ClassEnrollment extends Model
 {
     use HasFactory;
@@ -19,6 +22,9 @@ class ClassEnrollment extends Model
         'joined_at' => 'datetime',
     ];
 
+    /**
+     * Handles schoolClass.
+     */
     public function schoolClass()
     {
         return $this->belongsTo(
@@ -27,6 +33,9 @@ class ClassEnrollment extends Model
         );
     }
 
+    /**
+     * Handles student.
+     */
     public function student()
     {
         return $this->belongsTo(

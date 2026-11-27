@@ -4,8 +4,14 @@ namespace App\Services;
 
 use App\Models\StudentAnalytics;
 
+/**
+ * Represents the StudentRankingService application component.
+ */
 class StudentRankingService
 {
+    /**
+     * Handles updateRankings.
+     */
     public function updateRankings(): void
     {
         $analytics = StudentAnalytics::query()

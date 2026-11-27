@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Represents the StudentAnalytics application component.
+ */
 class StudentAnalytics extends Model
 {
     use HasFactory;
@@ -21,6 +24,9 @@ class StudentAnalytics extends Model
         'last_updated' => 'datetime',
     ];
 
+    /**
+     * Handles student.
+     */
     public function student()
     {
         return $this->belongsTo(User::class, 'student_id');

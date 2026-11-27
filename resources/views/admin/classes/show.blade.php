@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'Class Details | AI-Q')
+{-- Define this page section and its presentation content. --}
 @section('page-title', 'Class Details')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 <div class="space-y-6 aiq-class-details-admin">
 
@@ -40,6 +44,7 @@
     <div class="rounded-xl border border-slate-200 bg-white p-6 aiq-panel aiq-panel-interactive">
         <h2 class="mb-4 text-lg font-bold">Enrolled Students</h2>
 
+        {-- Iterate over the related records and render each result. --}
         @forelse($students as $student)
         <div class="flex flex-wrap justify-between gap-2 border-b border-slate-100 py-3 last:border-0 aiq-panel-interactive">
             <span class="font-medium">
@@ -59,6 +64,7 @@
     <div class="rounded-xl border border-slate-200 bg-white p-6 aiq-panel aiq-panel-interactive">
         <h2 class="mb-4 text-lg font-bold">Class Examinations</h2>
 
+        {-- Iterate over the related records and render each result. --}
         @forelse($exams as $exam)
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 py-3 last:border-0 aiq-panel-interactive">
             <div>

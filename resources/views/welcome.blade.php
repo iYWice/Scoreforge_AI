@@ -129,6 +129,7 @@
         rel="stylesheet">
 
 
+    {-- Render this content conditionally based on the current view state. --}
     @if (
     file_exists(public_path('build/manifest.json'))
     || file_exists(public_path('hot'))
@@ -166,6 +167,7 @@
         {{-- TOP NAVIGATION                                         --}}
         {{-- ====================================================== --}}
 
+        {-- Render this navigation or page landmark. --}
         <header
             id="aiq-site-header"
             class="border-b border-slate-200
@@ -232,6 +234,7 @@
                 {{-- Right side --}}
                 <div class="flex items-center gap-4">
 
+                    {-- Apply the applicable access or presence condition. --}
                     @auth
 
                     <span
@@ -276,6 +279,7 @@
 
                     </a>
 
+                    {-- Render this content conditionally based on the current view state. --}
                     @else
 
                     <p
@@ -326,6 +330,7 @@
         {{-- MAIN                                                   --}}
         {{-- ====================================================== --}}
 
+        {-- Render this meaningful page or content section. --}
         <main id="aiq-main" class="flex flex-1 items-center">
 
             <div
@@ -334,12 +339,14 @@
                    lg:px-8 lg:py-16">
 
 
+                {-- Apply the applicable access or presence condition. --}
                 @auth
 
                 {{-- ========================================== --}}
                 {{-- AUTHENTICATED WELCOME                      --}}
                 {{-- ========================================== --}}
 
+                {-- Render this meaningful page or content section. --}
                 <section class="mx-auto max-w-4xl">
 
                     <p
@@ -406,6 +413,7 @@
                         </a>
 
 
+                        {-- Collect and submit the data for this operation. --}
                         <form
                             method="POST"
                             action="{{ route('logout') }}">
@@ -433,6 +441,7 @@
                 </section>
 
 
+                {-- Render this content conditionally based on the current view state. --}
                 @else
 
                 {{-- ========================================== --}}
@@ -449,6 +458,7 @@
                     {{-- LEFT: AI-Q IDENTITY                    --}}
                     {{-- ====================================== --}}
 
+                    {-- Render this meaningful page or content section. --}
                     <section class="landing-hero">
 
 
@@ -706,6 +716,7 @@
                     {{-- RIGHT: AUTHENTICATION WORKSPACE        --}}
                     {{-- ====================================== --}}
 
+                    {-- Render this meaningful page or content section. --}
                     <section
                         id="auth-workspace"
                         class="auth-card border border-slate-200
@@ -803,6 +814,7 @@
                             class="p-6 sm:p-7">
 
 
+                            {-- Collect and submit the data for this operation. --}
                             <form
                                 method="POST"
                                 action="{{ route('login') }}"
@@ -871,6 +883,7 @@
                                         </label>
 
 
+                                        {-- Render this content conditionally based on the current view state. --}
                                         @if(Route::has('password.request'))
 
                                         <a
@@ -939,6 +952,7 @@
 
 
 
+                                {-- Render this content conditionally based on the current view state. --}
                                 @if(
                                 $errors->any()
                                 && !old('role')
@@ -1044,6 +1058,7 @@
                             class="p-6 sm:p-7">
 
 
+                            {-- Collect and submit the data for this operation. --}
                             <form
                                 method="POST"
                                 action="{{ route('register') }}"
@@ -1520,6 +1535,7 @@
         {{-- FOOTER                                                 --}}
         {{-- ====================================================== --}}
 
+        {-- Render this navigation or page landmark. --}
         <footer id="aiq-footer" class="border-t border-slate-200 bg-white">
 
             <div

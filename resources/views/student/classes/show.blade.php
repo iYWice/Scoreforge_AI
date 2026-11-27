@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', $class->name)
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Class Workspace')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 <div class="space-y-8 aiq-class-details">
@@ -57,6 +61,7 @@
 
     </section>
 
+{-- Render this meaningful page or content section. --}
 <section>
     <h3 class="text-xl font-extrabold text-slate-950">My Subjects</h3>
     <p class="mt-1 text-sm text-slate-500">
@@ -64,6 +69,7 @@
     </p>
 
     <div class="mt-5 grid gap-4 md:grid-cols-2">
+        {-- Iterate over the related records and render each result. --}
         @forelse($class->classSubjects as $offering)
             <article class="rounded-xl border border-slate-200 bg-white p-5 aiq-panel aiq-panel-interactive">
                 <h4 class="font-bold text-slate-900">
@@ -104,6 +110,7 @@
 
         <div class="mt-6 grid gap-4">
 
+            {-- Iterate over the related records and render each result. --}
             @forelse($class->exams as $exam)
 
             <div
@@ -119,6 +126,7 @@
                             {{ $exam->title }}
                         </h4>
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @if($exam->opens_at && now()->lt($exam->opens_at))
                             <span
                                 class="rounded-full bg-amber-50
@@ -128,6 +136,7 @@
                                            text-amber-700 aiq-badge">
                                 Upcoming
                             </span>
+                        {-- Render this content conditionally based on the current view state. --}
                         @else
                             <span
                                 class="rounded-full bg-emerald-50
@@ -149,14 +158,18 @@
                     </p>
 
                     <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-medium text-slate-500">
+                        {-- Render this content conditionally based on the current view state. --}
                         @if($exam->opens_at)
                             <span>Opens: {{ $exam->opens_at->format('M j, Y · g:i A') }}</span>
+                        {-- Render this content conditionally based on the current view state. --}
                         @else
                             <span>Opens: Immediately</span>
                         @endif
 
+                        {-- Render this content conditionally based on the current view state. --}
                         @if($exam->closes_at)
                             <span>Deadline: {{ $exam->closes_at->format('M j, Y · g:i A') }}</span>
+                        {-- Render this content conditionally based on the current view state. --}
                         @else
                             <span>No deadline</span>
                         @endif
@@ -164,6 +177,7 @@
                 </div>
 
 
+                {-- Collect and submit the data for this operation. --}
                 <form
                     method="POST"
                     action="{{ route('student.exam.start') }}">

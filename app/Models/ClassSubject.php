@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Represents the ClassSubject application component.
+ */
 class ClassSubject extends Model
 {
     protected $fillable = [
@@ -14,21 +17,33 @@ class ClassSubject extends Model
         'schedule',
     ];
 
+    /**
+     * Handles schoolClass.
+     */
     public function schoolClass()
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 
+    /**
+     * Handles subject.
+     */
     public function subject()
     {
         return $this->belongsTo(Subject::class);
     }
 
+    /**
+     * Handles teacher.
+     */
     public function teacher()
     {
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
+    /**
+     * Handles students.
+     */
     public function students()
     {
         return $this->belongsToMany(

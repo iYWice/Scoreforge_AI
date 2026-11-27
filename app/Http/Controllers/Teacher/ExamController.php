@@ -13,12 +13,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
+/**
+ * Represents the ExamController application component.
+ */
 class ExamController extends Controller
 {
     /*
      Display exams
      */
 
+    /**
+     * Handles index.
+     */
     public function index()
     {
         Exam::closeExpiredForTeacher(auth()->user());
@@ -43,6 +49,9 @@ class ExamController extends Controller
     /*
      Show the form for creating an exam
      */
+    /**
+     * Handles create.
+     */
     public function create()
     {
         $classes = SchoolClass::where('created_by', auth()->id())
@@ -60,6 +69,9 @@ class ExamController extends Controller
 
     /*
      Store a newly created exam in storage.
+     */
+    /**
+     * Handles store.
      */
     public function store(Request $request)
     {
@@ -132,6 +144,9 @@ class ExamController extends Controller
     /*
      Display the specified exam.
      */
+    /**
+     * Handles show.
+     */
     public function show(Exam $exam)
     {
         if ($exam->created_by !== auth()->id()) {
@@ -170,6 +185,9 @@ class ExamController extends Controller
     /*
      Show the form for editing the specified exam.
      */
+    /**
+     * Handles edit.
+     */
     public function edit(Exam $exam)
     {
         if ((int) $exam->created_by !== (int) auth()->id()) {
@@ -195,6 +213,9 @@ class ExamController extends Controller
 
     /*
      Update the specified exam in storage.
+     */
+    /**
+     * Handles update.
      */
     public function update(Request $request, Exam $exam)
     {
@@ -273,6 +294,9 @@ class ExamController extends Controller
     /*
      Remove the specified exam from storage.
      */
+    /**
+     * Handles destroy.
+     */
     public function destroy(Exam $exam)
     {
         if ($exam->created_by != auth()->id()) {
@@ -293,6 +317,9 @@ class ExamController extends Controller
             );
     }
 
+    /**
+     * Handles generateExamCode.
+     */
     private function generateExamCode(?string $subjectName = null)
     {
         $prefix = $subjectName
@@ -309,6 +336,9 @@ class ExamController extends Controller
 
     /*
      Update the status of the specified exam.
+     */
+    /**
+     * Handles updateStatus.
      */
     public function updateStatus(Request $request, Exam $exam)
     {

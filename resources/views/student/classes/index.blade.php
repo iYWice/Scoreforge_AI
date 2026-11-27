@@ -1,8 +1,12 @@
+{-- Use the application layout and configure inherited page structure. --}
 @extends('layouts.app')
 
+{-- Define this page section and its presentation content. --}
 @section('title', 'My Classes')
+{-- Define this page section and its presentation content. --}
 @section('eyebrow', 'Student Workspace')
 
+{-- Define this page section and its presentation content. --}
 @section('content')
 
 <div
@@ -58,6 +62,7 @@
     {{-- Classes --}}
     <section>
 
+        {-- Render this content conditionally based on the current view state. --}
         @if($classes->isEmpty())
 
         <div
@@ -92,10 +97,12 @@
             </button>
         </div>
 
+        {-- Render this content conditionally based on the current view state. --}
         @else
 
         <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 
+            {-- Iterate over the related records and render each result. --}
             @foreach($classes as $class)
 
             <a
@@ -116,6 +123,7 @@
     </p>
 
     <div class="mt-2 flex flex-wrap gap-2">
+        {-- Iterate over the related records and render each result. --}
         @forelse ($class->classSubjects as $offering)
             <span class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 aiq-badge">
                 {{ $offering->subject->name }} · {{ $offering->edp_code }}
@@ -229,6 +237,7 @@
             </div>
 
 
+            {-- Collect and submit the data for this operation. --}
             <form
                 method="POST"
                 action="{{ route('student.classes.join') }}"

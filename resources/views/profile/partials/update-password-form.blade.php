@@ -6,12 +6,14 @@
         </p>
     </div>
 
+    {-- Render this content conditionally based on the current view state. --}
     @if (session('status') === 'password-updated')
     <div class="mb-5 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
         Password updated successfully.
     </div>
     @endif
 
+    {-- Collect and submit the data for this operation. --}
     <form method="POST" action="{{ route('password.update') }}" class="space-y-5">
         @csrf
         @method('PUT')
@@ -27,6 +29,7 @@
                 autocomplete="current-password"
                 required
                 class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
+            {-- Iterate over the related records and render each result. --}
             @foreach ($errors->updatePassword->get('current_password') as $message)
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @endforeach
@@ -43,6 +46,7 @@
                 autocomplete="new-password"
                 required
                 class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
+            {-- Iterate over the related records and render each result. --}
             @foreach ($errors->updatePassword->get('password') as $message)
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @endforeach
